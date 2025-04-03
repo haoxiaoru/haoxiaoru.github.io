@@ -1,358 +1,151 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,
-minimum-scale=1,maximum-scale=1,user-scalable=no" />
-<title>互联网公司的媒体中心导航</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>郝晓茹 - 个人介绍</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            margin-left: 20px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #1d1d1f;
+            font-size: 16px;
+        }
+        .profile {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 30px;
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #e6e6e6;
+            margin-right: 20px;
+        }
+        .profile-info h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .profile-info p {
+            margin: 10px 0 0;
+            color: #86868b;
+        }
+        .profile-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .profile-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .profile-section h2 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #1d1d1f;
+        }
+        .profile-section p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        footer {
+            background-color: #ffffff;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 50px;
+            color: #86868b;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
-<h1>媒体中心导航</h1>
-<p>郝晓茹制作</p>
-
-<h2>BAT</h2>
-<p>
-<dl>
- <dt>百度</dt>
- 	<dd>- <a href="http://ir.baidu.com/phoenix.zhtml?c=188488&p=irol-news">
- 	新闻发布
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://ir.baidu.com/phoenix.zhtml?c=188488&p=irol-govmanage">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://ir.baidu.com/phoenix.zhtml?c=188488&p=irol-reportsannual">
- 	财报
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-<p>
-<dl>
- <dt>阿里巴巴</dt>
- 	<dd>- <a href="http://www.alibabagroup.com/cn/news/press">
- 	新闻发布
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://www.alibabagroup.com/cn/news/library">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://www.alibabagroup.com/cn/ir/earnings">
- 	财报
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-<p>
-<dl>
- <dt>腾讯</dt>
- 	<dd>- <a href="https://www.tencent.com/zh-cn/dynamic_timeline.html">
- 	新闻发布
- 	</a>
- 	</dd>
- 	<dd>- <a href="https://www.tencent.com/zh-cn/board.html">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="https://www.tencent.com/zh-cn/investor_timeline.html">
- 	财报
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-
-<h2>FAAGM</h2>
-
-<p>
-<dl>
- <dt>Facebook*</dt>
- 	<dd>- <a href="https://newsroom.fb.com/news/">
- 	新闻发布
- 	</a>
- 	</dd>
- 	<dd>- <a href="https://newsroom.fb.com/media-gallery/">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="https://investor.fb.com/financials/default.aspx">
- 	财报
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-
-<p>
-<dl>
- <dt>Apple中国</dt>
- 	<dd>- <a href="https://www.apple.com/cn/newsroom/">
- 	新闻发布
- 	</a>( <a href="https://www.apple.com/newsroom/">
- 	En
- 	</a>)
- 	</dd>
- 	<dd>- <a href="https://www.apple.com/cn/leadership/">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://investor.apple.com/financials.cfm">
- 	财报
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-<p>
-<dl>
- <dt>Amazon</dt>
- 	<dd>- <a href="http://phx.corporate-ir.net/phoenix.zhtml?c=176060&p=irol-news&nyo=0">
- 	新闻发布
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://phx.corporate-ir.net/phoenix.zhtml?c=176060&p=irol-images_videos">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://phx.corporate-ir.net/phoenix.zhtml?c=97664&p=irol-irhome">
- 	财报
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-<p>
-<dl>
- <dt>Google*</dt>
- 	<dd>- <a href="https://blog.google/">
- 	新闻发布
- 	</a>
- 	</dd>
- 	<dd>- <a href="https://www.blog.google/press/">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="https://abc.xyz/investor/">
- 	财报
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-<p>
-<dl>
- <dt>Microsoft</dt>
- 	<dd>- <a href="https://news.microsoft.com/category/press-releases/">
- 	新闻发布
- 	</a>(<a href="https://news.microsoft.com/zh-cn/recent-news/">中文</a>）
- 	</dd>
- 	<dd>- <a href="https://news.microsoft.com/imageGallery/">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="https://www.microsoft.com/en-us/investor">
- 	财报
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-<h2>TMD</h2>
-<p>
-<dl>
- <dt>今日头条</dt>
- 	<dd>- <a href="https://www.bytedance.com/newsroom/">
- 	新闻发布
- 	</a>
- 	</dd>
- 	<dd>- <a href="https://www.bytedance.com/mediakit/">
- 	图片资料
- 	</a>
- 	</dd>
-		<dd>- <a href="https://www.bytedance.com/">
- 	关于
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-<p>
-<dl>
- <dt>美团</dt>
- 	<dd>- 
- 	新闻发布
- 	</dd>
- 	<dd>-
- 	图片资料
- 	</dd>
- 		<dd>- <a href="http://www.meituan.com/about/">
- 	关于
- 	</a>
- 	</dd>
-
-</dl>
-</p>
-
-<p>
-<dl>
- <dt>滴滴出行</dt>
- 	<dd>- <a href="http://www.xiaojukeji.com/news/newslist">
- 	新闻发布
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://www.xiaojukeji.com/website/Manager.html">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://www.xiaojukeji.com/website/about.html">
- 	关于
- 	</a>
- 	</dd>
- 	
-</dl>
-</p>
-
-<h2>消费电子</h2>
-
-<p>
-<dl>
- <dt>三星</dt>
- 	<dd>- <a href="https://news.samsung.com/global/">
- 	新闻发布
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://www.samsungmobilepress.com/resources/">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://www.samsung.com/global/ir/">
- 	财报
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-<p>
-<dl>
- <dt>华为</dt>
- 	<dd>- <a href="https://consumer.huawei.com/cn/press/news/">
- 	新闻发布
- 	</a>（<a href="http://www.huawei.com/cn/press-events/news">
- 	集团
- 	</a> | <a href="https://consumer.huawei.com/en/press/news/">
- 	英文
- 	</a>）
- 	</dd>
- 	<dd>- <a href="https://consumer.huawei.com/cn/press/video/">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://www.huawei.com/cn/press-events/annual-report">
- 	财报
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-<p>
-<dl>
- <dt>小米</dt>
- 	<dd>- <a href="http://bbs.xiaomi.cn/f-6-0-0-0-8-0-1">
- 	新闻发布
- 	</a>
- 	</dd>
- 	<dd>- <a href="https://www.mi.com/about/founder/">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="https://www.mi.com/about/">
- 	关于
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-<p>
-<dl>
- <dt>索尼</dt>
- 	<dd>- <a href="https://www.sony.net/SonyInfo/News/Press/">
- 	新闻发布
- 	</a>（<a href="http://www.sony.com.cn/zh-cn/cms/newscenter.html">
- 	中文
- 	</a>）
- 	</dd>
- 	<dd>- <a href="http://www.sony.com.cn/zh-cn/cms/newscenter/presskit.html">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="https://www.sony.net/SonyInfo/IR/">
- 	财报
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-<p>
-<dl>
- <dt>联想</dt>
- 	<dd>- <a href="https://news.lenovo.com.cn/news/list.html">
- 	新闻发布
- 	</a>
- 	</dd>
- 	<dd>- <a href="https://www.lenovo.com.cn/vidocenter/">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://appserver.lenovo.com.cn/IR/">
- 	财报
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-<h2>明星公司（增加中）</h2>
-
-<p>
-<dl>
- <dt>特斯拉 Tesla</dt>
- 	<dd>- <a href="https://www.tesla.com/blog">
- 	新闻发布
- 	</a>（<a href="https://www.tesla.cn/blog">
- 	中文
- 	</a> ）
- 	</dd>
- 	<dd>- <a href="https://www.tesla.com/presskit">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://ir.tesla.com/">
- 	财报
- 	</a>
- 	</dd>
-</dl>
-</p>
-
-<p>
-<dl>
- <dt>京东</dt>
- 	<dd>- <a href="http://corporate.jd.com/whatIsNew?pagePath=inTheNews">
- 	新闻发布
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://corporate.jd.com/resources">
- 	图片资料
- 	</a>
- 	</dd>
- 	<dd>- <a href="http://ir.jd.com/phoenix.zhtml?c=253315&p=irol-news&nyo=0">
- 	财报
- 	</a>
- 	</dd>
-</dl>
-</p>
-
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">个人介绍</div>
+                <nav>
+                    <ul>
+                        <li><a href="#">首页</a></li>
+                        <li><a href="#">关于</a></li>
+                        <li><a href="#">联系</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        <main>
+            <div class="profile">
+                <div class="profile-header">
+                    <div class="profile-image"></div>
+                    <div class="profile-info">
+                        <h1>郝晓茹</h1>
+                        <p>一位科技爱好者</p>
+                        <p>邮箱：haoxiaoru1223#gmail.com</p>
+                    </div>
+                </div>
+                <div class="profile-content">
+                    <div class="profile-section">
+                        <h2>职业背景</h2>
+                        <p>保密</p>
+                    </div>
+                    <div class="profile-section">
+                        <h2>联系方式</h2>
+                        <p>邮箱：保密</p>
+                        <p>微信：保密</p>
+                        <p>微博：保密</p>
+                    </div>
+                    <div class="profile-section">
+                        <h2>个人简介</h2>
+                        <p>保密</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2024 郝晓茹个人介绍. 保留所有权利.</p>
+        </footer>
+    </div>
 </body>
 </html>

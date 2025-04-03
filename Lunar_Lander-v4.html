@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>登月舱着陆游戏 v1.1 (修复版)</title>
+    <style>
+        /* Basic reset and fullscreen styles */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Prevent scrollbars */
+            background-color: #000020; /* Dark blue space background */
+            color: #ffffff;
+            font-family: sans-serif;
+            display: flex; /* Use flexbox for centering (optional, for message) */
+            justify-content: center;
+            align-items: center;
+        }
+        /* Canvas takes up full space */
+        #gameCanvas {
+            display: block; /* Removes default spacing */
+            background-color: #000000; /* Black canvas background is fine now */
+            /* Width/Height set by JS */
+        }
+        /* Centered message overlay */
+        #message {
+             position: absolute;
+             top: 50%;
+             left: 50%;
+             transform: translate(-50%, -50%);
+             font-size: 2.5vw; /* Responsive font size */
+             font-weight: bold;
+             padding: 20px 30px;
+             background-color: rgba(0, 0, 0, 0.75);
+             border-radius: 10px;
+             text-align: center;
+             display: none; /* Hidden initially */
+             z-index: 10; /* Ensure message is on top */
+         }
+         #message.success { color: #0f0; }
+         #message.failure { color: #f00; }
+
+         /* Optional: Small instructions text also positioned absolutely */
+         #instructions {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px; /* Slightly smaller fixed size */
+            color: #aaa;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-align: center;
+            z-index: 5;
+         }
+
+         /* New: Start Game Introduction */
+         #introScreen {
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             background-color: rgba(0, 0, 32, 0.9);
+             display: flex;
+             flex-direction: column;
+             justify-content: center;
+             align-items: center;
+             z-index: 20;
+         }
+
+         #introContent {
+             background-color: rgba(0, 0, 0, 0.7);
+             border-radius: 10px;
+             padding: 30px;
+             max-width: 600px;
+             text-align: center;
+         }
+
+         #introContent h1 {
+             color: #0f0;
+             margin-bottom: 20px;
+         }
+
+         #introContent p {
+             margin-bottom: 15px;
+             line-height: 1.5;
+         }
+
+         #startButton {
+             background-color: #0f0;
+             color: #000;
+             border: none;
+             padding: 12px 24px;
+             font-size: 18px;
+             border-radius: 5px;
+             cursor: pointer;
+             margin-top: 20px;
+             transition: background-color 0.2s;
+         }
+
+         #startButton:hover {
+             background-color: #00ff00;
+         }
+
+         /* New: Success Popup */
+         #successPopup {
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             background-color: rgba(0, 0, 32, 0.9);
+             display: none;
+             flex-direction: column;
+             justify-content: center;
+             align-items: center;
+             z-index: 20;
+         }
+
+         #successContent {
+             background-color: rgba(0, 100, 0, 0.7);
+             border-radius: 10px;
+             padding: 30px;
+             max-width: 500px;
+             text-align: center;
+             color: #fff;
+         }
+
+         #successContent h2 {
+             color: #0f0;
+             margin-bottom: 20px;
+         }
+
+         .popup-buttons {
+             display: flex;
+             gap: 20px;
+             margin-top: 20px;
+         }
+
+         .popup-button {
+             padding: 10px 20px;
+             border-radius: 5px;
+             cursor: pointer;
+             font-size: 16px;
+             transition: all 0.2s;
+         }
+
+         #continueButton {
+             background-color: #aaa;
+             color: #000;
+         }
+
+         #hackButton {
+             background-color: #0f0;
+             color: #000;
+             font-weight: bold;
+         }
+
+         .popup-button:hover {
+             opacity: 0.9;
+         }
+    </style>
+</head>
+<body>
+    <!-- Instructions moved to be absolutely positioned -->
+    <div id="instructions">
+        使用方向键控制: [↑] 推进 | [←] 左旋 | [→] 右旋 | [空格/点击] 重新开始 <br>
+        目标: 安全降落在绿色平台上
+    </div>
+
+    <canvas id="gameCanvas"></canvas> <!-- Width/Height removed, will be set by JS -->
+
+    <!-- Message div remains for game over/success messages -->
+    <div id="message"></div>
+
+    <!-- New: Intro Screen -->
+    <div id="introScreen">
+        <div id="introContent">
+            <h1>登月舱着陆游戏</h1>
+            <p>目标: 安全降落在绿色平台上。</p>
+            <p>使用方向键控制登月舱：</p>
+            <p>- [↑] 推进器：减速下降</p>
+            <p>- [←] 左旋：调整方向</p>
+            <p>- [→] 右旋：调整方向</p>
+            <p>注意：燃料有限，合理使用推进器！</p>
+            <button id="startButton">开始游戏</button>
+        </div>
+    </div>
+
+    <!-- New: Success Popup -->
+    <div id="successPopup">
+        <div id="successContent">
+            <h2>着陆成功！</h2>
+            <p>恭喜你成功降落在月球表面！</p>
+            <div class="popup-buttons">
+                <button id="continueButton" class="popup-button">继续玩</button>
+                <button id="hackButton" class="popup-button">魔改一下</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const messageDiv = document.getElementById('message');
+        const introScreen = document.getElementById('introScreen');
+        const startButton = document.getElementById('startButton');
+        const successPopup = document.getElementById('successPopup');
+        const continueButton = document.getElementById('continueButton');
+        const hackButton = document.getElementById('hackButton');
+
+        // --- Game Constants ---
+        const GRAVITY = 0.0025;
+        const THRUST_POWER = 0.008;
+        const ROTATION_SPEED = 0.05;
+        const FUEL_CONSUMPTION = 0.15;
+        const INITIAL_FUEL = 100;
+        const SAFE_LANDING_VSPEED = 0.4;
+        const SAFE_LANDING_HSPEED = 0.2;
+        const SAFE_LANDING_ANGLE = 0.1; // Radians (~5.7 degrees)
+        const LANDER_SCALE = 1.2; // Slightly bigger lander
+        const LANDING_PAD_Y_TOLERANCE = 1.0; // Allow small Y difference for pad check
+
+        // --- Game State ---
+        let lander;
+        let surface = [];
+        let landingPad = { x1: 0, y: 0, x2: 0, width: 0, found: false }; // Added found flag
+        let keys = { ArrowUp: false, ArrowLeft: false, ArrowRight: false };
+        let gameState = 'intro'; // Start with intro screen
+        let lastTime = 0;
+        let thrustParticles = [];
+        let statusInfo = {
+             altitude: 0, hSpeed: 0, vSpeed: 0, angle: 0, fuel: 0,
+             vSpeedOk: true, hSpeedOk: true, angleOk: true,
+             fuelLow: false, fuelCritical: false
+         };
+
+        // --- Lander Object ---
+        function createLander() {
+            return {
+                x: canvas.width / 3 + Math.random() * (canvas.width / 3),
+                y: canvas.height * 0.1,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: 0,
+                angle: (Math.random() - 0.5) * 0.5,
+                width: 15 * LANDER_SCALE,
+                height: 20 * LANDER_SCALE,
+                thrusting: false,
+                fuel: INITIAL_FUEL,
+                crashed: false,
+                landed: false
+            };
+        }
+
+        // --- Surface Generation (FIXED for Bug 1) ---
+        function generateSurface() {
+            surface = [];
+            landingPad.found = false; // Reset landing pad found status
+            let currentX = 0;
+            let currentY = canvas.height - (Math.random() * canvas.height * 0.15 + canvas.height * 0.1);
+            surface.push({ x: currentX, y: currentY });
+
+            const minSegmentWidth = canvas.width * 0.05;
+            const maxSegmentWidth = canvas.width * 0.15;
+            const maxSteepness = canvas.height * 0.08; // Max height change per segment
+            const requiredPadWidth = canvas.width * 0.1; // Relative pad width needed
+
+            // 1. Generate initial random terrain
+            while (currentX < canvas.width) {
+                let segmentWidth = Math.random() * (maxSegmentWidth - minSegmentWidth) + minSegmentWidth;
+                let nextX = currentX + segmentWidth;
+                // Ensure last point reaches the edge exactly
+                if (nextX >= canvas.width) {
+                    nextX = canvas.width;
+                    segmentWidth = canvas.width - currentX; // Adjust last segment width
+                }
+
+                let nextY = currentY + (Math.random() * 2 - 1) * maxSteepness;
+                // Clamp Y to reasonable bounds
+                nextY = Math.max(canvas.height * 0.4, Math.min(canvas.height - 20, nextY));
+
+                 // Prevent zero-width segments if nextX didn't advance
+                 if (nextX > currentX) {
+                    surface.push({ x: nextX, y: nextY });
+                    currentX = nextX;
+                    currentY = nextY;
+                 } else {
+                     // If somehow segment width is zero or negative, break to avoid infinite loop
+                     // Or force advance slightly
+                     if (currentX < canvas.width) {
+                          currentX += 10; // Force advance
+                          if (currentX > canvas.width) currentX = canvas.width;
+                          surface.push({ x: currentX, y: currentY });
+                     } else {
+                         break; // Already at edge
+                     }
+                 }
+            }
+
+            // 2. Find a suitable segment and flatten it for the landing pad
+            let bestPadIndex = -1;
+            // Look for a relatively flat and wide segment, not too close to edges
+            for (let i = 1; i < surface.length - 2; i++) {
+                 const p1 = surface[i];
+                 const p2 = surface[i+1];
+                 const segmentWidth = p2.x - p1.x;
+                 const heightDiff = Math.abs(p2.y - p1.y);
+
+                 // Prefer flatter and wider segments in the middle-ish area
+                 if (segmentWidth >= requiredPadWidth && heightDiff < maxSteepness * 0.3) {
+                       // Basic suitability check passed
+                       bestPadIndex = i;
+                       break; // Take the first suitable one for now
+                 }
+            }
+
+             // 3. If no suitable segment found, force flatten a segment in the middle
+             if (bestPadIndex === -1) {
+                 bestPadIndex = Math.floor(surface.length / 2);
+                 if (bestPadIndex >= surface.length - 1) { // Handle very short surface arrays
+                     bestPadIndex = Math.max(0, surface.length - 2);
+                 }
+                 console.warn("No suitable flat segment found, forcing pad creation.");
+             }
+
+
+             // 4. Flatten the chosen segment and set landingPad properties
+             if (bestPadIndex >= 0 && bestPadIndex < surface.length -1) {
+                const p1 = surface[bestPadIndex];
+                const p2 = surface[bestPadIndex + 1];
+
+                // Flatten: Make the Y coordinate of the second point equal to the first
+                p2.y = p1.y;
+
+                // Assign landing pad info
+                landingPad.x1 = p1.x;
+                landingPad.y = p1.y; // Use the now flat Y coordinate
+                landingPad.x2 = p2.x;
+                landingPad.width = p2.x - p1.x;
+                landingPad.found = true;
+                 console.log(`Landing pad created at segment ${bestPadIndex}: [${p1.x.toFixed(0)}, ${p1.y.toFixed(0)}] to [${p2.x.toFixed(0)}, ${p2.y.toFixed(0)}]`);
+             } else {
+                 console.error("Failed to create landing pad - invalid index.");
+                 landingPad.found = false;
+             }
+
+        }
+
+        // --- Input Handling ---
+        function handleKeyDown(e) {
+            if (keys.hasOwnProperty(e.key)) {
+                keys[e.key] = true;
+                e.preventDefault();
+            }
+             if (gameState !== 'playing' && e.code === 'Space') {
+                  resetGame();
+                  e.preventDefault();
+             }
+        }
+
+        function handleKeyUp(e) {
+            if (keys.hasOwnProperty(e.key)) {
+                keys[e.key] = false;
+                e.preventDefault();
+            }
+        }
+
+         function handleClick() {
+              if (gameState !== 'playing') {
+                  resetGame();
+              }
+         }
+
+        // --- Update Game Logic ---
+        function update(dtFactor) {
+            if (gameState !== 'playing') return;
+
+            lander.thrusting = false;
+
+            // Rotation
+            if (keys.ArrowLeft) lander.angle -= ROTATION_SPEED * dtFactor;
+            if (keys.ArrowRight) lander.angle += ROTATION_SPEED * dtFactor;
+            lander.angle = (lander.angle + Math.PI * 3) % (Math.PI * 2) - Math.PI;
+
+            // Thrust
+            if (keys.ArrowUp && lander.fuel > 0) {
+                lander.thrusting = true;
+                const thrustX = Math.sin(lander.angle) * THRUST_POWER;
+                const thrustY = -Math.cos(lander.angle) * THRUST_POWER;
+                lander.vx += thrustX * dtFactor;
+                lander.vy += thrustY * dtFactor;
+                lander.fuel -= FUEL_CONSUMPTION * dtFactor;
+                if (lander.fuel < 0) lander.fuel = 0;
+                if (Math.random() < 0.8) addThrustParticle(dtFactor);
+            }
+
+            // Gravity
+            lander.vy += GRAVITY * dtFactor;
+
+            // Update Position
+            lander.x += lander.vx * dtFactor;
+            lander.y += lander.vy * dtFactor;
+
+            // Update particles
+            updateParticles(dtFactor);
+
+            // Collision Detection
+            checkCollisions();
+
+            // Out of bounds check
+            if (lander.y > canvas.height + lander.height * 2 || lander.y < -lander.height * 2 || lander.x < -lander.width || lander.x > canvas.width + lander.width) {
+                 if (gameState === 'playing') { // Prevent multiple messages
+                     setMessage("漂浮在太空中迷失了...", "failure");
+                     gameState = 'crashed';
+                     lander.crashed = true;
+                 }
+            }
+
+            // Update status info for drawing
+            updateStatusInfo();
+        }
+
+        // --- Particle System ---
+        function addThrustParticle(dtFactor) { // Pass dtFactor if needed, though life is frame based here
+            const angleOffset = (Math.random() - 0.5) * 0.5;
+            const speed = 1 + Math.random() * 1;
+            const life = 15 + Math.random() * 15; // Life in frames (or adjust based on dtFactor if preferred)
+            const nozzleOffsetX = -Math.sin(lander.angle) * (lander.height / 2);
+            const nozzleOffsetY = Math.cos(lander.angle) * (lander.height / 2);
+            const startX = lander.x + nozzleOffsetX;
+            const startY = lander.y + nozzleOffsetY;
+            // Particle velocity = lander velocity + exhaust velocity relative to lander
+            const exhaustVx = -Math.sin(lander.angle + angleOffset) * speed;
+            const exhaustVy = Math.cos(lander.angle + angleOffset) * speed;
+            const particleVx = lander.vx + exhaustVx; // Add lander's velocity
+            const particleVy = lander.vy + exhaustVy; // Add lander's velocity
+
+            thrustParticles.push({
+                x: startX, y: startY, vx: particleVx, vy: particleVy,
+                life: life, maxLife: life, size: Math.random() * 2 + 1
+            });
+        }
+
+        function updateParticles(dtFactor) {
+            for (let i = thrustParticles.length - 1; i >= 0; i--) {
+                let p = thrustParticles[i];
+                p.x += p.vx * dtFactor;
+                p.y += p.vy * dtFactor;
+                p.life -= 1 * dtFactor; // Decrease life based on time
+                if (p.life <= 0) {
+                    thrustParticles.splice(i, 1);
+                }
+            }
+        }
+
+        function drawParticles() {
+             ctx.fillStyle = '#FFA500';
+             for (const p of thrustParticles) {
+                 const alpha = Math.max(0, p.life / p.maxLife);
+                 ctx.globalAlpha = alpha * 0.8;
+                 ctx.beginPath();
+                 ctx.arc(p.x, p.y, p.size * (1 - alpha / 2), 0, Math.PI * 2);
+                 ctx.fill();
+             }
+             ctx.globalAlpha = 1.0;
+        }
+
+        // --- Collision Detection ---
+        function checkCollisions() {
+             const cosA = Math.cos(lander.angle);
+             const sinA = Math.sin(lander.angle);
+             const halfW = lander.width / 2;
+             const halfH = lander.height / 2;
+
+             // Calculate world coordinates of bottom corners (landing gear points)
+             const legOffset = 4; // Match leg drawing offset approx
+             const corner1X = lander.x + (-(halfW + legOffset) * cosA - halfH * sinA);
+             const corner1Y = lander.y + (-(halfW + legOffset) * sinA + halfH * cosA);
+             const corner2X = lander.x + ((halfW + legOffset) * cosA - halfH * sinA);
+             const corner2Y = lander.y + ((halfW + legOffset) * sinA + halfH * cosA);
+
+            // Iterate through surface segments
+            for (let i = 0; i < surface.length - 1; i++) {
+                const p1 = surface[i];
+                const p2 = surface[i + 1];
+
+                // Broad phase check: Is the lander roughly above this segment horizontally?
+                 // Use lander's main x and width for broader check
+                 if (lander.x + lander.width/2 > p1.x && lander.x - lander.width/2 < p2.x)
+                 {
+                    // Check collision for both landing gear points against this segment
+                    if (checkCollisionPoint(corner1X, corner1Y, p1, p2)) {
+                         handleLanding(p1.y); // Pass the Y-level of the surface segment hit
+                         return;
+                    }
+                    if (checkCollisionPoint(corner2X, corner2Y, p1, p2)) {
+                         handleLanding(p1.y); // Pass the Y-level of the surface segment hit
+                         return;
+                    }
+                }
+            }
+         }
+
+         // Helper function: checks if a point (px, py) is at or below the line segment (p1, p2)
+         function checkCollisionPoint(px, py, p1, p2) {
+             // Check if px is within the horizontal bounds of the segment
+             // Add small tolerance to bounds check to catch edge cases? Maybe not needed.
+             if (px >= p1.x && px <= p2.x) {
+                 const segmentWidth = p2.x - p1.x;
+                 let surfaceY;
+                 if (segmentWidth < 0.01) { // Treat near-vertical lines as flat at higher Y
+                     surfaceY = Math.max(p1.y, p2.y);
+                 } else { // Linear interpolation for segment Y at point X
+                     const slope = (p2.y - p1.y) / segmentWidth;
+                     surfaceY = p1.y + slope * (px - p1.x);
+                 }
+                 // Collision if point y is at or below surface y (with tiny buffer)
+                 return py >= surfaceY - 1.0; // Small buffer (1 pixel)
+             }
+             return false;
+         }
+
+        // --- Landing Handler (FIXED for Bug 2) ---
+        // Now only receives the Y level of the surface contacted
+        function handleLanding(collisionSurfaceY) {
+             // Prevent multiple calls if already landed/crashed
+             if (gameState !== 'playing') return;
+
+             // Calculate conditions *before* stopping the lander for accuracy
+             const verticalSpeedOK = Math.abs(lander.vy) <= SAFE_LANDING_VSPEED;
+             const horizontalSpeedOK = Math.abs(lander.vx) <= SAFE_LANDING_HSPEED;
+             const angleOK = Math.abs(lander.angle) <= SAFE_LANDING_ANGLE;
+
+             // Stop the lander physics
+             // Adjust Y position so the bottom rests exactly on collisionSurfaceY
+             // This is an approximation, assumes bottom center or lowest point hits first
+             const bottomOffsetY = (lander.height / 2 * Math.cos(lander.angle)) + (Math.abs(lander.width / 2 * Math.sin(lander.angle))); // Rough estimate of lowest point offset
+             lander.y = collisionSurfaceY - bottomOffsetY;
+             const finalVX = lander.vx; // Store speed just before stopping
+             const finalVY = lander.vy; // Store speed just before stopping
+             lander.vy = 0;
+             lander.vx = 0;
+             lander.thrusting = false; // Ensure thrust effect stops
+
+             // Determine if the landing position is ON the landing pad
+             // Check HORIZONTAL position (lander's center X) against pad bounds
+             // AND check VERTICAL position (collision Y) against pad's Y level
+             let onPad = false;
+             if (landingPad.found) {
+                 onPad = (lander.x >= landingPad.x1 && lander.x <= landingPad.x2 &&
+                          Math.abs(collisionSurfaceY - landingPad.y) < LANDING_PAD_Y_TOLERANCE);
+             }
+
+             // Final landing decision
+             if (onPad && verticalSpeedOK && horizontalSpeedOK && angleOK) {
+                 // Show success popup
+                 successPopup.style.display = 'flex';
+                 gameState = 'landed';
+                 lander.landed = true;
+                 lander.angle = 0; // Straighten up
+
+             } else {
+                 let reason = "";
+                 if (!landingPad.found) reason = "未找到着陆平台?!"; // Should not happen
+                 else if (!onPad) {
+                     // Give more specific reason for missing pad if possible
+                     if (lander.x < landingPad.x1 || lander.x > landingPad.x2) {
+                          reason = "错过着陆平台 (左右位置)";
+                     } else if (Math.abs(collisionSurfaceY - landingPad.y) >= LANDING_PAD_Y_TOLERANCE) {
+                          reason = "错过着陆平台 (高度)"; // Hit terrain next to pad at different height
+                     } else {
+                          reason = "错过着陆平台"; // Generic fallback
+                     }
+                 }
+                 else if (!verticalSpeedOK) reason = `垂直速度过快 (${Math.abs(finalVY).toFixed(2)} > ${SAFE_LANDING_VSPEED})`;
+                 else if (!horizontalSpeedOK) reason = `水平速度过快 (${Math.abs(finalVX).toFixed(2)} > ${SAFE_LANDING_HSPEED})`;
+                 else if (!angleOK) reason = `着陆角度过大 (${Math.abs(statusInfo.angle).toFixed(1)}°)`;
+                 else reason = "未知坠毁原因"; // Fallback
+
+                 setMessage(`坠毁! ${reason}`, "failure");
+                 gameState = 'crashed';
+                 lander.crashed = true;
+                 // Optionally add a small bounce/tilt on crash
+                 // lander.vy = -0.1;
+                 // lander.angle += (Math.random() - 0.5) * 0.5;
+             }
+             // Update status info one last time with final pre-stop speeds if needed
+             // Or just use the already updated statusInfo which reflects state just before collision
+         }
+
+
+        // --- Drawing ---
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = '#000015';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Stars
+            ctx.fillStyle = 'white';
+            ctx.save();
+            for(let i=0; i<150; i++) {
+                ctx.beginPath();
+                let x = (Math.sin(i * 0.3) * 0.5 + 0.5) * canvas.width;
+                let y = (Math.cos(i * 0.7) * 0.5 + 0.5) * canvas.height;
+                let size = (Math.sin(i * 0.5) * 0.5 + 0.5) * 1.5 + 0.5;
+                ctx.globalAlpha = Math.sin(i * 1.2) * 0.3 + 0.7;
+                ctx.rect(x, y, size, size);
+                ctx.fill();
+            }
+            ctx.restore();
+
+            // Draw Surface
+            ctx.strokeStyle = '#cccccc';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            if (surface.length > 0) {
+                ctx.moveTo(surface[0].x, surface[0].y);
+                for (let i = 1; i < surface.length; i++) {
+                    ctx.lineTo(surface[i].x, surface[i].y);
+                }
+            }
+            ctx.stroke();
+
+            // Draw Landing Pad
+            if (landingPad.found) {
+                ctx.strokeStyle = '#00ff00';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(landingPad.x1, landingPad.y);
+                ctx.lineTo(landingPad.x2, landingPad.y);
+                ctx.stroke();
+            }
+
+             // Draw Particles (before lander)
+             drawParticles();
+
+            // Draw Lander
+            ctx.save();
+            ctx.translate(lander.x, lander.y);
+            ctx.rotate(lander.angle);
+
+            if (lander.crashed && gameState === 'crashed') { // Only draw fragments if actually crashed state
+                 ctx.fillStyle = '#FFA500'; ctx.strokeStyle = '#FF0000'; ctx.lineWidth = 1;
+                 for (let i = 0; i < 5; i++) {
+                     ctx.save();
+                     ctx.rotate((Math.random() - 0.5) * Math.PI * 2);
+                     ctx.translate((Math.random() - 0.5) * 15, (Math.random() - 0.5) * 15);
+                     ctx.beginPath(); ctx.moveTo(0, -5); ctx.lineTo(-3, 3); ctx.lineTo(3, 3); ctx.closePath();
+                     ctx.fill(); ctx.stroke();
+                     ctx.restore();
+                 }
+            } else { // Draw lander if playing, landed, or falling after fuel runs out but not crashed yet
+                ctx.fillStyle = lander.landed ? '#00cc00' : '#dddddd';
+                ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1;
+                // Main body
+                ctx.beginPath();
+                ctx.moveTo(0, -lander.height / 2); ctx.lineTo(-lander.width / 2, lander.height / 3);
+                ctx.lineTo(-lander.width / 2, lander.height / 2); ctx.lineTo( lander.width / 2, lander.height / 2);
+                ctx.lineTo( lander.width / 2, lander.height / 3); ctx.closePath();
+                ctx.fill(); ctx.stroke();
+                 // Legs
+                 const legBaseX = lander.width / 2;
+                 const legBaseY = lander.height / 2;
+                 const legOutX = legBaseX + 4; // Matches landing gear collision points better
+                 const legOutY = legBaseY + 6;
+                 ctx.strokeStyle = '#aaaaaa'; ctx.lineWidth = 2;
+                 ctx.beginPath();
+                 ctx.moveTo(-legBaseX, legBaseY); ctx.lineTo(-legOutX, legOutY); // Left leg
+                 ctx.moveTo( legBaseX, legBaseY); ctx.lineTo( legOutX, legOutY); // Right leg
+                 ctx.stroke();
+                // Thrust Flame
+                if (lander.thrusting && lander.fuel > 0) {
+                    ctx.fillStyle = `rgba(255, ${Math.random()*100 + 155}, 0, ${Math.random() * 0.5 + 0.5})`;
+                    ctx.beginPath();
+                    const flameLength = lander.height * 0.7 + Math.random() * 5;
+                    ctx.moveTo(0, lander.height / 2); ctx.lineTo(-lander.width / 3.5, lander.height / 2 + flameLength);
+                    ctx.lineTo( lander.width / 3.5, lander.height / 2 + flameLength); ctx.closePath();
+                    ctx.fill();
+                }
+            }
+            ctx.restore(); // Restore context state
+
+            // Draw Status Info directly on canvas
+            drawStatus();
+        }
+
+        // --- Update Status Info Object ---
+        function updateStatusInfo() {
+             let groundY = canvas.height; // Default to bottom
+             if (landingPad.found) {
+                 groundY = landingPad.y; // Use pad Y for reference if found
+             } else if (surface.length > 0) { // Find approx ground below if no pad
+                  let minY = canvas.height;
+                  for(const p of surface) {
+                       if(p.x > lander.x - 50 && p.x < lander.x + 50) minY = Math.min(minY, p.y);
+                  }
+                  groundY = minY;
+             }
+
+             // Calculate altitude based on lowest point of lander (approx) vs groundY
+             const cosA = Math.cos(lander.angle);
+             const sinA = Math.sin(lander.angle);
+             const legPointY = lander.y + ((lander.width / 2 + 4) * Math.abs(sinA)) + (lander.height / 2 * cosA) + 6; // Approx lowest point Y
+             statusInfo.altitude = Math.max(0, groundY - legPointY).toFixed(1);
+
+             statusInfo.hSpeed = lander.vx.toFixed(2);
+             statusInfo.vSpeed = lander.vy.toFixed(2);
+             statusInfo.angle = (lander.angle * 180 / Math.PI).toFixed(1);
+             statusInfo.fuel = Math.max(0, lander.fuel).toFixed(0);
+
+             statusInfo.vSpeedOk = Math.abs(lander.vy) <= SAFE_LANDING_VSPEED;
+             statusInfo.hSpeedOk = Math.abs(lander.vx) <= SAFE_LANDING_HSPEED;
+             statusInfo.angleOk = Math.abs(lander.angle) <= SAFE_LANDING_ANGLE;
+             statusInfo.fuelCritical = lander.fuel < 20;
+             statusInfo.fuelLow = lander.fuel < 50 && !statusInfo.fuelCritical;
+        }
+
+        // --- Draw Status on Canvas ---
+         function drawStatus() {
+             const statusX = 15;
+             let statusY = 25; // Slightly lower start position
+             const lineHeight = 22; // Increased line height
+             const labelWidth = 110;
+             const valueOffsetX = labelWidth + 10;
+
+             ctx.font = '16px Arial'; // Slightly larger font
+             ctx.textAlign = 'left';
+             ctx.textBaseline = 'top';
+             ctx.shadowColor = "black"; // Add shadow for better readability
+             ctx.shadowBlur = 3;
+             ctx.shadowOffsetX = 1;
+             ctx.shadowOffsetY = 1;
+
+             // Altitude
+             ctx.fillStyle = '#aaa'; ctx.fillText(`高度 (m):`, statusX, statusY);
+             ctx.fillStyle = '#0f0'; ctx.fillText(statusInfo.altitude, statusX + valueOffsetX, statusY);
+             statusY += lineHeight;
+             // Horizontal Speed
+             ctx.fillStyle = '#aaa'; ctx.fillText(`水平速度 (m/s):`, statusX, statusY);
+             ctx.fillStyle = statusInfo.hSpeedOk ? '#0f0' : (Math.abs(statusInfo.hSpeed) < SAFE_LANDING_HSPEED * 1.8 ? '#ff0' : '#f00');
+             ctx.fillText(statusInfo.hSpeed, statusX + valueOffsetX, statusY);
+             statusY += lineHeight;
+             // Vertical Speed
+             ctx.fillStyle = '#aaa'; ctx.fillText(`垂直速度 (m/s):`, statusX, statusY);
+             ctx.fillStyle = statusInfo.vSpeedOk ? '#0f0' : (Math.abs(statusInfo.vSpeed) < SAFE_LANDING_VSPEED * 1.8 ? '#ff0' : '#f00');
+             ctx.fillText(statusInfo.vSpeed, statusX + valueOffsetX, statusY);
+             statusY += lineHeight;
+             // Angle
+             ctx.fillStyle = '#aaa'; ctx.fillText(`角度 (°):`, statusX, statusY);
+             ctx.fillStyle = statusInfo.angleOk ? '#0f0' : (Math.abs(lander.angle) < SAFE_LANDING_ANGLE * 1.8 ? '#ff0' : '#f00');
+             ctx.fillText(statusInfo.angle, statusX + valueOffsetX, statusY);
+             statusY += lineHeight;
+             // Fuel
+             ctx.fillStyle = '#aaa'; ctx.fillText(`燃料 (%):`, statusX, statusY);
+             ctx.fillStyle = statusInfo.fuelCritical ? '#f00' : (statusInfo.fuelLow ? '#ff0' : '#0f0');
+             ctx.fillText(statusInfo.fuel, statusX + valueOffsetX, statusY);
+
+             // Reset shadow
+             ctx.shadowColor = "transparent";
+             ctx.shadowBlur = 0;
+             ctx.shadowOffsetX = 0;
+             ctx.shadowOffsetY = 0;
+         }
+
+         // --- Show Messages ---
+         function setMessage(text, type = 'info') {
+             messageDiv.textContent = text + ((type === 'success' || type === 'failure') ? "\n(点击或按空格键重新开始)" : "");
+             messageDiv.className = type;
+             messageDiv.style.display = 'block';
+         }
+         function hideMessage() {
+             messageDiv.style.display = 'none';
+         }
+
+        // --- Game Loop ---
+        function gameLoop(timestamp) {
+             if (!lastTime) lastTime = timestamp;
+             const dtSeconds = Math.min(0.1, (timestamp - lastTime) / 1000);
+             lastTime = timestamp;
+             const dtFactor = dtSeconds * 60; // Factor relative to 60fps
+
+             // Only run update/draw if game should be active
+             if (gameState === 'playing' || gameState === 'landed' || gameState === 'crashed') {
+                 update(dtFactor);
+                 draw();
+             } else {
+                 // Could add a paused state later if needed
+             }
+
+             requestAnimationFrame(gameLoop); // Keep the loop going
+        }
+
+        // --- Resize Handling ---
+        let resizeTimeout;
+        function handleResize() {
+             clearTimeout(resizeTimeout);
+             resizeTimeout = setTimeout(() => {
+                 console.log("Resizing canvas and resetting game...");
+                 // No need to call resizeCanvas directly, resetGame handles it
+                 resetGame();
+             }, 300); // Increased debounce delay slightly
+        }
+
+        // --- Reset and Start Game ---
+        function resetGame() {
+             console.log("--- Resetting Game ---");
+             gameState = 'playing'; // Reset to playing state
+
+             // Set canvas dimensions first
+             canvas.width = window.innerWidth;
+             canvas.height = window.innerHeight;
+             console.log(`Canvas size: ${canvas.width}x${canvas.height}`);
+
+             generateSurface(); // Generate surface based on new size
+             if (!landingPad.found) {
+                 console.error("CRITICAL: Landing pad generation failed during reset.");
+                 // Optionally display an error message to the user
+                 setMessage("错误: 无法生成着陆平台!", "failure");
+                 return; // Stop reset if essential element failed
+             }
+
+             lander = createLander(); // Create lander relative to new size
+             keys = { ArrowUp: false, ArrowLeft: false, ArrowRight: false };
+             thrustParticles = [];
+             hideMessage();
+             lastTime = performance.now(); // Reset timer *after* setup
+             statusInfo = { altitude: 0, hSpeed: 0, vSpeed: 0, angle: 0, fuel: INITIAL_FUEL, vSpeedOk: true, hSpeedOk: true, angleOk: true, fuelLow: false, fuelCritical: false }; // Reset status object
+             updateStatusInfo(); // Update status once with initial values
+
+             console.log("--- Game Ready ---");
+             // The game loop is already running via requestAnimationFrame,
+             // it will pick up the 'playing' state on its next iteration.
+        }
+
+        // --- Event Listeners for Buttons ---
+        startButton.addEventListener('click', () => {
+            introScreen.style.display = 'none';
+            resetGame();
+        });
+
+        continueButton.addEventListener('click', () => {
+            successPopup.style.display = 'none';
+            resetGame();
+        });
+
+        hackButton.addEventListener('click', () => {
+            // 跳转到指定网页
+            const hackUrl = "https://kimi.moonshot.cn/share/cvndk5inae70dm7311ag";
+            
+            // 检查链接是否有效
+            if (isValidUrl(hackUrl)) {
+                window.open(hackUrl, '_blank');
+            } else {
+                alert("链接无效，请检查链接的合法性并适当重试。");
+            }
+        });
+
+        // 辅助函数：检查URL是否有效
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // --- Initialization ---
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
+        canvas.addEventListener('click', handleClick);
+        window.addEventListener('resize', handleResize);
+
+        // Initial setup and game start
+        requestAnimationFrame(gameLoop); // Start the main game loop
+    </script>
+</body>
+</html>

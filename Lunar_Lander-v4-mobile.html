@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- Crucial for mobile: viewport settings -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>登月舱着陆游戏 v1.2 (移动版)</title>
+    <style>
+        /* Basic reset and fullscreen styles */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Prevent scrollbars */
+            background-color: #000020; /* Dark blue space background */
+            color: #ffffff;
+            font-family: sans-serif;
+            display: flex; /* Use flexbox for centering (optional, for message) */
+            justify-content: center;
+            align-items: center;
+            /* Prevent pull-to-refresh and other unwanted touch actions */
+            overscroll-behavior: none;
+        }
+        /* Canvas takes up full space */
+        #gameCanvas {
+            display: block; /* Removes default spacing */
+            background-color: #000000; /* Black canvas background */
+            touch-action: manipulation; /* Optimize touch interaction on canvas */
+        }
+        /* Centered message overlay */
+        #message {
+             position: absolute;
+             top: 50%;
+             left: 50%;
+             transform: translate(-50%, -50%);
+             font-size: 5vw; /* Responsive font size for mobile */
+             max-width: 90%; /* Prevent overflow */
+             font-weight: bold;
+             padding: 20px;
+             background-color: rgba(0, 0, 0, 0.8);
+             border-radius: 10px;
+             text-align: center;
+             display: none; /* Hidden initially */
+             z-index: 10; /* Ensure message is on top */
+         }
+         #message.success { color: #0f0; }
+         #message.failure { color: #f00; }
+
+         /* Instructions text */
+         #instructions {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px; /* Slightly smaller for mobile */
+            color: #aaa;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-align: center;
+            z-index: 5;
+            max-width: 95%; /* Prevent overflow */
+         }
+
+         /* Intro Screen */
+         #introScreen {
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             background-color: rgba(0, 0, 32, 0.95);
+             display: flex;
+             flex-direction: column;
+             justify-content: center;
+             align-items: center;
+             z-index: 20;
+             padding: 15px;
+             box-sizing: border-box;
+         }
+         #introContent {
+             background-color: rgba(0, 0, 0, 0.75);
+             border-radius: 10px;
+             padding: 20px;
+             max-width: 90%;
+             text-align: center;
+         }
+         #introContent h1 {
+             color: #0f0;
+             margin-bottom: 15px;
+             font-size: 6vw;
+         }
+         #introContent p {
+             margin-bottom: 10px;
+             line-height: 1.6;
+             font-size: 3.8vw;
+         }
+         #startButton {
+             background-color: #0f0;
+             color: #000;
+             border: none;
+             padding: 15px 30px;
+             font-size: 4.5vw;
+             border-radius: 8px;
+             cursor: pointer;
+             margin-top: 15px;
+             transition: background-color 0.2s;
+             font-weight: bold;
+         }
+         #startButton:hover, #startButton:active {
+             background-color: #4dff4d;
+         }
+
+         /* Success Popup */
+         #successPopup {
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             background-color: rgba(0, 0, 32, 0.95);
+             display: none;
+             flex-direction: column;
+             justify-content: center;
+             align-items: center;
+             z-index: 20;
+             padding: 15px;
+             box-sizing: border-box;
+         }
+         #successContent {
+             background-color: rgba(0, 100, 0, 0.8);
+             border-radius: 10px;
+             padding: 25px;
+             max-width: 90%;
+             text-align: center;
+             color: #fff;
+         }
+         #successContent h2 {
+             color: #0f0;
+             margin-bottom: 15px;
+             font-size: 5.5vw;
+         }
+          #successContent p {
+             font-size: 4vw;
+             margin-bottom: 20px;
+         }
+         .popup-buttons {
+             display: flex;
+             flex-direction: column; /* Stack buttons vertically */
+             gap: 15px; /* Space between buttons */
+             margin-top: 20px;
+             width: 80%; /* Limit button width */
+             margin-left: auto;
+             margin-right: auto;
+         }
+         .popup-button {
+             padding: 12px 20px;
+             border-radius: 8px;
+             cursor: pointer;
+             font-size: 4vw;
+             transition: all 0.2s;
+             border: none;
+             font-weight: bold;
+         }
+         #continueButton {
+             background-color: #aaa;
+             color: #000;
+         }
+         #hackButton {
+             background-color: #0f0;
+             color: #000;
+         }
+         .popup-button:hover, .popup-button:active {
+             opacity: 0.8;
+         }
+
+         /* --- Mobile Controls --- */
+         #thrustButton {
+             position: absolute;
+             bottom: 30px; /* Position from bottom */
+             right: 30px; /* Position from right */
+             width: 100px; /* Fixed large size */
+             height: 100px; /* Fixed large size */
+             background-color: rgba(0, 255, 0, 0.4); /* Semi-transparent green */
+             border: 3px solid rgba(0, 255, 0, 0.8);
+             border-radius: 50%; /* Make it circular */
+             color: white;
+             font-size: 18px; /* Text size inside */
+             font-weight: bold;
+             display: flex; /* Center text inside */
+             justify-content: center;
+             align-items: center;
+             cursor: pointer;
+             z-index: 15; /* Above canvas, below messages */
+             user-select: none; /* Prevent text selection */
+             -webkit-user-select: none;
+             touch-action: manipulation; /* Optimize touch */
+             -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+             display: none; /* Hidden initially, shown when game starts */
+         }
+         /* Style when button is active (pressed) */
+         #thrustButton.active {
+             background-color: rgba(0, 255, 0, 0.7);
+             border-color: rgba(0, 255, 0, 1);
+             transform: scale(0.95); /* Slight shrink effect */
+         }
+    </style>
+</head>
+<body>
+    <!-- Updated Instructions -->
+    <div id="instructions">
+        倾斜设备控制方向 | 点击 [推进] 按钮减速 | [点击屏幕] 重新开始
+        <br>目标: 安全降落在绿色平台上
+    </div>
+
+    <canvas id="gameCanvas"></canvas> <!-- Width/Height removed, will be set by JS -->
+
+    <!-- Message div remains for game over/success messages -->
+    <div id="message"></div>
+
+    <!-- New: Intro Screen (Updated Text) -->
+    <div id="introScreen">
+        <div id="introContent">
+            <h1>登月舱着陆游戏</h1>
+            <p>目标: 安全降落在绿色平台上。</p>
+            <p>操作方式:</p>
+            <p>- 左右倾斜你的设备来旋转登月舱</p>
+            <p>- 按住屏幕右下角的 [推进] 按钮来启动推进器，减缓下降</p>
+            <p>注意：燃料有限，合理使用推进器！</p>
+            <button id="startButton">开始游戏</button>
+            <p id="orientationError" style="color: #f88; margin-top: 15px; display: none;">无法访问设备方向传感器。请确保您的浏览器和设备支持并已授权。</p>
+        </div>
+    </div>
+
+    <!-- Success Popup (Unchanged Structure) -->
+    <div id="successPopup">
+        <div id="successContent">
+            <h2>着陆成功！</h2>
+            <p>恭喜你成功降落在月球表面！</p>
+            <div class="popup-buttons">
+                <button id="continueButton" class="popup-button">继续玩</button>
+                <button id="hackButton" class="popup-button">魔改一下</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Thrust Button -->
+    <div id="thrustButton">推进</div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const messageDiv = document.getElementById('message');
+        const introScreen = document.getElementById('introScreen');
+        const startButton = document.getElementById('startButton');
+        const successPopup = document.getElementById('successPopup');
+        const continueButton = document.getElementById('continueButton');
+        const hackButton = document.getElementById('hackButton');
+        const thrustButton = document.getElementById('thrustButton'); // Get thrust button
+        const orientationErrorText = document.getElementById('orientationError');
+
+        // --- Game Constants ---
+        const GRAVITY = 0.0025;
+        const THRUST_POWER = 0.008;
+        // const ROTATION_SPEED = 0.05; // Replaced by tilt sensitivity
+        const FUEL_CONSUMPTION = 0.15;
+        const INITIAL_FUEL = 100;
+        const SAFE_LANDING_VSPEED = 0.4;
+        const SAFE_LANDING_HSPEED = 0.2;
+        const SAFE_LANDING_ANGLE = 0.1; // Radians (~5.7 degrees)
+        const LANDER_SCALE = 1.2;
+        const LANDING_PAD_Y_TOLERANCE = 1.0;
+
+        // --- Mobile Control Constants ---
+        const TILT_SENSITIVITY = 0.0015; // How much rotation per degree of tilt per frame update factor
+        const TILT_DEADZONE = 3;      // Degrees of tilt ignored around center
+        const MAX_TILT_EFFECT_ANGLE = 40; // Tilt angle (degrees) giving max rotation effect
+
+        // --- Game State ---
+        let lander;
+        let surface = [];
+        let landingPad = { x1: 0, y: 0, x2: 0, width: 0, found: false };
+        // let keys = { ArrowUp: false, ArrowLeft: false, ArrowRight: false }; // No longer needed for primary controls
+        let gameState = 'intro';
+        let lastTime = 0;
+        let thrustParticles = [];
+        let statusInfo = { /* ... */ }; // Same structure
+
+        // --- Mobile Control State ---
+        let isThrusting = false;     // Is the thrust button currently pressed?
+        let deviceTiltGamma = 0;   // Stores the left/right tilt angle (degrees)
+        let orientationPermissionGranted = false;
+        let isRequestingOrientationPermission = false; // Prevent multiple requests
+
+        // --- Lander Object (Unchanged) ---
+        function createLander() {
+             // Slightly adjust starting position maybe?
+             const startX = canvas.width / 2 + (Math.random() - 0.5) * (canvas.width / 4);
+             const startY = canvas.height * 0.1;
+            return {
+                x: startX,
+                y: startY,
+                vx: (Math.random() - 0.5) * 0.4, // Slightly slower initial horizontal speed
+                vy: 0.1 + Math.random() * 0.1,   // Start with a small downward velocity
+                angle: (Math.random() - 0.5) * 0.3,
+                width: 15 * LANDER_SCALE,
+                height: 20 * LANDER_SCALE,
+                thrusting: false,
+                fuel: INITIAL_FUEL,
+                crashed: false,
+                landed: false
+            };
+        }
+
+        // --- Surface Generation (Unchanged) ---
+        function generateSurface() {
+            surface = [];
+            landingPad.found = false;
+            let currentX = 0;
+            let currentY = canvas.height - (Math.random() * canvas.height * 0.15 + canvas.height * 0.1);
+            surface.push({ x: currentX, y: currentY });
+
+            const minSegmentWidth = canvas.width * 0.05;
+            const maxSegmentWidth = canvas.width * 0.15;
+            const maxSteepness = canvas.height * 0.08;
+            const requiredPadWidth = canvas.width * 0.1;
+
+            while (currentX < canvas.width) {
+                let segmentWidth = Math.random() * (maxSegmentWidth - minSegmentWidth) + minSegmentWidth;
+                let nextX = currentX + segmentWidth;
+                if (nextX >= canvas.width) {
+                    nextX = canvas.width;
+                    segmentWidth = canvas.width - currentX;
+                }
+                let nextY = currentY + (Math.random() * 2 - 1) * maxSteepness;
+                nextY = Math.max(canvas.height * 0.4, Math.min(canvas.height - 20, nextY));
+
+                 if (nextX > currentX) {
+                    surface.push({ x: nextX, y: nextY });
+                    currentX = nextX;
+                    currentY = nextY;
+                 } else {
+                     if (currentX < canvas.width) {
+                          currentX += 10;
+                          if (currentX > canvas.width) currentX = canvas.width;
+                          surface.push({ x: currentX, y: currentY });
+                     } else {
+                         break;
+                     }
+                 }
+            }
+
+            let bestPadIndex = -1;
+            for (let i = 1; i < surface.length - 2; i++) {
+                 const p1 = surface[i];
+                 const p2 = surface[i+1];
+                 const segmentWidth = p2.x - p1.x;
+                 const heightDiff = Math.abs(p2.y - p1.y);
+                  // Give priority to pads not extremely close to edges
+                 const isCentered = p1.x > canvas.width * 0.15 && p2.x < canvas.width * 0.85;
+
+                 if (isCentered && segmentWidth >= requiredPadWidth && heightDiff < maxSteepness * 0.25) {
+                       bestPadIndex = i;
+                       break;
+                 }
+            }
+
+             if (bestPadIndex === -1) {
+                 // Fallback: try less strict conditions or center force
+                 for (let i = 1; i < surface.length - 2; i++) {
+                    const p1 = surface[i]; const p2 = surface[i+1];
+                    const segmentWidth = p2.x - p1.x;
+                    const heightDiff = Math.abs(p2.y - p1.y);
+                    if (segmentWidth >= requiredPadWidth * 0.8 && heightDiff < maxSteepness * 0.4) {
+                         bestPadIndex = i; break;
+                    }
+                 }
+                 if (bestPadIndex === -1) {
+                     bestPadIndex = Math.floor(surface.length / 2);
+                     if (bestPadIndex >= surface.length - 1) {
+                         bestPadIndex = Math.max(0, surface.length - 2);
+                     }
+                     console.warn("No suitable flat segment found, forcing pad creation near middle.");
+                 }
+             }
+
+             if (bestPadIndex >= 0 && bestPadIndex < surface.length -1) {
+                const p1 = surface[bestPadIndex];
+                const p2 = surface[bestPadIndex + 1];
+                p2.y = p1.y; // Flatten
+                landingPad.x1 = p1.x;
+                landingPad.y = p1.y;
+                landingPad.x2 = p2.x;
+                landingPad.width = p2.x - p1.x;
+                landingPad.found = true;
+                 console.log(`Landing pad created at segment ${bestPadIndex}: [${p1.x.toFixed(0)}, ${p1.y.toFixed(0)}] to [${p2.x.toFixed(0)}, ${p2.y.toFixed(0)}]`);
+             } else {
+                 console.error("Failed to create landing pad - invalid index.");
+                 landingPad.found = false;
+                 // Handle this error more gracefully in resetGame
+             }
+        }
+
+        // --- Input Handling ---
+
+        // Device Orientation (Tilt)
+        function handleOrientation(event) {
+            if (event.gamma !== null) { // gamma is typically left/right tilt
+                deviceTiltGamma = event.gamma;
+            }
+            // Optional: Could use event.beta (front/back tilt) for something else?
+        }
+
+        // Thrust Button Touch Events
+        function handleThrustStart(e) {
+            e.preventDefault(); // Prevent scrolling/zooming
+            if (gameState !== 'playing') return;
+             // Request permission on first interaction if needed
+            if (!orientationPermissionGranted && !isRequestingOrientationPermission) {
+                requestOrientationPermission();
+            }
+            isThrusting = true;
+            thrustButton.classList.add('active'); // Visual feedback
+        }
+
+        function handleThrustEnd(e) {
+            e.preventDefault();
+            isThrusting = false;
+            thrustButton.classList.remove('active');
+        }
+
+        // General screen tap for reset
+         function handleScreenTap() {
+              // Only reset if game is over (landed/crashed)
+              if (gameState === 'landed' || gameState === 'crashed') {
+                  // Hide popups before resetting
+                  successPopup.style.display = 'none';
+                  hideMessage();
+                  resetGame();
+              }
+         }
+
+         // Request Device Orientation Permission (Needed for iOS 13+)
+         function requestOrientationPermission() {
+             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                 isRequestingOrientationPermission = true;
+                 orientationErrorText.style.display = 'none'; // Hide previous error
+                 DeviceOrientationEvent.requestPermission()
+                     .then(permissionState => {
+                         if (permissionState === 'granted') {
+                             window.addEventListener('deviceorientation', handleOrientation);
+                             orientationPermissionGranted = true;
+                             console.log("Device orientation permission granted.");
+                         } else {
+                             orientationPermissionGranted = false;
+                             console.warn("Device orientation permission denied.");
+                             orientationErrorText.textContent = "倾斜控制需要设备方向权限。请在设置中允许或刷新重试。";
+                             orientationErrorText.style.display = 'block';
+                         }
+                         isRequestingOrientationPermission = false;
+                     })
+                     .catch(error => {
+                         console.error("Error requesting device orientation permission:", error);
+                         orientationPermissionGranted = false;
+                         orientationErrorText.textContent = "请求设备方向权限时出错。";
+                         orientationErrorText.style.display = 'block';
+                         isRequestingOrientationPermission = false;
+                     });
+             } else {
+                 // Handle browsers/devices that don't require explicit permission
+                 // or don't support the API
+                 if ('DeviceOrientationEvent' in window) {
+                     console.log("Attempting to add device orientation listener directly.");
+                     window.addEventListener('deviceorientation', handleOrientation);
+                     orientationPermissionGranted = true; // Assume granted if no request method exists
+                 } else {
+                    console.warn("Device orientation events not supported by this browser/device.");
+                    orientationPermissionGranted = false;
+                    orientationErrorText.textContent = "您的设备或浏览器不支持倾斜控制。";
+                    orientationErrorText.style.display = 'block';
+                 }
+             }
+         }
+
+
+        // --- Update Game Logic ---
+        function update(dtFactor) {
+            if (gameState !== 'playing') return;
+
+            lander.thrusting = isThrusting; // Set thrusting state based on button
+
+            // Rotation based on Tilt (if permission granted)
+            if (orientationPermissionGranted && Math.abs(deviceTiltGamma) > TILT_DEADZONE) {
+                // Calculate effective tilt, subtracting deadzone and clamping
+                let effectiveTilt = deviceTiltGamma - Math.sign(deviceTiltGamma) * TILT_DEADZONE;
+                // Scale tilt effect - make it reach max effect at MAX_TILT_EFFECT_ANGLE
+                let tiltFactor = effectiveTilt / (MAX_TILT_EFFECT_ANGLE - TILT_DEADZONE);
+                tiltFactor = Math.max(-1, Math.min(1, tiltFactor)); // Clamp to [-1, 1]
+
+                lander.angle += tiltFactor * TILT_SENSITIVITY * dtFactor * 60; // Apply rotation (multiply sensitivity by dtFactor * 60 for consistency)
+            }
+             lander.angle = (lander.angle + Math.PI * 3) % (Math.PI * 2) - Math.PI; // Keep angle in range [-PI, PI]
+
+            // Thrust (based on isThrusting state)
+            if (lander.thrusting && lander.fuel > 0) {
+                const thrustX = Math.sin(lander.angle) * THRUST_POWER;
+                const thrustY = -Math.cos(lander.angle) * THRUST_POWER;
+                lander.vx += thrustX * dtFactor;
+                lander.vy += thrustY * dtFactor;
+                lander.fuel -= FUEL_CONSUMPTION * dtFactor;
+                if (lander.fuel < 0) lander.fuel = 0;
+                if (Math.random() < 0.8) addThrustParticle(dtFactor);
+            }
+
+            // Gravity
+            lander.vy += GRAVITY * dtFactor;
+
+            // Update Position
+            lander.x += lander.vx * dtFactor;
+            lander.y += lander.vy * dtFactor;
+
+            // Update particles
+            updateParticles(dtFactor);
+
+            // Collision Detection
+            checkCollisions(); // Assuming this function is robust
+
+            // Out of bounds check
+             if (lander.y > canvas.height + lander.height * 2 || lander.y < -lander.height * 2 || lander.x < -lander.width || lander.x > canvas.width + lander.width) {
+                 if (gameState === 'playing') {
+                     setMessage("漂浮在太空中迷失了...", "failure");
+                     gameState = 'crashed';
+                     lander.crashed = true;
+                     thrustButton.style.display = 'none'; // Hide button on game over
+                 }
+            }
+
+            // Update status info for drawing
+            updateStatusInfo(); // Assuming this function is robust
+        }
+
+        // --- Particle System (Unchanged) ---
+        function addThrustParticle(dtFactor) {
+            const angleOffset = (Math.random() - 0.5) * 0.5;
+            const speed = 1 + Math.random() * 1;
+            const life = 15 + Math.random() * 15;
+            const nozzleOffsetX = -Math.sin(lander.angle) * (lander.height / 2);
+            const nozzleOffsetY = Math.cos(lander.angle) * (lander.height / 2);
+            const startX = lander.x + nozzleOffsetX;
+            const startY = lander.y + nozzleOffsetY;
+            const exhaustVx = -Math.sin(lander.angle + angleOffset) * speed;
+            const exhaustVy = Math.cos(lander.angle + angleOffset) * speed;
+            const particleVx = lander.vx + exhaustVx;
+            const particleVy = lander.vy + exhaustVy;
+
+            thrustParticles.push({
+                x: startX, y: startY, vx: particleVx, vy: particleVy,
+                life: life, maxLife: life, size: Math.random() * 2 + 1
+            });
+        }
+        function updateParticles(dtFactor) {
+            for (let i = thrustParticles.length - 1; i >= 0; i--) {
+                let p = thrustParticles[i];
+                p.x += p.vx * dtFactor;
+                p.y += p.vy * dtFactor;
+                p.life -= 1 * dtFactor;
+                if (p.life <= 0) {
+                    thrustParticles.splice(i, 1);
+                }
+            }
+        }
+        function drawParticles() { /* ... unchanged ... */
+             ctx.fillStyle = '#FFA500';
+             for (const p of thrustParticles) {
+                 const alpha = Math.max(0, p.life / p.maxLife);
+                 ctx.globalAlpha = alpha * 0.8;
+                 ctx.beginPath();
+                 ctx.arc(p.x, p.y, p.size * (1 - alpha / 2), 0, Math.PI * 2);
+                 ctx.fill();
+             }
+             ctx.globalAlpha = 1.0;
+        }
+
+        // --- Collision Detection (Unchanged logic, checkCollisionPoint added) ---
+        function checkCollisions() { /* ... unchanged ... */
+             const cosA = Math.cos(lander.angle);
+             const sinA = Math.sin(lander.angle);
+             const halfW = lander.width / 2;
+             const halfH = lander.height / 2;
+             const legOffset = 4;
+             const corner1X = lander.x + (-(halfW + legOffset) * cosA - halfH * sinA);
+             const corner1Y = lander.y + (-(halfW + legOffset) * sinA + halfH * cosA);
+             const corner2X = lander.x + ((halfW + legOffset) * cosA - halfH * sinA);
+             const corner2Y = lander.y + ((halfW + legOffset) * sinA + halfH * cosA);
+
+            for (let i = 0; i < surface.length - 1; i++) {
+                const p1 = surface[i];
+                const p2 = surface[i + 1];
+                 if (lander.x + lander.width/2 > p1.x && lander.x - lander.width/2 < p2.x)
+                 {
+                    if (checkCollisionPoint(corner1X, corner1Y, p1, p2)) {
+                         handleLanding(p1.y); return;
+                    }
+                    if (checkCollisionPoint(corner2X, corner2Y, p1, p2)) {
+                         handleLanding(p1.y); return;
+                    }
+                }
+            }
+        }
+        function checkCollisionPoint(px, py, p1, p2) { /* ... unchanged ... */
+             if (px >= p1.x && px <= p2.x) {
+                 const segmentWidth = p2.x - p1.x;
+                 let surfaceY;
+                 if (segmentWidth < 0.01) {
+                     surfaceY = Math.max(p1.y, p2.y);
+                 } else {
+                     const slope = (p2.y - p1.y) / segmentWidth;
+                     surfaceY = p1.y + slope * (px - p1.x);
+                 }
+                 return py >= surfaceY - 1.0;
+             }
+             return false;
+         }
+
+
+        // --- Landing Handler (Added hiding thrust button) ---
+        function handleLanding(collisionSurfaceY) {
+             if (gameState !== 'playing') return;
+
+             const verticalSpeedOK = Math.abs(lander.vy) <= SAFE_LANDING_VSPEED;
+             const horizontalSpeedOK = Math.abs(lander.vx) <= SAFE_LANDING_HSPEED;
+             const angleOK = Math.abs(lander.angle) <= SAFE_LANDING_ANGLE;
+
+             const bottomOffsetY = (lander.height / 2 * Math.cos(lander.angle)) + (Math.abs(lander.width / 2 * Math.sin(lander.angle)));
+             lander.y = collisionSurfaceY - bottomOffsetY;
+             const finalVX = lander.vx;
+             const finalVY = lander.vy;
+             lander.vy = 0;
+             lander.vx = 0;
+             lander.thrusting = false;
+             isThrusting = false; // Ensure button state is reset
+             thrustButton.classList.remove('active');
+             thrustButton.style.display = 'none'; // Hide button on game end
+
+             let onPad = false;
+             if (landingPad.found) {
+                 onPad = (lander.x >= landingPad.x1 && lander.x <= landingPad.x2 &&
+                          Math.abs(collisionSurfaceY - landingPad.y) < LANDING_PAD_Y_TOLERANCE);
+             }
+
+             if (onPad && verticalSpeedOK && horizontalSpeedOK && angleOK) {
+                 successPopup.style.display = 'flex'; // Show success popup
+                 gameState = 'landed';
+                 lander.landed = true;
+                 lander.angle = 0;
+             } else {
+                 let reason = "";
+                 if (!landingPad.found) reason = "未找到着陆平台?!";
+                 else if (!onPad) {
+                     if (lander.x < landingPad.x1 || lander.x > landingPad.x2) reason = "错过着陆平台 (左右)";
+                     else if (Math.abs(collisionSurfaceY - landingPad.y) >= LANDING_PAD_Y_TOLERANCE) reason = "错过着陆平台 (高度)";
+                     else reason = "错过着陆平台";
+                 }
+                 else if (!verticalSpeedOK) reason = `垂直速度过快 (${Math.abs(finalVY).toFixed(2)} > ${SAFE_LANDING_VSPEED})`;
+                 else if (!horizontalSpeedOK) reason = `水平速度过快 (${Math.abs(finalVX).toFixed(2)} > ${SAFE_LANDING_HSPEED})`;
+                 else if (!angleOK) reason = `着陆角度过大 (${Math.abs(statusInfo.angle).toFixed(1)}°)`;
+                 else reason = "未知坠毁原因";
+
+                 setMessage(`坠毁! ${reason}`, "failure");
+                 gameState = 'crashed';
+                 lander.crashed = true;
+             }
+         }
+
+        // --- Drawing (Unchanged logic, drawStatus tweaked slightly) ---
+        function draw() { /* ... unchanged ... */
+            // Clear canvas
+            ctx.fillStyle = '#000015';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Stars (unchanged)
+            ctx.fillStyle = 'white'; ctx.save();
+            for(let i=0; i<150; i++) { /* ... */ ctx.beginPath(); let x = (Math.sin(i*0.3)*0.5+0.5)*canvas.width; let y = (Math.cos(i*0.7)*0.5+0.5)*canvas.height; let size = (Math.sin(i*0.5)*0.5+0.5)*1.5+0.5; ctx.globalAlpha=Math.sin(i*1.2)*0.3+0.7; ctx.rect(x,y,size,size); ctx.fill(); }
+            ctx.restore();
+
+            // Draw Surface (unchanged)
+            ctx.strokeStyle = '#cccccc'; ctx.lineWidth = 2; ctx.beginPath();
+            if(surface.length > 0){ ctx.moveTo(surface[0].x, surface[0].y); for(let i=1; i<surface.length; i++){ ctx.lineTo(surface[i].x, surface[i].y); } }
+            ctx.stroke();
+
+            // Draw Landing Pad (unchanged)
+            if(landingPad.found){ ctx.strokeStyle = '#00ff00'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(landingPad.x1, landingPad.y); ctx.lineTo(landingPad.x2, landingPad.y); ctx.stroke(); }
+
+             // Draw Particles (before lander)
+             drawParticles();
+
+            // Draw Lander (unchanged)
+            ctx.save(); ctx.translate(lander.x, lander.y); ctx.rotate(lander.angle);
+            if (lander.crashed && gameState === 'crashed') {
+                 ctx.fillStyle = '#FFA500'; ctx.strokeStyle = '#FF0000'; ctx.lineWidth = 1;
+                 for (let i = 0; i < 5; i++) { /* ... draw fragments ... */ ctx.save(); ctx.rotate((Math.random()-0.5)*Math.PI*2); ctx.translate((Math.random()-0.5)*15,(Math.random()-0.5)*15); ctx.beginPath(); ctx.moveTo(0,-5); ctx.lineTo(-3,3); ctx.lineTo(3,3); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore(); }
+            } else {
+                ctx.fillStyle = lander.landed ? '#00cc00' : '#dddddd'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(0, -lander.height / 2); ctx.lineTo(-lander.width / 2, lander.height / 3); ctx.lineTo(-lander.width / 2, lander.height / 2); ctx.lineTo( lander.width / 2, lander.height / 2); ctx.lineTo( lander.width / 2, lander.height / 3); ctx.closePath(); ctx.fill(); ctx.stroke();
+                 const legBaseX = lander.width / 2; const legBaseY = lander.height / 2; const legOutX = legBaseX + 4; const legOutY = legBaseY + 6;
+                 ctx.strokeStyle = '#aaaaaa'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-legBaseX, legBaseY); ctx.lineTo(-legOutX, legOutY); ctx.moveTo( legBaseX, legBaseY); ctx.lineTo( legOutX, legOutY); ctx.stroke();
+                if (lander.thrusting && lander.fuel > 0) {
+                    ctx.fillStyle = `rgba(255, ${Math.random()*100 + 155}, 0, ${Math.random() * 0.5 + 0.5})`; ctx.beginPath(); const flameLength = lander.height * 0.7 + Math.random() * 5; ctx.moveTo(0, lander.height / 2); ctx.lineTo(-lander.width / 3.5, lander.height / 2 + flameLength); ctx.lineTo( lander.width / 3.5, lander.height / 2 + flameLength); ctx.closePath(); ctx.fill();
+                }
+            }
+            ctx.restore();
+
+            // Draw Status Info directly on canvas
+            drawStatus();
+        }
+
+        // --- Update Status Info Object (Unchanged) ---
+        function updateStatusInfo() { /* ... unchanged ... */
+             let groundY = canvas.height;
+             if (landingPad.found) { groundY = landingPad.y; }
+             else if (surface.length > 0) { let minY=canvas.height; for(const p of surface){ if(p.x > lander.x-50 && p.x < lander.x+50) minY=Math.min(minY,p.y); } groundY = minY; }
+             const cosA = Math.cos(lander.angle); const sinA = Math.sin(lander.angle); const legPointY = lander.y + ((lander.width / 2 + 4) * Math.abs(sinA)) + (lander.height / 2 * cosA) + 6;
+             statusInfo.altitude = Math.max(0, groundY - legPointY).toFixed(1);
+             statusInfo.hSpeed = lander.vx.toFixed(2); statusInfo.vSpeed = lander.vy.toFixed(2);
+             statusInfo.angle = (lander.angle * 180 / Math.PI).toFixed(1); statusInfo.fuel = Math.max(0, lander.fuel).toFixed(0);
+             statusInfo.vSpeedOk = Math.abs(lander.vy) <= SAFE_LANDING_VSPEED; statusInfo.hSpeedOk = Math.abs(lander.vx) <= SAFE_LANDING_HSPEED;
+             statusInfo.angleOk = Math.abs(lander.angle) <= SAFE_LANDING_ANGLE;
+             statusInfo.fuelCritical = lander.fuel < 20; statusInfo.fuelLow = lander.fuel < 50 && !statusInfo.fuelCritical;
+         }
+
+        // --- Draw Status on Canvas (Slightly adjusted positioning/size) ---
+         function drawStatus() {
+             const statusX = 10; // Move slightly left
+             let statusY = 35; // Move slightly down from instructions
+             const lineHeight = 20; // Slightly smaller line height
+             const labelWidth = 100; // Adjust if needed
+             const valueOffsetX = labelWidth + 5;
+
+             ctx.font = '14px Arial'; // Slightly smaller font for mobile
+             ctx.textAlign = 'left';
+             ctx.textBaseline = 'top';
+             ctx.shadowColor = "black"; ctx.shadowBlur = 3; ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 1;
+
+             // Altitude
+             ctx.fillStyle = '#aaa'; ctx.fillText(`高度 (m):`, statusX, statusY);
+             ctx.fillStyle = '#0f0'; ctx.fillText(statusInfo.altitude, statusX + valueOffsetX, statusY);
+             statusY += lineHeight;
+             // H Speed
+             ctx.fillStyle = '#aaa'; ctx.fillText(`水平速度:`, statusX, statusY); // Shorter label
+             ctx.fillStyle = statusInfo.hSpeedOk ? '#0f0' : (Math.abs(statusInfo.hSpeed) < SAFE_LANDING_HSPEED * 1.8 ? '#ff0' : '#f00');
+             ctx.fillText(statusInfo.hSpeed, statusX + valueOffsetX, statusY);
+             statusY += lineHeight;
+             // V Speed
+             ctx.fillStyle = '#aaa'; ctx.fillText(`垂直速度:`, statusX, statusY); // Shorter label
+             ctx.fillStyle = statusInfo.vSpeedOk ? '#0f0' : (Math.abs(statusInfo.vSpeed) < SAFE_LANDING_VSPEED * 1.8 ? '#ff0' : '#f00');
+             ctx.fillText(statusInfo.vSpeed, statusX + valueOffsetX, statusY);
+             statusY += lineHeight;
+             // Angle
+             ctx.fillStyle = '#aaa'; ctx.fillText(`角度 (°):`, statusX, statusY);
+             ctx.fillStyle = statusInfo.angleOk ? '#0f0' : (Math.abs(lander.angle) < SAFE_LANDING_ANGLE * 1.8 ? '#ff0' : '#f00');
+             ctx.fillText(statusInfo.angle, statusX + valueOffsetX, statusY);
+             statusY += lineHeight;
+             // Fuel
+             ctx.fillStyle = '#aaa'; ctx.fillText(`燃料 (%):`, statusX, statusY);
+             ctx.fillStyle = statusInfo.fuelCritical ? '#f00' : (statusInfo.fuelLow ? '#ff0' : '#0f0');
+             ctx.fillText(statusInfo.fuel, statusX + valueOffsetX, statusY);
+
+             ctx.shadowColor = "transparent"; ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+         }
+
+         // --- Show/Hide Messages (Unchanged) ---
+         function setMessage(text, type = 'info') { /* ... unchanged ... */
+             messageDiv.textContent = text + ((type === 'success' || type === 'failure') ? "\n(点击屏幕重新开始)" : ""); // Update reset hint
+             messageDiv.className = type; messageDiv.style.display = 'block';
+         }
+         function hideMessage() { messageDiv.style.display = 'none'; }
+
+        // --- Game Loop (Unchanged) ---
+        function gameLoop(timestamp) {
+             if (!lastTime) lastTime = timestamp;
+             const dtSeconds = Math.min(0.1, (timestamp - lastTime) / 1000);
+             lastTime = timestamp;
+             const dtFactor = dtSeconds * 60;
+
+             if (gameState === 'playing' || gameState === 'landed' || gameState === 'crashed') {
+                 update(dtFactor);
+                 draw();
+             } else if (gameState === 'intro') {
+                 // Intro screen is displayed via CSS, loop does nothing here
+             }
+
+             requestAnimationFrame(gameLoop);
+        }
+
+        // --- Resize Handling (No reset on resize for mobile usually) ---
+        function handleResize() {
+             // On mobile, resizing is less common, and resetting might be annoying.
+             // We'll just adjust canvas size. If layout breaks severely, a reset might be needed.
+             canvas.width = window.innerWidth;
+             canvas.height = window.innerHeight;
+             console.log(`Resized canvas: ${canvas.width}x${canvas.height}`);
+             // No resetGame() call here to avoid interrupting gameplay
+             // Redrawing happens automatically in the next gameLoop frame
+             if (gameState === 'playing') {
+                draw(); // Force a redraw immediately if playing to prevent visual glitches
+             }
+        }
+
+        // --- Reset and Start Game ---
+        function resetGame() {
+             console.log("--- Resetting Game ---");
+             // Ensure popups/messages are hidden
+             hideMessage();
+             successPopup.style.display = 'none';
+             introScreen.style.display = 'none';
+
+             // Set canvas dimensions
+             canvas.width = window.innerWidth;
+             canvas.height = window.innerHeight;
+             console.log(`Canvas size: ${canvas.width}x${canvas.height}`);
+
+             generateSurface(); // Generate surface based on new size
+             if (!landingPad.found) {
+                 console.error("CRITICAL: Landing pad generation failed during reset.");
+                 setMessage("错误: 无法生成着陆平台!", "failure");
+                 thrustButton.style.display = 'none'; // Hide button if setup fails
+                 gameState = 'crashed'; // Treat as failure state
+                 return;
+             }
+
+             lander = createLander();
+             // Reset mobile controls state
+             isThrusting = false;
+             thrustButton.classList.remove('active');
+             deviceTiltGamma = 0; // Reset tilt reading just in case
+
+             thrustParticles = [];
+             lastTime = performance.now();
+             statusInfo = { altitude: 0, hSpeed: 0, vSpeed: 0, angle: 0, fuel: INITIAL_FUEL, vSpeedOk: true, hSpeedOk: true, angleOk: true, fuelLow: false, fuelCritical: false };
+             updateStatusInfo(); // Initial status update
+
+             gameState = 'playing'; // Set state *after* setup
+             thrustButton.style.display = 'flex'; // Show thrust button
+
+             console.log("--- Game Ready ---");
+        }
+
+        // --- Event Listeners for Buttons & Touch ---
+        startButton.addEventListener('click', () => {
+             // Request permission *before* starting the game fully
+             requestOrientationPermission();
+             // We don't call resetGame here directly.
+             // resetGame will be called if permission is granted OR
+             // if the device doesn't require/support permission request.
+             // For now, just hide intro. resetGame will handle the rest.
+             introScreen.style.display = 'none';
+             resetGame(); // Proceed to reset/start game immediately for non-iOS or already granted cases
+        });
+
+        continueButton.addEventListener('click', () => {
+            successPopup.style.display = 'none';
+            resetGame();
+        });
+
+        hackButton.addEventListener('click', () => { /* ... unchanged ... */
+            const hackUrl = "https://kimi.moonshot.cn/share/cvndk5inae70dm7311ag";
+            if (isValidUrl(hackUrl)) { window.open(hackUrl, '_blank'); }
+            else { alert("链接无效，请检查链接的合法性并适当重试。"); }
+        });
+        function isValidUrl(string) { try { new URL(string); return true; } catch (e) { return false; } }
+
+        // Setup touch listeners for the thrust button
+        thrustButton.addEventListener('touchstart', handleThrustStart, { passive: false });
+        thrustButton.addEventListener('touchend', handleThrustEnd, { passive: false });
+        thrustButton.addEventListener('touchcancel', handleThrustEnd, { passive: false }); // Handle cancelled touches
+
+        // Add mouse events as fallback for desktop testing/debugging
+        thrustButton.addEventListener('mousedown', handleThrustStart);
+        thrustButton.addEventListener('mouseup', handleThrustEnd);
+        thrustButton.addEventListener('mouseleave', handleThrustEnd); // Stop thrust if mouse leaves button
+
+        // General tap listener for resetting game
+         // Use 'touchend' for mobile primary, 'click' as fallback
+        // Attach to body or window for broader coverage after game over
+        document.body.addEventListener('touchend', handleScreenTap);
+        document.body.addEventListener('click', handleScreenTap);
+
+
+        // --- Initialization ---
+        // Remove keyboard listeners for arrows
+        // window.removeEventListener('keydown', handleKeyDown); // Or modify handleKeyDown if keeping space reset
+        // window.removeEventListener('keyup', handleKeyUp); // Or modify handleKeyUp
+        window.addEventListener('resize', handleResize);
+
+        // Initial setup and game start
+        requestAnimationFrame(gameLoop); // Start the main game loop
+
+        // Check initial orientation support (without requesting permission yet)
+        if (!('DeviceOrientationEvent' in window)) {
+             orientationErrorText.textContent = "您的设备或浏览器不支持倾斜控制。";
+             orientationErrorText.style.display = 'block';
+        } else if (typeof DeviceOrientationEvent.requestPermission !== 'function') {
+            // If no permission needed (e.g., Android Chrome), add listener directly
+            // We add it *before* the game starts in case the user doesn't press thrust immediately
+            window.addEventListener('deviceorientation', handleOrientation);
+            orientationPermissionGranted = true; // Assume it works
+        }
+
+
+    </script>
+</body>
+</html>

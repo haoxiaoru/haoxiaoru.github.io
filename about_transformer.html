@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="page_title">深入浅出：大模型背后的 Transformer 架构</title>
+    <style>
+        /* --- Base Styles & Variables --- */
+        :root {
+            --bg-color-light: #ffffff;
+            --text-color-light: #1d1d1f;
+            --secondary-text-color-light: #6e6e73;
+            --link-color-light: #007aff;
+            --border-color-light: #d2d2d7;
+            --card-bg-light: #f5f5f7;
+            --accent-color-light: #007aff;
+            --code-bg-light: #f0f0f0;
+            --svg-stroke-light: #333;
+            --svg-fill-light: #555;
+            --svg-highlight-light: #007aff;
+
+            --bg-color-dark: #121212; /* Slightly lighter than pure black */
+            --text-color-dark: #f5f5f7; /* Off-white */
+            --secondary-text-color-dark: #a1a1a6;
+            --link-color-dark: #0a84ff;
+            --border-color-dark: #3a3a3c;
+            --card-bg-dark: #1c1c1e;
+            --accent-color-dark: #0a84ff;
+            --code-bg-dark: #2c2c2e;
+            --svg-stroke-dark: #ccc;
+            --svg-fill-dark: #aaa;
+            --svg-highlight-dark: #0a84ff;
+
+            --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            --font-size-base: 16px;
+            --line-height-base: 1.6;
+            --content-max-width: 800px;
+            --border-radius: 12px;
+            --transition-speed: 0.3s;
+        }
+
+        /* Apply theme variables */
+        body {
+            font-family: var(--font-family-sans);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-base);
+            margin: 0;
+            padding: 0;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        body.light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+            --bg-color: var(--bg-color-light);
+            --text-color: var(--text-color-light);
+            --secondary-text-color: var(--secondary-text-color-light);
+            --link-color: var(--link-color-light);
+            --border-color: var(--border-color-light);
+            --card-bg: var(--card-bg-light);
+            --accent-color: var(--accent-color-light);
+            --code-bg: var(--code-bg-light);
+            --svg-stroke: var(--svg-stroke-light);
+            --svg-fill: var(--svg-fill-light);
+            --svg-highlight: var(--svg-highlight-light);
+        }
+
+        body.dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+            --bg-color: var(--bg-color-dark);
+            --text-color: var(--text-color-dark);
+            --secondary-text-color: var(--secondary-text-color-dark);
+            --link-color: var(--link-color-dark);
+            --border-color: var(--border-color-dark);
+            --card-bg: var(--card-bg-dark);
+            --accent-color: var(--accent-color-dark);
+            --code-bg: var(--code-bg-dark);
+            --svg-stroke: var(--svg-stroke-dark);
+            --svg-fill: var(--svg-fill-dark);
+            --svg-highlight: var(--svg-highlight-dark);
+        }
+
+        /* --- Layout & Structure --- */
+        .container {
+            max-width: var(--content-max-width);
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 600;
+            color: var(--text-color); /* Explicitly set for header */
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px; /* Add margin for wrapping */
+        }
+
+        .control-button {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
+            white-space: nowrap; /* Prevent button text wrapping */
+        }
+
+        .control-button:hover {
+            background-color: var(--border-color); /* Subtle hover */
+        }
+
+        main section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            display: inline-block; /* Fit border to text */
+        }
+
+        h3 {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        p, li {
+            color: var(--secondary-text-color);
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        strong {
+             color: var(--text-color); /* Make strong text stand out */
+             font-weight: 600;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            transition: opacity var(--transition-speed);
+        }
+
+        a:hover {
+            opacity: 0.7;
+        }
+
+        .highlight {
+             background-color: color-mix(in srgb, var(--accent-color) 15%, transparent); /* Subtle highlight */
+             padding: 2px 5px;
+             border-radius: 4px;
+             font-weight: 500;
+             color: var(--text-color);
+        }
+
+        code {
+            font-family: "SF Mono", "Consolas", "Courier New", monospace;
+            background-color: var(--code-bg);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--text-color);
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+
+        /* --- SVG Static Styles --- */
+        .svg-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid var(--border-color);
+            overflow: hidden; /* Ensure contents fit */
+        }
+
+        svg.transformer-static {
+             max-width: 100%;
+             height: auto;
+        }
+
+        /* Self-Attention Static Specific Styles */
+        #sa-input-rect, #sa-q-rect, #sa-k-rect, #sa-v-rect, #sa-scores-rect, #sa-softmax-rect, #sa-weighted-v-rect, #sa-output-rect,
+        #sa-k-rect-other, #sa-v-rect-other, #sa-softmax-rect, #sa-output-rect /* Ensure all rects have consistent style */ {
+            fill: var(--card-bg);
+            stroke: var(--svg-stroke);
+            stroke-width: 1.5;
+            rx: 5; /* Rounded corners */
+        }
+
+        .sa-label {
+            font-family: var(--font-family-sans);
+            font-size: 10px;
+            fill: var(--text-color);
+            text-anchor: middle;
+        }
+
+        .sa-arrow {
+            stroke: var(--svg-stroke);
+            stroke-width: 1;
+            marker-end: url(#arrowhead);
+            opacity: 1; /* Visible by default */
+        }
+
+        .sa-dot {
+            fill: var(--svg-highlight);
+            r: 3;
+            opacity: 1; /* Visible by default */
+        }
+
+         /* Arrowhead marker */
+         #arrowhead path {
+             fill: var(--svg-stroke);
+         }
+
+        /* --- Responsiveness --- */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.6em;
+            }
+            h3 {
+                font-size: 1.2em;
+            }
+            .container {
+                padding: 30px 15px;
+            }
+            header {
+                 flex-direction: column; /* Stack title and controls */
+                 align-items: flex-start;
+            }
+            .controls {
+                 margin-top: 15px;
+                 width: 100%; /* Make controls take full width */
+                 justify-content: flex-start; /* Align buttons left */
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 15px; /* Slightly smaller base font */
+            }
+            header h1 {
+                font-size: 1.8em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            .container {
+                padding: 20px 10px;
+            }
+             .controls {
+                 gap: 5px; /* Reduce gap between buttons */
+             }
+            .control-button {
+                 padding: 6px 10px;
+                 font-size: 0.85em;
+            }
+        }
+
+    </style>
+</head>
+<body class="light-mode">
+
+    <div class="container">
+        <header>
+            <h1 data-lang-key="header_title">Transformer 架构揭秘</h1>
+            <div class="controls">
+                <button id="theme-toggle" class="control-button" data-lang-key="toggle_theme">切换模式</button>
+                <button id="lang-toggle" class="control-button" data-lang-key="toggle_lang">English</button>
+            </div>
+        </header>
+
+        <main>
+            <section id="introduction">
+                <h2 data-lang-key="intro_heading">引言：为什么需要 Transformer？</h2>
+                <p data-lang-key="intro_p1">
+                    欢迎来到大模型（LLM）的核心动力室！几乎所有你听说过的强大 AI 模型，如 GPT、BERT、T5 等，都建立在一个名为 <strong class="highlight">Transformer</strong> 的革命性架构之上。这个架构由 Google 研究人员在 2017 年的论文 <a href="https://arxiv.org/abs/1706.03762" target="_blank" data-lang-key="attention_paper_link">"Attention Is All You Need"</a> 中提出。
+                </p>
+                <p data-lang-key="intro_p2">
+                    在 Transformer 出现之前，处理序列数据（如文本）主要依赖循环神经网络（RNN）和长短期记忆网络（LSTM）。但它们存在两个主要问题：难以捕捉序列中<strong class="highlight">长距离的依赖关系</strong>，并且由于其顺序处理的特性，<strong class="highlight">难以并行计算</strong>，训练速度较慢。Transformer 通过引入 <strong class="highlight">自注意力（Self-Attention）机制</strong> 完美地解决了这些问题。
+                </p>
+            </section>
+
+            <section id="overall-architecture">
+                <h2 data-lang-key="overall_heading">整体架构：编码器-解码器</h2>
+                <p data-lang-key="overall_p1">
+                    Transformer 模型通常遵循一个 <strong class="highlight">编码器（Encoder）- 解码器（Decoder）</strong> 的结构。这种结构非常适合需要将一个序列转换成另一个序列的任务，比如机器翻译（将一种语言的句子翻译成另一种）。
+                </p>
+                <ul>
+                    <li data-lang-key="overall_li1"><strong>编码器 (Encoder):</strong> 负责接收输入序列（例如，一句英文），并将其转换为一系列<strong class="highlight">富含上下文信息的向量表示</strong>（Contextual Embeddings）。它由 N 个相同的层堆叠而成。</li>
+                    <li data-lang-key="overall_li2"><strong>解码器 (Decoder):</strong> 接收编码器的输出和目标序列（例如，目标语言的部分翻译），并<strong class="highlight">生成下一个词的概率分布</strong>，从而逐步构建输出序列。它也由 N 个相同的层堆叠而成。</li>
+                </ul>
+                 <p data-lang-key="overall_p2">
+                     值得注意的是，有些模型（如 BERT）只使用了编码器部分（用于理解任务），而有些模型（如 GPT）则主要使用了<strong class="highlight">解码器</strong>部分（用于生成任务）。但核心组件是共通的。
+                 </p>
+            </section>
+
+            <section id="core-components">
+                <h2 data-lang-key="core_heading">核心组件详解</h2>
+
+                <h3 data-lang-key="embedding_pos_encoding_heading">1. 输入嵌入 (Input Embedding) 与位置编码 (Positional Encoding)</h3>
+                <p data-lang-key="embedding_p1">
+                    计算机无法直接理解单词。首先，我们需要将输入序列中的每个词（或子词/token）转换为一个<strong class="highlight">固定维度的向量</strong>，这就是 <strong class="highlight">词嵌入（Word Embedding）</strong>。这些嵌入向量捕捉了词语的语义信息。
+                </p>
+                <p data-lang-key="pos_encoding_p1">
+                    然而，Transformer 的核心机制——自注意力，本身并不处理词语的顺序信息（它同时看待所有词）。但语言中，<strong class="highlight">词序至关重要</strong>（"猫追狗" vs "狗追猫"）。为了解决这个问题，Transformer 引入了 <strong class="highlight">位置编码（Positional Encoding）</strong>。这些编码是根据词语在序列中的位置计算出来的向量，然后<strong class="highlight">加到</strong>对应的词嵌入向量上。这样，模型就能同时获得词语的语义信息和位置信息。常用的方法是使用不同频率的正弦和余弦函数。
+                </p>
+
+                <h3 data-lang-key="self_attention_heading">2. 自注意力机制 (Self-Attention Mechanism)</h3>
+                <p data-lang-key="self_attention_p1">
+                    这是 Transformer 的<strong class="highlight">灵魂</strong>！自注意力允许模型在处理一个词时，<strong class="highlight">关注</strong>输入序列中所有其他词（包括它自己），并<strong class="highlight">计算这些词对于理解当前词的重要性（权重）</strong>。这使得模型能够捕捉词语之间的依赖关系，无论它们在序列中相距多远。
+                </p>
+                <p data-lang-key="self_attention_p2">
+                    其核心思想是为每个输入向量（词嵌入+位置编码）创建三个不同的向量：
+                </p>
+                <ul>
+                    <li data-lang-key="self_attention_li1"><strong>查询向量 (Query, Q):</strong> 代表当前词，用于去“查询”其他词。</li>
+                    <li data-lang-key="self_attention_li2"><strong>键向量 (Key, K):</strong> 代表序列中的每个词，用于被 Q 查询，以判断相关性。</li>
+                    <li data-lang-key="self_attention_li3"><strong>值向量 (Value, V):</strong> 代表序列中的每个词，包含该词的实际信息。一旦计算出相关性（注意力权重），这些 V 向量会根据权重被加权求和。</li>
+                </ul>
+                 <p data-lang-key="self_attention_p3">
+                     计算过程大致如下（以一个词为例）：
+                 </p>
+                 <ol>
+                     <li data-lang-key="self_attention_ol1">将当前词的 Q 向量与序列中<strong class="highlight">所有词</strong>的 K 向量进行<strong class="highlight">点积 (Dot Product)</strong> 运算，得到原始的注意力分数（raw scores）。</li>
+                     <li data-lang-key="self_attention_ol2">为了稳定梯度，将这些分数除以 K 向量维度的平方根 (<code class="highlight">sqrt(d_k)</code>)，进行<strong class="highlight">缩放 (Scale)</strong>。</li>
+                     <li data-lang-key="self_attention_ol3">对缩放后的分数应用 <strong class="highlight">Softmax</strong> 函数，将其转换为<strong class="highlight">概率分布（注意力权重）</strong>，所有权重加起来等于 1。权重越高的词，表示与当前词关系越密切。</li>
+                     <li data-lang-key="self_attention_ol4">将得到的注意力权重分别乘以序列中<strong class="highlight">每个词</strong>对应的 V 向量。</li>
+                     <li data-lang-key="self_attention_ol5">将所有加权后的 V 向量<strong class="highlight">求和</strong>，得到最终的输出向量。这个向量<strong class="highlight">融合了序列中所有相关词的信息</strong>，是对当前词的一个更丰富的、上下文感知的表示。</li>
+                 </ol>
+
+                <!-- Static SVG for Self-Attention -->
+                <div class="svg-container">
+                    <svg id="self-attention-svg" viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg" class="transformer-static">
+                        <defs>
+                             <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                                 <polygon points="0 0, 10 3.5, 0 7" />
+                             </marker>
+                         </defs>
+
+                        <!-- Simplified representation -->
+                        <!-- Input Word -->
+                        <rect id="sa-input-rect" x="20" y="50" width="50" height="30" />
+                        <text x="45" y="70" class="sa-label" data-lang-key="svg_input">Input</text>
+
+                         <!-- Q, K, V generation -->
+                         <rect id="sa-q-rect" x="100" y="20" width="40" height="20" />
+                         <text x="120" y="34" class="sa-label">Q</text>
+                         <line id="sa-arrow-input-qkv-1" class="sa-arrow" x1="70" y1="65" x2="100" y2="30"/>
+
+                         <rect id="sa-k-rect" x="100" y="55" width="40" height="20" />
+                         <text x="120" y="69" class="sa-label">K</text>
+                         <line id="sa-arrow-input-qkv-2" class="sa-arrow" x1="70" y1="65" x2="100" y2="65"/>
+
+                         <rect id="sa-k-rect-other" x="180" y="55" width="40" height="20" /> <!-- Another K for interaction -->
+                         <text x="200" y="69" class="sa-label" data-lang-key="svg_key_other">Other K</text>
+
+                         <rect id="sa-v-rect" x="100" y="90" width="40" height="20" />
+                         <text x="120" y="104" class="sa-label">V</text>
+                         <line id="sa-arrow-input-qkv-3" class="sa-arrow" x1="70" y1="65" x2="100" y2="100"/>
+
+                         <rect id="sa-v-rect-other" x="180" y="90" width="40" height="20" /> <!-- Another V -->
+                          <text x="200" y="104" class="sa-label" data-lang-key="svg_value_other">Other V</text>
+
+                        <!-- Attention Calculation (Simplified) -->
+                         <line id="sa-arrow-q-k" class="sa-arrow" x1="140" y1="30" x2="180" y2="60"/> <!-- Q -> Other K -->
+                         <circle id="sa-dot-product" cx="160" cy="45" class="sa-dot"/> <!-- Dot product symbol -->
+                         <text x="160" y="40" class="sa-label" data-lang-key="svg_dot_product">Score</text>
+
+                        <!-- Softmax (Conceptual) -->
+                        <rect id="sa-softmax-rect" x="240" y="40" width="40" height="20" />
+                        <text x="260" y="54" class="sa-label">Weight</text>
+                        <line id="sa-arrow-score-softmax" class="sa-arrow" x1="220" y1="45" x2="240" y2="50"/> <!-- Adjusted source position slightly -->
+
+                         <!-- Weighted Sum (Conceptual) -->
+                         <line id="sa-arrow-weight-v" class="sa-arrow" x1="280" y1="50" x2="220" y2="95"/> <!-- Weight -> Other V, adjusted target -->
+                         <circle id="sa-sum-dot" cx="250" cy="75" class="sa-dot"/> <!-- Position indicating sum -->
+                         <text x="250" y="90" class="sa-label" data-lang-key="svg_weighted_sum">Weighted V</text>
+
+                        <!-- Output -->
+                        <rect id="sa-output-rect" x="310" y="50" width="50" height="30" />
+                        <text x="335" y="70" class="sa-label" data-lang-key="svg_output">Output</text>
+                        <line id="sa-arrow-sum-output" class="sa-arrow" x1="270" y1="80" x2="310" y2="65"/> <!-- From sum area to output -->
+
+                        <!-- Note: This is a highly simplified visual representation. -->
+                        <!-- Actual implementation involves matrices and parallel computation. -->
+                         <text x="200" y="140" class="sa-label" data-lang-key="svg_note" style="font-size: 8px;">*这是一个简化的可视化，实际计算涉及矩阵运算。</text>
+                    </svg>
+                </div>
+                 <!-- Removed figcaption for SVG -->
+
+                <h3 data-lang-key="multi_head_attention_heading">3. 多头注意力 (Multi-Head Attention)</h3>
+                <p data-lang-key="multi_head_p1">
+                    为了让模型能够<strong class="highlight">同时关注来自不同表示子空间的信息</strong>（例如，有的“头”可能关注语法关系，有的“头”可能关注语义相似性），Transformer 使用了“多头”注意力。
+                </p>
+                <p data-lang-key="multi_head_p2">
+                    它不是只计算一次 Q, K, V，而是将 Q, K, V 通过<strong class="highlight">不同的、可学习的线性变换（投影）</strong>多次，得到多组 Q, K, V（例如 8 组，即 8 个“头”）。然后，<strong class="highlight">并行地</strong>为每个“头”执行自注意力计算。最后，将所有“头”的输出<strong class="highlight">拼接（Concatenate）起来</strong>，并通过另一次线性变换得到最终的输出。这使得模型能够更全面地捕捉输入信息。
+                </p>
+
+                <h3 data-lang-key="add_norm_heading">4. 残差连接 (Residual Connection) 与层归一化 (Layer Normalization)</h3>
+                <p data-lang-key="add_norm_p1">
+                    在每个自注意力层和前馈网络层之后，都跟着两个关键操作：
+                </p>
+                <ul>
+                    <li data-lang-key="add_norm_li1"><strong>残差连接 (Add):</strong> 将该子层（如自注意力层）的<strong class="highlight">输入</strong>直接<strong class="highlight">加到</strong>该子层的<strong class="highlight">输出</strong>上。这借鉴了 ResNet 的思想，有助于<strong class="highlight">缓解梯度消失问题</strong>，使得训练更深的网络成为可能。公式为：<code>Output = Layer(x) + x</code>。</li>
+                    <li data-lang-key="add_norm_li2"><strong>层归一化 (Norm):</strong> 对残差连接后的结果进行<strong class="highlight">归一化</strong>处理。与批归一化（Batch Normalization）不同，层归一化是在<strong class="highlight">每个样本内部、跨特征维度</strong>进行归一化，使其更适用于 NLP 任务和变长序列。它有助于<strong class="highlight">稳定训练过程</strong>，加速收敛。</li>
+                </ul>
+                <p data-lang-key="add_norm_p2">
+                    所以每个子层的完整流程是：<code>Output = LayerNorm(x + Sublayer(x))</code>。
+                </p>
+
+                <h3 data-lang-key="ffn_heading">5. 位置前馈网络 (Position-wise Feed-Forward Network, FFN)</h3>
+                <p data-lang-key="ffn_p1">
+                    在每个编码器层和解码器层的注意力子层之后，都有一个<strong class="highlight">独立应用于每个位置</strong>的前馈神经网络（FFN）。这个 FFN 通常由两个线性变换和一个 ReLU（或 GeLU 等）激活函数组成。
+                </p>
+                <p data-lang-key="ffn_p2">
+                    虽然它在<strong class="highlight">不同位置上使用相同的参数</strong>（Position-wise），但它为模型<strong class="highlight">增加了非线性</strong>，并对注意力层输出的表示进行进一步的<strong class="highlight">转换和提炼</strong>。可以看作是对每个位置的向量表示进行一次“深度加工”。
+                </p>
+
+                <h3 data-lang-key="decoder_heading">6. 解码器层特有组件</h3>
+                <p data-lang-key="decoder_p1">
+                    解码器层除了包含编码器层中的自注意力、Add & Norm、FFN 之外，还有两个独特的组件：
+                </p>
+                <ul>
+                    <li data-lang-key="decoder_li1"><strong>掩码自注意力 (Masked Self-Attention):</strong> 在解码器生成序列时，它只能<strong class="highlight">关注当前位置及其之前</strong>的位置，不能“看到”未来的词。这是通过在 Softmax 之前的缩放点积步骤中，将<strong class="highlight">未来位置的分数设置为负无穷</strong>（或一个非常大的负数）来实现的，这样 Softmax 之后这些位置的权重就变成了 0。</li>
+                    <li data-lang-key="decoder_li2"><strong>编码器-解码器注意力 (Encoder-Decoder Attention):</strong> 这一层允许解码器的<strong class="highlight">每个位置</strong>都<strong class="highlight">关注</strong>编码器输出的<strong class="highlight">所有位置</strong>。这里的 Q 来自于下面的掩码自注意力层，而 K 和 V 则<strong class="highlight">来自于编码器的最终输出</strong>。这使得解码器在生成下一个词时，能够充分利用编码器对整个输入序列的理解。</li>
+                </ul>
+
+                 <h3 data-lang-key="output_layer_heading">7. 最终输出层 (Linear & Softmax)</h3>
+                 <p data-lang-key="output_layer_p1">
+                     解码器栈的最终输出是一系列向量。为了得到实际的单词，还需要最后两步：
+                 </p>
+                 <ul>
+                     <li data-lang-key="output_layer_li1"><strong>线性层 (Linear Layer):</strong> 一个全连接层，将解码器输出的高维向量映射到<strong class="highlight">词汇表大小</strong>的维度。每个维度对应词汇表中的一个词。</li>
+                     <li data-lang-key="output_layer_li2"><strong>Softmax 层:</strong> 将线性层的输出（称为 logits）转换为<strong class="highlight">概率分布</strong>。概率最高的那个词通常被选为当前时间步的输出。</li>
+                 </ul>
+            </section>
+
+            <section id="why-it-works">
+                <h2 data-lang-key="advantages_heading">Transformer 为何如此强大？</h2>
+                <ul>
+                    <li data-lang-key="advantages_li1"><strong>捕捉长距离依赖:</strong> 自注意力机制可以直接计算序列中任意两个位置之间的关系，路径长度为 O(1)，远优于 RNN 的 O(n)。</li>
+                    <li data-lang-key="advantages_li2"><strong>并行计算:</strong> 注意力计算和前馈网络计算在每个位置上都可以并行进行，极大地提高了训练效率，可以利用 GPU/TPU 的并行能力。</li>
+                    <li data-lang-key="advantages_li3"><strong>模型容量和可扩展性:</strong> Transformer 结构易于堆叠（增加层数）和扩展（增加维度、头数），能够构建非常庞大的模型，吸收海量数据中的知识。</li>
+                </ul>
+            </section>
+
+            <section id="conclusion">
+                <h2 data-lang-key="conclusion_heading">结语</h2>
+                <p data-lang-key="conclusion_p1">
+                    Transformer 架构无疑是近年来自然语言处理乃至整个人工智能领域最重要的突破之一。它的核心思想——<strong class="highlight">自注意力</strong>，不仅改变了我们处理序列数据的方式，也启发了计算机视觉等其他领域的研究。理解 Transformer 的工作原理，是理解现代大语言模型能力的关键一步。
+                </p>
+                <p data-lang-key="conclusion_p2">
+                    希望这个页面能帮助你更好地理解这个强大的架构！
+                </p>
+            </section>
+        </main>
+
+        <footer>
+            <p style="text-align: center; font-size: 0.9em; color: var(--secondary-text-color);" data-lang-key="footer_text">
+                页面内容生成 & 设计 by AI
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // --- Language Content ---
+        const translations = {
+            en: {
+                page_title: "Deep Dive: The Transformer Architecture Behind Large Models",
+                header_title: "Transformer Explained",
+                toggle_theme: "Toggle Theme",
+                toggle_lang: "中文",
+                intro_heading: "Introduction: Why Transformer?",
+                intro_p1: "Welcome to the engine room of Large Language Models (LLMs)! Almost all powerful AI models you've heard of, like GPT, BERT, T5, etc., are built upon a revolutionary architecture called the <strong>Transformer</strong>. This architecture was proposed by Google researchers in the 2017 paper <a href='https://arxiv.org/abs/1706.03762' target='_blank'>'Attention Is All You Need'</a>.",
+                intro_p2: "Before the Transformer, sequence data (like text) was mainly processed using Recurrent Neural Networks (RNNs) and Long Short-Term Memory networks (LSTMs). However, they had two main problems: difficulty in capturing <strong>long-range dependencies</strong> in sequences, and due to their sequential processing nature, they were <strong>difficult to parallelize</strong>, leading to slower training. The Transformer perfectly solved these issues by introducing the <strong>Self-Attention mechanism</strong>.",
+                attention_paper_link: "'Attention Is All You Need'",
+                overall_heading: "Overall Architecture: Encoder-Decoder",
+                overall_p1: "The Transformer model typically follows an <strong>Encoder-Decoder</strong> structure. This structure is well-suited for tasks that require transforming one sequence into another, such as machine translation (translating a sentence from one language to another).",
+                overall_li1: "<strong>Encoder:</strong> Takes the input sequence (e.g., an English sentence) and transforms it into a series of <strong>context-rich vector representations</strong> (Contextual Embeddings). It consists of a stack of N identical layers.",
+                overall_li2: "<strong>Decoder:</strong> Receives the encoder's output and the target sequence (e.g., the partially translated target language sentence) and <strong>generates the probability distribution for the next word</strong>, thus constructing the output sequence step-by-step. It also consists of a stack of N identical layers.",
+                overall_p2: "It's worth noting that some models (like BERT) only use the Encoder part (for understanding tasks), while others (like GPT) primarily use the <strong>Decoder</strong> part (for generation tasks). But the core components are shared.",
+                core_heading: "Core Components Explained",
+                embedding_pos_encoding_heading: "1. Input Embedding & Positional Encoding",
+                embedding_p1: "Computers cannot directly understand words. First, we need to convert each word (or subword/token) in the input sequence into a <strong>fixed-dimensional vector</strong>. This is <strong>Word Embedding</strong>. These embedding vectors capture the semantic information of the words.",
+                pos_encoding_p1: "However, the core mechanism of the Transformer, Self-Attention, does not inherently process the order of words (it looks at all words simultaneously). But in language, <strong>word order is crucial</strong> ('cat chases dog' vs 'dog chases cat'). To solve this, the Transformer introduces <strong>Positional Encoding</strong>. These encodings are vectors calculated based on the position of the word in the sequence and are then <strong>added</strong> to the corresponding word embedding vectors. This way, the model gets both semantic and positional information. A common method uses sine and cosine functions of different frequencies.",
+                self_attention_heading: "2. Self-Attention Mechanism",
+                self_attention_p1: "This is the <strong>soul</strong> of the Transformer! Self-Attention allows the model, when processing one word, to <strong>attend</strong> to all other words in the input sequence (including itself) and <strong>calculate the importance (weight)</strong> of these words for understanding the current word. This enables the model to capture dependencies between words, regardless of their distance in the sequence.",
+                self_attention_p2: "The core idea is to create three different vectors for each input vector (word embedding + positional encoding):",
+                self_attention_li1: "<strong>Query (Q):</strong> Represents the current word, used to 'query' other words.",
+                self_attention_li2: "<strong>Key (K):</strong> Represents each word in the sequence, used to be queried by Q to determine relevance.",
+                self_attention_li3: "<strong>Value (V):</strong> Represents each word in the sequence, containing the actual information of the word. Once relevance (attention weights) is calculated, these V vectors are weighted and summed.",
+                self_attention_p3: "The calculation process is roughly as follows (for one word):",
+                self_attention_ol1: "Compute the <strong>Dot Product</strong> of the current word's Q vector with the K vectors of <strong>all words</strong> in the sequence to get raw attention scores.",
+                self_attention_ol2: "To stabilize gradients, <strong>Scale</strong> these scores by dividing by the square root of the K vector dimension (<code>sqrt(d_k)</code>).",
+                self_attention_ol3: "Apply the <strong>Softmax</strong> function to the scaled scores to convert them into a <strong>probability distribution (attention weights)</strong>, where all weights sum to 1. Words with higher weights are more relevant to the current word.",
+                self_attention_ol4: "Multiply the obtained attention weights by the corresponding V vector of <strong>each word</strong> in the sequence.",
+                self_attention_ol5: "<strong>Sum</strong> all the weighted V vectors to get the final output vector. This vector <strong>fuses information from all relevant words</strong> in the sequence, providing a richer, context-aware representation of the current word.",
+                svg_input: "Input",
+                svg_key_other: "Other K",
+                svg_value_other: "Other V",
+                svg_dot_product: "Score",
+                svg_weighted_sum: "Weighted V",
+                svg_output: "Output",
+                svg_note: "*Simplified visualization, actual computation involves matrices.",
+                multi_head_attention_heading: "3. Multi-Head Attention",
+                multi_head_p1: "To allow the model to <strong>jointly attend to information from different representation subspaces</strong> (e.g., some 'heads' might focus on syntactic relationships, others on semantic similarity), the Transformer uses 'Multi-Head' Attention.",
+                multi_head_p2: "Instead of calculating Q, K, V just once, it projects Q, K, V multiple times using <strong>different, learnable linear transformations (projections)</strong>, yielding multiple sets of Q, K, V (e.g., 8 sets, hence 8 'heads'). Then, self-attention calculations are performed <strong>in parallel</strong> for each 'head'. Finally, the outputs of all 'heads' are <strong>concatenated</strong> and transformed by another linear layer to produce the final output. This allows the model to capture information more comprehensively.",
+                add_norm_heading: "4. Residual Connection & Layer Normalization",
+                add_norm_p1: "After each self-attention layer and feed-forward network layer, two crucial operations follow:",
+                add_norm_li1: "<strong>Residual Connection (Add):</strong> The <strong>input</strong> to the sub-layer (e.g., self-attention) is directly <strong>added</strong> to the <strong>output</strong> of that sub-layer. Borrowing from ResNets, this helps <strong>alleviate the vanishing gradient problem</strong>, enabling the training of deeper networks. Formula: <code>Output = Layer(x) + x</code>.",
+                add_norm_li2: "<strong>Layer Normalization (Norm):</strong> The result after the residual connection is <strong>normalized</strong>. Unlike Batch Normalization, Layer Normalization normalizes <strong>within each sample, across the feature dimension</strong>, making it more suitable for NLP tasks and variable-length sequences. It helps <strong>stabilize the training process</strong> and accelerate convergence.",
+                add_norm_p2: "So the full process for each sub-layer is: <code>Output = LayerNorm(x + Sublayer(x))</code>.",
+                ffn_heading: "5. Position-wise Feed-Forward Network (FFN)",
+                ffn_p1: "After the attention sub-layer in each encoder and decoder layer, there is a feed-forward network (FFN) that is <strong>applied independently to each position</strong>. This FFN usually consists of two linear transformations with a ReLU (or GeLU, etc.) activation function in between.",
+                ffn_p2: "Although it uses the <strong>same parameters across different positions</strong> (Position-wise), it <strong>adds non-linearity</strong> to the model and performs further <strong>transformation and refinement</strong> on the representations output by the attention layer. It can be seen as a 'deep processing' step for each position's vector representation.",
+                decoder_heading: "6. Decoder-Specific Components",
+                decoder_p1: "In addition to the Self-Attention, Add & Norm, and FFN found in encoder layers, decoder layers have two unique components:",
+                decoder_li1: "<strong>Masked Self-Attention:</strong> When the decoder generates a sequence, it should only <strong>attend to the current position and previous positions</strong>, it cannot 'see' future words. This is achieved by setting the scores for <strong>future positions to negative infinity</strong> (or a very large negative number) before the Softmax step in the scaled dot-product attention. This makes the Softmax output 0 for those positions.",
+                decoder_li2: "<strong>Encoder-Decoder Attention:</strong> This layer allows <strong>each position</strong> in the decoder to <strong>attend to all positions</strong> in the encoder's output. Here, the Q comes from the preceding masked self-attention layer, while the K and V <strong>come from the final output of the encoder</strong>. This enables the decoder to leverage the encoder's understanding of the entire input sequence when generating the next word.",
+                output_layer_heading: "7. Final Output Layer (Linear & Softmax)",
+                output_layer_p1: "The final output of the decoder stack is a sequence of vectors. To get actual words, two final steps are needed:",
+                output_layer_li1: "<strong>Linear Layer:</strong> A fully connected layer that maps the high-dimensional decoder output vectors to the dimension of the <strong>vocabulary size</strong>. Each dimension corresponds to a word in the vocabulary.",
+                output_layer_li2: "<strong>Softmax Layer:</strong> Converts the output of the linear layer (called logits) into a <strong>probability distribution</strong>. The word with the highest probability is usually selected as the output for the current time step.",
+                advantages_heading: "Why is Transformer So Powerful?",
+                advantages_li1: "<strong>Capturing Long-Range Dependencies:</strong> Self-attention can directly compute relationships between any two positions in the sequence with a path length of O(1), far better than RNN's O(n).",
+                advantages_li2: "<strong>Parallel Computation:</strong> Attention and feed-forward calculations can be performed in parallel for each position, greatly improving training efficiency and leveraging the parallel capabilities of GPUs/TPUs.",
+                advantages_li3: "<strong>Model Capacity and Scalability:</strong> The Transformer architecture is easy to stack (increase layers) and scale (increase dimensions, heads), allowing for the construction of very large models capable of absorbing knowledge from massive datasets.",
+                conclusion_heading: "Conclusion",
+                conclusion_p1: "The Transformer architecture is undoubtedly one of the most significant breakthroughs in natural language processing and AI in recent years. Its core idea, <strong>self-attention</strong>, has not only changed how we process sequential data but has also inspired research in other fields like computer vision. Understanding how the Transformer works is key to comprehending the capabilities of modern large language models.",
+                conclusion_p2: "Hopefully, this page has helped you better understand this powerful architecture!",
+                footer_text: "Page content generated & designed by AI"
+            },
+            zh: {
+                page_title: "深入浅出：大模型背后的 Transformer 架构",
+                header_title: "Transformer 架构揭秘",
+                toggle_theme: "切换模式",
+                toggle_lang: "English",
+                intro_heading: "引言：为什么需要 Transformer？",
+                intro_p1: "欢迎来到大模型（LLM）的核心动力室！几乎所有你听说过的强大 AI 模型，如 GPT、BERT、T5 等，都建立在一个名为 <strong class='highlight'>Transformer</strong> 的革命性架构之上。这个架构由 Google 研究人员在 2017 年的论文 <a href='https://arxiv.org/abs/1706.03762' target='_blank' data-lang-key='attention_paper_link'>\"Attention Is All You Need\"</a> 中提出。",
+                intro_p2: "在 Transformer 出现之前，处理序列数据（如文本）主要依赖循环神经网络（RNN）和长短期记忆网络（LSTM）。但它们存在两个主要问题：难以捕捉序列中<strong class='highlight'>长距离的依赖关系</strong>，并且由于其顺序处理的特性，<strong class='highlight'>难以并行计算</strong>，训练速度较慢。Transformer 通过引入 <strong class='highlight'>自注意力（Self-Attention）机制</strong> 完美地解决了这些问题。",
+                attention_paper_link: "\"Attention Is All You Need\"",
+                overall_heading: "整体架构：编码器-解码器",
+                overall_p1: "Transformer 模型通常遵循一个 <strong class='highlight'>编码器（Encoder）- 解码器（Decoder）</strong> 的结构。这种结构非常适合需要将一个序列转换成另一个序列的任务，比如机器翻译（将一种语言的句子翻译成另一种）。",
+                overall_li1: "<strong>编码器 (Encoder):</strong> 负责接收输入序列（例如，一句英文），并将其转换为一系列<strong class='highlight'>富含上下文信息的向量表示</strong>（Contextual Embeddings）。它由 N 个相同的层堆叠而成。",
+                overall_li2: "<strong>解码器 (Decoder):</strong> 接收编码器的输出和目标序列（例如，目标语言的部分翻译），并<strong class='highlight'>生成下一个词的概率分布</strong>，从而逐步构建输出序列。它也由 N 个相同的层堆叠而成。",
+                overall_p2: "值得注意的是，有些模型（如 BERT）只使用了编码器部分（用于理解任务），而有些模型（如 GPT）则主要使用了<strong class='highlight'>解码器</strong>部分（用于生成任务）。但核心组件是共通的。",
+                core_heading: "核心组件详解",
+                embedding_pos_encoding_heading: "1. 输入嵌入 (Input Embedding) 与位置编码 (Positional Encoding)",
+                embedding_p1: "计算机无法直接理解单词。首先，我们需要将输入序列中的每个词（或子词/token）转换为一个<strong class='highlight'>固定维度的向量</strong>，这就是 <strong class='highlight'>词嵌入（Word Embedding）</strong>。这些嵌入向量捕捉了词语的语义信息。",
+                pos_encoding_p1: "然而，Transformer 的核心机制——自注意力，本身并不处理词语的顺序信息（它同时看待所有词）。但语言中，<strong class='highlight'>词序至关重要</strong>（\"猫追狗\" vs \"狗追猫\"）。为了解决这个问题，Transformer 引入了 <strong class='highlight'>位置编码（Positional Encoding）</strong>。这些编码是根据词语在序列中的位置计算出来的向量，然后<strong class='highlight'>加到</strong>对应的词嵌入向量上。这样，模型就能同时获得词语的语义信息和位置信息。常用的方法是使用不同频率的正弦和余弦函数。",
+                self_attention_heading: "2. 自注意力机制 (Self-Attention Mechanism)",
+                self_attention_p1: "这是 Transformer 的<strong class='highlight'>灵魂</strong>！自注意力允许模型在处理一个词时，<strong class='highlight'>关注</strong>输入序列中所有其他词（包括它自己），并<strong class='highlight'>计算这些词对于理解当前词的重要性（权重）</strong>。这使得模型能够捕捉词语之间的依赖关系，无论它们在序列中相距多远。",
+                self_attention_p2: "其核心思想是为每个输入向量（词嵌入+位置编码）创建三个不同的向量：",
+                self_attention_li1: "<strong>查询向量 (Query, Q):</strong> 代表当前词，用于去“查询”其他词。",
+                self_attention_li2: "<strong>键向量 (Key, K):</strong> 代表序列中的每个词，用于被 Q 查询，以判断相关性。",
+                self_attention_li3: "<strong>值向量 (Value, V):</strong> 代表序列中的每个词，包含该词的实际信息。一旦计算出相关性（注意力权重），这些 V 向量会根据权重被加权求和。",
+                self_attention_p3: "计算过程大致如下（以一个词为例）：",
+                self_attention_ol1: "将当前词的 Q 向量与序列中<strong class='highlight'>所有词</strong>的 K 向量进行<strong class='highlight'>点积 (Dot Product)</strong> 运算，得到原始的注意力分数（raw scores）。",
+                self_attention_ol2: "为了稳定梯度，将这些分数除以 K 向量维度的平方根 (<code class='highlight'>sqrt(d_k)</code>)，进行<strong class='highlight'>缩放 (Scale)</strong>。",
+                self_attention_ol3: "对缩放后的分数应用 <strong class='highlight'>Softmax</strong> 函数，将其转换为<strong class='highlight'>概率分布（注意力权重）</strong>，所有权重加起来等于 1。权重越高的词，表示与当前词关系越密切。",
+                self_attention_ol4: "将得到的注意力权重分别乘以序列中<strong class='highlight'>每个词</strong>对应的 V 向量。",
+                self_attention_ol5: "将所有加权后的 V 向量<strong class='highlight'>求和</strong>，得到最终的输出向量。这个向量<strong class='highlight'>融合了序列中所有相关词的信息</strong>，是对当前词的一个更丰富的、上下文感知的表示。",
+                svg_input: "输入",
+                svg_key_other: "其他 K",
+                svg_value_other: "其他 V",
+                svg_dot_product: "分数",
+                svg_weighted_sum: "加权 V",
+                svg_output: "输出",
+                svg_note: "*这是一个简化的可视化，实际计算涉及矩阵运算。",
+                multi_head_attention_heading: "3. 多头注意力 (Multi-Head Attention)",
+                multi_head_p1: "为了让模型能够<strong class='highlight'>同时关注来自不同表示子空间的信息</strong>（例如，有的“头”可能关注语法关系，有的“头”可能关注语义相似性），Transformer 使用了“多头”注意力。",
+                multi_head_p2: "它不是只计算一次 Q, K, V，而是将 Q, K, V 通过<strong class='highlight'>不同的、可学习的线性变换（投影）</strong>多次，得到多组 Q, K, V（例如 8 组，即 8 个“头”）。然后，<strong class='highlight'>并行地</strong>为每个“头”执行自注意力计算。最后，将所有“头”的输出<strong class='highlight'>拼接（Concatenate）起来</strong>，并通过另一次线性变换得到最终的输出。这使得模型能够更全面地捕捉输入信息。",
+                add_norm_heading: "4. 残差连接 (Residual Connection) 与层归一化 (Layer Normalization)",
+                add_norm_p1: "在每个自注意力层和前馈网络层之后，都跟着两个关键操作：",
+                add_norm_li1: "<strong>残差连接 (Add):</strong> 将该子层（如自注意力层）的<strong class='highlight'>输入</strong>直接<strong class='highlight'>加到</strong>该子层的<strong class='highlight'>输出</strong>上。这借鉴了 ResNet 的思想，有助于<strong class='highlight'>缓解梯度消失问题</strong>，使得训练更深的网络成为可能。公式为：<code>Output = Layer(x) + x</code>。",
+                add_norm_li2: "<strong>层归一化 (Norm):</strong> 对残差连接后的结果进行<strong class='highlight'>归一化</strong>处理。与批归一化（Batch Normalization）不同，层归一化是在<strong class='highlight'>每个样本内部、跨特征维度</strong>进行归一化，使其更适用于 NLP 任务和变长序列。它有助于<strong class='highlight'>稳定训练过程</strong>，加速收敛。",
+                add_norm_p2: "所以每个子层的完整流程是：<code>Output = LayerNorm(x + Sublayer(x))</code>。",
+                ffn_heading: "5. 位置前馈网络 (Position-wise Feed-Forward Network, FFN)",
+                ffn_p1: "在每个编码器层和解码器层的注意力子层之后，都有一个<strong class='highlight'>独立应用于每个位置</strong>的前馈神经网络（FFN）。这个 FFN 通常由两个线性变换和一个 ReLU（或 GeLU 等）激活函数组成。",
+                ffn_p2: "虽然它在<strong class='highlight'>不同位置上使用相同的参数</strong>（Position-wise），但它为模型<strong class='highlight'>增加了非线性</strong>，并对注意力层输出的表示进行进一步的<strong class='highlight'>转换和提炼</strong>。可以看作是对每个位置的向量表示进行一次“深度加工”。",
+                 decoder_heading: "6. 解码器层特有组件",
+                 decoder_p1: "解码器层除了包含编码器层中的自注意力、Add & Norm、FFN 之外，还有两个独特的组件：",
+                 decoder_li1: "<strong>掩码自注意力 (Masked Self-Attention):</strong> 在解码器生成序列时，它只能<strong class='highlight'>关注当前位置及其之前</strong>的位置，不能“看到”未来的词。这是通过在 Softmax 之前的缩放点积步骤中，将<strong class='highlight'>未来位置的分数设置为负无穷</strong>（或一个非常大的负数）来实现的，这样 Softmax 之后这些位置的权重就变成了 0。",
+                 decoder_li2: "<strong>编码器-解码器注意力 (Encoder-Decoder Attention):</strong> 这一层允许解码器的<strong class='highlight'>每个位置</strong>都<strong class='highlight'>关注</strong>编码器输出的<strong class='highlight'>所有位置</strong>。这里的 Q 来自于下面的掩码自注意力层，而 K 和 V 则<strong class='highlight'>来自于编码器的最终输出</strong>。这使得解码器在生成下一个词时，能够充分利用编码器对整个输入序列的理解。",
+                output_layer_heading: "7. 最终输出层 (Linear & Softmax)",
+                output_layer_p1: "解码器栈的最终输出是一系列向量。为了得到实际的单词，还需要最后两步：",
+                output_layer_li1: "<strong>线性层 (Linear Layer):</strong> 一个全连接层，将解码器输出的高维向量映射到<strong class='highlight'>词汇表大小</strong>的维度。每个维度对应词汇表中的一个词。",
+                output_layer_li2: "<strong>Softmax 层:</strong> 将线性层的输出（称为 logits）转换为<strong class='highlight'>概率分布</strong>。概率最高的那个词通常被选为当前时间步的输出。",
+                advantages_heading: "Transformer 为何如此强大？",
+                advantages_li1: "<strong>捕捉长距离依赖:</strong> 自注意力机制可以直接计算序列中任意两个位置之间的关系，路径长度为 O(1)，远优于 RNN 的 O(n)。",
+                advantages_li2: "<strong>并行计算:</strong> 注意力计算和前馈网络计算在每个位置上都可以并行进行，极大地提高了训练效率，可以利用 GPU/TPU 的并行能力。",
+                advantages_li3: "<strong>模型容量和可扩展性:</strong> Transformer 结构易于堆叠（增加层数）和扩展（增加维度、头数），能够构建非常庞大的模型，吸收海量数据中的知识。",
+                conclusion_heading: "结语",
+                conclusion_p1: "Transformer 架构无疑是近年来自然语言处理乃至整个人工智能领域最重要的突破之一。它的核心思想——<strong class='highlight'>自注意力</strong>，不仅改变了我们处理序列数据的方式，也启发了计算机视觉等其他领域的研究。理解 Transformer 的工作原理，是理解现代大语言模型能力的关键一步。",
+                conclusion_p2: "希望这个页面能帮助你更好地理解这个强大的架构！",
+                footer_text: "页面内容生成 & 设计 by AI"
+            }
+        };
+
+        // --- Theme Toggle ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        let currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+        function applyTheme(theme) {
+            body.classList.remove('light-mode', 'dark-mode');
+            body.classList.add(theme + '-mode');
+            localStorage.setItem('theme', theme);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(currentTheme);
+        });
+
+        // --- Language Toggle ---
+        const langToggle = document.getElementById('lang-toggle');
+        const htmlEl = document.documentElement;
+        let currentLang = localStorage.getItem('lang') || 'zh'; // Default to Chinese
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            htmlEl.setAttribute('lang', lang);
+            localStorage.setItem('lang', lang);
+            const content = translations[lang];
+
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.getAttribute('data-lang-key');
+                if (content[key]) {
+                    // Use innerHTML to allow HTML tags within translations (like <strong>, <a>)
+                    element.innerHTML = content[key];
+                }
+                // Special handling for button text update based on current language
+                if (element.id === 'lang-toggle') {
+                    element.innerText = lang === 'zh' ? translations.en.toggle_lang : translations.zh.toggle_lang;
+                }
+                 if (element.id === 'theme-toggle') {
+                     // Update theme toggle button text if needed based on language
+                      element.innerText = content['toggle_theme'] || (lang === 'zh' ? '切换模式' : 'Toggle Theme');
+                 }
+            });
+
+             // Update SVG text elements if they have data-lang-key
+            document.querySelectorAll('svg [data-lang-key]').forEach(element => {
+                const key = element.getAttribute('data-lang-key');
+                if (content[key]) {
+                    element.textContent = content[key]; // Use textContent for SVG text
+                }
+            });
+
+            // Update page title
+            document.title = content.page_title || "Transformer Explained";
+        }
+
+        langToggle.addEventListener('click', () => {
+            const newLang = currentLang === 'zh' ? 'en' : 'zh';
+            setLanguage(newLang);
+        });
+
+        // --- Initial Load ---
+        function initializePage() {
+            applyTheme(currentTheme);
+            setLanguage(currentLang);
+            // No SVG animation initialization needed anymore
+        }
+
+        // Initialize on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', initializePage);
+
+    </script>
+
+</body>
+</html>

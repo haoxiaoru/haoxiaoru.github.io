@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VEGFA与寿命的关系</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet"> <!-- Added Noto Sans SC for Chinese -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- Example using Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome CDN -->
+    <style>
+        :root {
+            --primary-color: #005f73;
+            --secondary-color: #0a9396;
+            --accent-color: #94d2bd;
+            --background-color: #f8f9fa;
+            --text-color: #212529;
+            --light-text-color: #6c757d;
+            --card-bg: #ffffff;
+            --border-color: #dee2e6;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --font-family: 'Source Sans 3', 'Noto Sans SC', sans-serif; /* Added Noto Sans SC */
+            --q1-color: #2a9d8f; /* Green for Q1 */
+            --high-impact-color: #e76f51; /* Orange for High Impact */
+            --high-citation-color: #f4a261; /* Yellow-Orange for High Citations */
+            --header-bg-overlay: rgba(0, 47, 58, 0.6); /* Darker overlay for better contrast */
+        }
+
+        html {
+            scroll-behavior: smooth; /* Enable smooth scrolling */
+        }
+
+        body {
+            font-family: var(--font-family);
+            line-height: 1.8;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .report-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: var(--card-bg);
+            padding: 0 50px 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px var(--shadow-color);
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        header {
+            margin: 0 -50px 30px -50px;
+            padding: 60px 50px;
+            text-align: center;
+            position: relative;
+            background-image: url('https://haoxiaoru.github.io/newlife.png');
+            background-size: cover;
+            background-position: center center;
+            border-bottom: 3px solid var(--primary-color);
+            color: white;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            overflow: hidden; /* Clip background/overlay */
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--header-bg-overlay);
+            z-index: 1;
+        }
+
+        header h1 {
+            font-size: 3.2em;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            line-height: 1.3;
+            position: relative;
+            z-index: 2;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+        }
+
+        /* --- TOC Navigation --- */
+        #toc-nav {
+            background-color: #e9ecef;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            width: auto;
+            box-sizing: border-box;
+        }
+
+        #toc-nav h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+            color: var(--primary-color);
+        }
+
+        #toc-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #toc-nav li { /* No specific styles needed */ }
+
+        #toc-nav a {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: block;
+            background-color: #fff;
+            border: 1px solid var(--accent-color);
+            text-align: center;
+        }
+
+        #toc-nav a:hover, #toc-nav a:focus {
+            background-color: var(--secondary-color);
+            color: white;
+            outline: none;
+        }
+
+        /* --- Sections & Headings --- */
+        section { margin-bottom: 35px; }
+
+        h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--secondary-color);
+            border-bottom: 1px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        h2 .fas { margin-right: 10px; }
+
+        h3 {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        h3 .fas { margin-right: 8px; }
+
+        h4 {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+        h4 .fas { margin-right: 8px; }
+
+        p { margin-bottom: 1.2em; text-align: justify; }
+        em, i { font-style: italic; }
+        .gene-name { font-style: italic; font-weight: 600; color: var(--secondary-color); }
+
+        /* --- Source Highlight --- */
+        .source-highlight {
+            display: inline-block;
+            background-color: #e9ecef;
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--accent-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin: 5px 2px;
+            font-size: 0.85em;
+            line-height: 1.5;
+            position: relative;
+            cursor: default;
+            transition: all 0.3s ease;
+            vertical-align: middle;
+            font-family: 'Source Sans 3', sans-serif;
+        }
+        .source-highlight:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-left-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        .source-highlight .label { font-weight: 600; color: var(--primary-color); margin-right: 5px; }
+        .source-highlight .journal { font-style: italic; font-weight: 600; }
+        .source-highlight .metric { margin-left: 10px; display: inline-flex; align-items: center; white-space: nowrap; }
+        .source-highlight .metric .fas { margin-right: 4px; font-size: 0.9em; }
+        .source-highlight .impact-factor { color: var(--high-impact-color); }
+        .source-highlight .impact-factor[data-value^="4"] { font-weight: bold; color: #d00000; }
+        .source-highlight .impact-factor[data-value^="1"] { color: #e76f51; }
+        .source-highlight .jcr-quartile { font-weight: bold; }
+        .source-highlight .jcr-quartile.q1 { color: var(--q1-color); }
+        .source-highlight .jcr-quartile.q2 { color: #f4a261; }
+        .source-highlight .citations { color: var(--high-citation-color); }
+        .source-highlight .citations[data-citations^="4"], .source-highlight .citations[data-citations^="3"] { font-weight: bold; color: #e76f51; }
+        .source-highlight .tooltip-text { visibility: hidden; width: 220px; background-color: #555; color: #fff; text-align: center; border-radius: 6px; padding: 8px 10px; position: absolute; z-index: 10; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s, visibility 0.3s; font-size: 0.9em; line-height: 1.4; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-family: 'Source Sans 3', sans-serif; }
+        .source-highlight .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #555 transparent transparent transparent; }
+        .source-highlight:hover .tooltip-text { visibility: visible; opacity: 1; }
+
+        /* --- Data Tables --- */
+        .data-table-container { overflow-x: auto; margin: 30px 0; }
+        .data-table { width: 100%; border-collapse: collapse; border: 1px solid var(--border-color); box-shadow: 0 4px 10px var(--shadow-color); border-radius: 8px; overflow: hidden; }
+        .data-table th, .data-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: top; }
+        .data-table thead th { background-color: var(--primary-color); color: var(--card-bg); font-weight: 600; font-size: 1em; letter-spacing: 0.5px; border-bottom: 2px solid var(--secondary-color); }
+        .data-table tbody tr:nth-child(even) { background-color: #f8f9fa; }
+        .data-table tbody tr:hover { background-color: var(--accent-color); color: var(--primary-color); transition: background-color 0.2s ease-in-out; }
+        .data-table td:first-child { font-weight: 600; color: var(--secondary-color); }
+        .data-table .snippet-ref { font-size: 0.9em; color: var(--light-text-color); font-style: italic; text-align: center; vertical-align: middle; font-family: 'Source Sans 3', sans-serif; }
+        .data-table .gene-italic { font-style: italic; font-family: 'Source Sans 3', sans-serif; }
+
+        /* --- Sortable Table Specific Styles --- */
+        .sortable-table thead th { cursor: pointer; position: relative; }
+        .sortable-table thead th .sort-icon {
+            display: inline-block;
+            width: 1em; /* Reserve space */
+            margin-left: 5px;
+            opacity: 0.4;
+            transition: opacity 0.2s;
+        }
+        .sortable-table thead th:hover .sort-icon { opacity: 0.8; }
+        .sortable-table thead th[aria-sort] .sort-icon { opacity: 1; } /* Show active sort icon */
+
+        /* --- Works Cited --- */
+        .works-cited { margin-top: 40px; border-top: 1px solid var(--border-color); padding-top: 20px; }
+        .works-cited h4 { color: var(--primary-color); margin-bottom: 20px; font-size: 1.5em; }
+        .works-cited ol { list-style-type: none; padding-left: 0; }
+        .works-cited li { margin-bottom: 15px; padding-left: 30px; position: relative; font-size: 0.9em; line-height: 1.6; font-family: 'Source Sans 3', sans-serif; }
+        .works-cited li::before { content: counter(list-item); position: absolute; left: 0; top: 2px; background-color: var(--secondary-color); color: white; font-weight: bold; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 22px; font-size: 0.8em; }
+        .works-cited a {
+             color: var(--primary-color);
+             text-decoration: none;
+             transition: color 0.3s ease, border-bottom 0.3s ease;
+             border-bottom: 1px dotted var(--accent-color);
+             /* ADDED: Fix URL overflow on mobile */
+             overflow-wrap: break-word;
+             word-break: break-word; /* Alternative, more aggressive */
+        }
+        .works-cited a:hover { color: var(--secondary-color); border-bottom: 1px solid var(--secondary-color); }
+
+        /* --- Media Queries --- */
+
+        /* Fixed Sidebar on Wider Screens */
+        @media (min-width: 1300px) {
+            .report-container {
+                margin-left: 270px; /* Sidebar width (220px) + Gap (50px) */
+                margin-top: 40px;
+                margin-right: auto;
+            }
+            #toc-nav {
+                position: fixed;
+                left: 30px;
+                top: 100px;
+                width: 220px;
+                height: calc(100vh - 120px);
+                max-height: 80vh;
+                overflow-y: auto;
+                margin-bottom: 0;
+                z-index: 1000;
+                padding: 20px 15px;
+            }
+            #toc-nav h3 { text-align: center; margin-bottom: 15px; }
+            #toc-nav ul { flex-direction: column; gap: 8px; }
+            #toc-nav a { text-align: left; padding: 8px 15px; display: block; }
+        }
+
+        /* Screens smaller than sidebar breakpoint */
+        @media (max-width: 1299px) {
+             .report-container {
+                 margin-left: auto; margin-right: auto;
+                 padding: 0 20px 25px 20px;
+                 margin-top: 20px; margin-bottom: 20px;
+             }
+             header {
+                 margin: 0 -20px 20px -20px;
+                 padding: 40px 20px;
+             }
+        }
+
+         /* Tablet */
+         @media (max-width: 768px) {
+             .report-container { padding: 0 20px 25px 20px; margin: 20px; }
+             header { padding: 40px 20px; margin: 0 -20px 20px -20px; }
+             header h1 { font-size: 2.2em; }
+             h2 { font-size: 1.6em; }
+             h3 { font-size: 1.3em; }
+             .source-highlight { display: block; margin-bottom: 10px; }
+             .source-highlight .metric { margin-left: 0; margin-top: 5px; display: block; }
+             .data-table th, .data-table td { padding: 10px 8px; font-size: 0.9em; }
+             .works-cited li { padding-left: 35px; }
+             .works-cited li::before { left: 5px; width: 20px; height: 20px; line-height: 20px; }
+         }
+
+         /* Mobile */
+         @media (max-width: 480px) {
+             .report-container { padding: 0 15px 20px 15px; margin: 10px; }
+             header { padding: 30px 15px; margin: 0 -15px 15px -15px; }
+             header h1 { font-size: 1.8em; }
+             h2 { font-size: 1.4em; }
+             h3 { font-size: 1.2em; }
+             body { font-size: 15px; }
+         }
+
+        /* Font Awesome Icons */
+        .fa-flask { color: #6c757d; }
+        .fa-chart-line { color: var(--high-impact-color); }
+        .fa-layer-group { color: var(--q1-color); }
+        .fa-users { color: var(--high-citation-color); }
+        .fa-dna { color: var(--secondary-color); margin-right: 8px;}
+        .fa-mouse { color: var(--secondary-color); margin-right: 8px;}
+        .fa-brain { color: var(--secondary-color); margin-right: 8px;}
+        .fa-heartbeat { color: var(--secondary-color); margin-right: 8px;}
+        .fa-eye { color: var(--secondary-color); margin-right: 8px;}
+        .fa-dumbbell { color: var(--secondary-color); margin-right: 8px;}
+        .fa-cogs { color: var(--secondary-color); margin-right: 8px;}
+        .fa-pills { color: var(--secondary-color); margin-right: 8px;}
+        .fa-info-circle { color: var(--secondary-color); margin-right: 8px;}
+        .fa-table { color: var(--primary-color); margin-right: 8px;}
+        .fa-rat { color: var(--primary-color); margin-right: 8px;}
+        /* .fa-flask { color: var(--secondary-color); margin-right: 8px;} */ /* Duplicate */
+        .fa-balance-scale { color: var(--secondary-color); margin-right: 8px;}
+        .fa-briefcase-medical { color: var(--secondary-color); margin-right: 8px;}
+        .fa-flag-checkered { color: var(--secondary-color); margin-right: 8px;}
+        .fa-book { color: var(--primary-color); margin-right: 8px;}
+        .fa-list { color: var(--primary-color); margin-right: 8px;}
+        .fa-sort, .fa-sort-up, .fa-sort-down { color: inherit; } /* For sort icons */
+         .fa-magnifying-glass-chart { color: var(--primary-color); margin-right: 8px;} /* Icon for new table */
+
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <header>
+            <h1>VEGFA与寿命之间复杂关系的综合报告</h1>
+        </header>
+
+        <nav id="toc-nav">
+            <h3><i class="fas fa-list"></i> 目录导航</h3>
+            <ul>
+                <li><a href="#introduction">引言</a></li>
+                <li><a href="#animal-studies">- 动物模型</a></li>
+                <li><a href="#mechanisms">- 疾病机制</a></li>
+                <li><a href="#human-genetics">- 人类遗传学</a></li>
+                <li><a href="#underlying-mechanisms-details">分析与结论</a></li>
+                <li><a href="#works-cited">参考文献</a></li>
+            </ul>
+        </nav>
+
+        <section id="introduction">
+            <h2><i class="fas fa-info-circle"></i> 引言：VEGFA的多重角色</h2>
+            <p>血管内皮生长因子A (<span class="gene-name">VEGFA</span>) 是分子生物学领域的一种关键信号蛋白，主要因其在血管生成（新生血管的复杂过程）和血管通透性动态调节中不可或缺的作用而闻名<sup>1</sup>。<span class="gene-name">VEGFA</span>基因可通过可变剪接过程产生多种蛋白质异构体。这些异构体表现出不同的生物活性，它们与特定受体的亲和力以及与细胞外基质相互作用的能力各不相同，这凸显了<span class="gene-name">VEGFA</span>功能的复杂性<sup>3</sup>。除了其在血管过程中的公认作用外，越来越多的科学证据表明，<span class="gene-name">VEGFA</span>在神经保护、炎症反应调节和组织再生等其他关键生物功能中也发挥着重要作用——所有这些都与衰老过程密切相关<sup>3</sup>。</p>
+            <p>衰老是一种复杂的生物现象，涉及生理功能的逐渐衰退，通常与血管系统的年龄相关变化以及包括<span class="gene-name">VEGFA</span>通路在内的关键信号通路的平衡失调有关<sup>19</sup>。本报告综合了当前科学界对<span class="gene-name">VEGFA</span>与寿命之间复杂关系的理解，借鉴了不同生物组织层面的多项研究成果。</p>
+        </section>
+
+        <section id="animal-studies">
+             <h2><i class="fas fa-flask"></i> 动物模型：来自小鼠研究的见解</h2>
+             <p>动物模型，特别是小鼠研究，在阐明<span class="gene-name">VEGFA</span>水平与寿命之间的相关性方面发挥了重要作用。研究通过调控<span class="gene-name">VEGFA</span>水平揭示了其与寿命的关键联系。</p>
+             <p>一项关键研究
+                 <span class="source-highlight" data-year="2021">
+                     <span class="label">Source:</span> <span class="journal">Science</span>
+                     <span class="metric impact-factor" data-value="41.8"><i class="fas fa-chart-line"></i> IF: 41.8</span>
+                     <span class="metric jcr-quartile q1"><i class="fas fa-layer-group"></i> JCR: Q1</span>
+                     <span class="metric citations" data-citations="417"><i class="fas fa-users"></i> Citations: 417</span>
+                     <sup>19</sup>
+                     <span class="tooltip-text">High-impact study showing increased VEGFA signaling extends mouse lifespan. IF=Impact Factor, JCR=Journal Citation Reports Quartile, Citations=Google Scholar count.</span>
+                 </span>
+                 表明，在老年小鼠中，对抗与年龄相关的<span class="gene-name">VEGF</span>信号不足（通常由诱饵受体增加引起）可以显著改善其血管系统健康，增强多个器官的功能，并显著延长其寿命。这些益处伴随着代谢特征和身体成分的改善，以及与衰老相关的多种病理现象的发生率和严重程度显著降低。这一系列证据有力地表明，维持足够水平的<span class="gene-name">VEGFA</span>信号对于促进健康衰老和延长寿命至关重要（至少在小鼠模型中如此）。这支持了衰老的血管理论，该理论认为血管系统的年龄相关性退化是生物体整体衰老过程的主要驱动因素。
+             </p>
+             <p>相反，另一项研究
+                 <span class="source-highlight" data-year="2016">
+                      <span class="label">Source:</span> <span class="journal">EMBO Mol Med</span>
+                      <span class="metric impact-factor" data-value="10.9"><i class="fas fa-chart-line"></i> IF: 10.9</span>
+                      <span class="metric jcr-quartile q1"><i class="fas fa-layer-group"></i> JCR: Q1</span>
+                      <span class="metric citations" data-citations="301"><i class="fas fa-users"></i> Citations: 301</span>
+                      <sup>25</sup>
+                      <span class="tooltip-text">High-quality study indicating excessive VEGFA can cause age-related eye diseases in mice.</span>
+                 </span>
+                 指出，在特定情况下，尤其是与年龄相关的眼部疾病的发病机制中，<span class="gene-name">VEGFA</span>水平升高可能产生有害影响。例如，在小鼠模型中过表达<span class="gene-name">VEGFA</span>的研究显示，小鼠出现了白内障以及与新生血管性（湿性）和非渗出性（干性）年龄相关性黄斑变性（AMD）相似的病理变化。这表明，虽然最佳水平的<span class="gene-name">VEGFA</span>可能对整体健康和长寿有益，但过量表达可能导致特定年龄相关疾病的发展，从而可能对整体健康和寿命产生负面影响。这可能暗示了<span class="gene-name">VEGFA</span>水平与寿命之间存在复杂、甚至非线性的关系，即过低和过高的水平都与不良健康后果相关。
+             </p>
+             <p>在骨骼肌再生方面，对衰老小鼠的研究
+                 <span class="source-highlight" data-year="2023">
+                     <span class="label">Source:</span> <span class="journal">Adv Biol</span>
+                     <span class="metric impact-factor" data-value="6.3"><i class="fas fa-chart-line"></i> IF: 6.3</span>
+                     <span class="metric jcr-quartile q1"><i class="fas fa-layer-group"></i> JCR: Q1</span>
+                     <span class="metric citations" data-citations="18"><i class="fas fa-users"></i> Citations: 18</span>
+                     <sup>30</sup>
+                      <span class="tooltip-text">Recent Q1 study linking reduced muscle VEGFA to impaired regeneration in aged mice, improved by intervention.</span>
+                 </span>
+                 揭示了肌肉组织中<span class="gene-name">VEGFA</span>水平降低与损伤后肌肉修复能力减弱之间存在相关性。值得注意的是，旨在提高老年小鼠<span class="gene-name">VEGFA</span>水平的干预措施，如施用缺氧信号激活剂ML228，已被证明能改善肌肉再生。这指出了<span class="gene-name">VEGFA</span>在维持生物体衰老过程中骨骼肌再生潜力方面具有关键的组织特异性作用，这可能通过保持肌肉质量、力量和整体身体功能间接影响寿命。
+             </p>
+
+             <h3><i class="fas fa-table"></i> 关键动物模型研究结果总结</h3>
+             <div class="data-table-container">
+                 <table class="data-table">
+                     <thead>
+                         <tr>
+                             <th>生物体</th>
+                             <th>VEGFA 调控</th>
+                             <th>受影响组织</th>
+                             <th>对寿命的影响</th>
+                             <th>显著相关表型</th>
+                             <th>文献片段</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <tr>
+                             <td>小鼠</td>
+                             <td>信号增强</td>
+                             <td>多个器官</td>
+                             <td>增加</td>
+                             <td>代谢改善、身体成分改善、年龄相关病理减少</td>
+                             <td class="snippet-ref">19</td>
+                         </tr>
+                         <tr>
+                             <td>小鼠</td>
+                             <td>过表达</td>
+                             <td>眼部</td>
+                             <td>可能减少 (因眼疾)</td>
+                             <td>白内障、新生血管性和非渗出性AMD样病变</td>
+                             <td class="snippet-ref">25</td>
+                         </tr>
+                         <tr>
+                             <td>小鼠</td>
+                             <td>增加 (通过 ML228)</td>
+                             <td>骨骼肌</td>
+                             <td>未直接测量，但肌肉再生改善</td>
+                             <td>再生纤维横截面积增加、脂肪沉积减少</td>
+                             <td class="snippet-ref">30</td>
+                         </tr>
+                         <tr>
+                             <td>小鼠</td>
+                             <td>减少 (<span class="gene-name">VEGF</span>lo)</td>
+                             <td>骨骼肌</td>
+                             <td>未直接测量，但肌肉再生受损</td>
+                             <td>再生纤维横截面积减小、脂肪沉积</td>
+                             <td class="snippet-ref">30</td>
+                         </tr>
+                     </tbody>
+                 </table>
+             </div>
+        </section>
+
+        <section id="mechanisms">
+            <h2><i class="fas fa-cogs"></i> VEGFA与衰老及疾病关联的机制</h2>
+            <p>老年小鼠中<span class="gene-name">VEGFA</span>信号不足与一系列符合衰老标志的有害效应有关。这些包括毛细血管密度降低，导致组织血流和氧气输送受损<sup>19</sup>。这种血管功能障碍可进一步导致线粒体功能障碍（细胞能量生产能力下降）和内皮细胞衰老（血管内壁细胞失去正常功能）<sup>19</sup>。此外，<span class="gene-name">VEGFA</span>信号不足还与慢性低度炎症（即“炎症衰老”）的增加有关，这是许多年龄相关疾病的重要驱动因素<sup>19</sup>。这些相互关联的效应强调了充足的<span class="gene-name">VEGFA</span>信号在维持血管稳态和减轻多个器官系统生理衰老的各个基本方面所起的关键作用。</p>
+             <h3><i class="fas fa-eye"></i> 在眼部疾病 (AMD) 中的作用</h3>
+             <p>在年龄相关性黄斑变性 (AMD) 中，<span class="gene-name">VEGFA</span>的作用尤为复杂。虽然<span class="gene-name">VEGFA</span>抑制剂已成为治疗新生血管性AMD的基石<sup>2</sup>，但研究发现<span class="gene-name">VEGFA</span>表达增加是湿性和干性AMD以及白内障发展的关键因素<sup>2</sup>。研究表明，眼组织中<span class="gene-name">VEGFA</span>水平升高会引发氧化应激（活性氧产生失衡）并激活NLRP3炎症小体（一种参与炎症的蛋白质复合物）。这些过程导致了这些年龄相关眼部疾病特有的细胞损伤和功能障碍<sup>25</sup>。这种<span class="gene-name">VEGFA</span>在AMD中的双重作用突显了在衰老过程中维持眼部健康所需的微妙平衡。</p>
+             <h3><i class="fas fa-heartbeat"></i> 在心血管疾病 (CVD) 中的作用</h3>
+             <p>包括<span class="gene-name">VEGFA</span>在内的<span class="gene-name">VEGF</span>家族也与动脉粥样硬化和其他心血管疾病 (CVD) 的发病机制有关<sup>40</sup>。虽然<span class="gene-name">VEGFA</span>促进血管生成的能力可能通过刺激新血管生长来补偿CVD中的组织缺氧，但它也可能通过增加血管通透性和促进动脉粥样硬化斑块内的炎症来加剧疾病进程<sup>40</sup>。因此，<span class="gene-name">VEGFA</span>在CVD中的作用是多方面的，可能取决于疾病的具体类型和阶段，以及受影响组织内的局部微环境背景。针对CVD的<span class="gene-name">VEGFA</span>治疗性调控需要仔细权衡这些潜在的相反效应。</p>
+             <h3><i class="fas fa-brain"></i> 在神经退行性疾病中的作用</h3>
+             <p><span class="gene-name">VEGFA</span>水平异常与阿尔茨海默病 (AD) 和肌萎缩侧索硬化 (ALS) 等神经退行性疾病的发生发展日益相关<sup>3</sup>。动物模型研究表明，<span class="gene-name">VEGFA</span>水平降低可导致ALS样症状的出现，提示该生长因子具有关键的神经保护作用<sup>3</sup>。然而，在AD背景下，<span class="gene-name">VEGFA</span>的作用似乎更为复杂，并可能呈双相性。一些研究表明，脑脊液中<span class="gene-name">VEGFA</span>水平升高与更优的大脑老化相关，并可能发挥神经保护作用，尤其是在存在早期AD生物标志物的情况下<sup>48</sup>。相反，其他研究指出，某些<span class="gene-name">VEGF</span>家族成员（包括<span class="gene-name">VEGFA</span>受体）在脑中的表达升高与较差的认知轨迹和加剧的AD神经病理学相关<sup>50</sup>。这些发现强调了<span class="gene-name">VEGFA</span>在神经血管单元中的复杂参与及其对神经退行性过程的潜在贡献。</p>
+             <h3><i class="fas fa-dumbbell"></i> 在骨骼肌再生中的作用</h3>
+             <p>对衰老小鼠的研究
+                 <span class="source-highlight" data-year="2023"> <!-- Verify Year -->
+                      <span class="label">Source:</span> <span class="journal">Adv Biol</span>
+                      <span class="metric impact-factor" data-value="6.3"><i class="fas fa-chart-line"></i> IF: 6.3</span>
+                      <span class="metric jcr-quartile q1"><i class="fas fa-layer-group"></i> JCR: Q1</span>
+                      <span class="metric citations" data-citations="18"><i class="fas fa-users"></i> Citations: 18</span>
+                      <sup>30</sup>
+                      <span class="tooltip-text">Q1 study linking decreased muscle VEGFA in aging mice to reduced regeneration capacity.</span>
+                 </span>
+                 表明，骨骼肌再生能力的年龄相关性下降与肌肉组织内<span class="gene-name">VEGFA</span>蛋白水平降低相关。重要的是，旨在提高老年动物<span class="gene-name">VEGFA</span>水平的干预措施已被证明能改善肌肉再生，提示<span class="gene-name">VEGFA</span>在缓解肌少症（年龄相关的肌肉质量和功能丧失）方面起着关键作用<sup>30</sup>。这凸显了在衰老过程中维持骨骼肌中充足<span class="gene-name">VEGFA</span>水平对于保持肌肉健康和功能的重要性。</p>
+        </section>
+
+        <section id="human-genetics">
+             <h2><i class="fas fa-dna"></i> 人类遗传学：<span class="gene-name">VEGFA</span>变异与长寿</h2>
+             <p>研究人员正在探索<span class="gene-name">VEGFA</span>及其受体基因变异与人类长寿的潜在关联。</p>
+             <p>一项值得注意的研究
+                 <span class="source-highlight" data-year="2023">
+                     <span class="label">Source:</span> <span class="journal">Aging</span>
+                     <span class="metric impact-factor" data-value="5.9"><i class="fas fa-chart-line"></i> IF: 5.9</span>
+                     <span class="metric jcr-quartile q1"><i class="fas fa-layer-group"></i> JCR: Q1</span>
+                     <span class="metric citations" data-citations="33"><i class="fas fa-users"></i> Citations: 33</span>
+                     <sup>41</sup>
+                     <span class="tooltip-text">Q1 study identifying a specific FLT1 (VEGFR1) SNP associated with increased human lifespan via reduced hypertension mortality risk.</span>
+                 </span>
+                 发现<span class="gene-name">FLT1</span>基因（编码血管内皮生长因子受体1，即<span class="gene-name">VEGFR1</span>）中的一个特定单核苷酸多态性 (SNP)，rs3794396，与人类寿命延长相关，主要是通过降低高血压（一种常见的年龄相关疾病）相关的死亡风险。这表明影响<span class="gene-name">VEGFA</span>信号通路的微小遗传差异，特别是涉及<span class="gene-name">VEGFR1</span>的差异，确实在影响人类寿命方面发挥作用，尤其是在年龄相关心血管疾病的背景下。</p>
+             <p>另一项针对意大利人群的研究
+                 <span class="source-highlight" data-year="2007">
+                     <span class="label">Source:</span> <span class="journal">Neurobiol Aging</span>
+                     <span class="metric impact-factor" data-value="4.0"><i class="fas fa-chart-line"></i> IF: 4.0</span>
+                     <span class="metric jcr-quartile q1"><i class="fas fa-layer-group"></i> JCR: Q1</span>
+                     <span class="metric citations" data-citations="211"><i class="fas fa-users"></i> Citations: 211</span>
+                     <sup>61</sup>
+                     <span class="tooltip-text">Well-cited Q1 study showing differences in VEGFA promoter polymorphisms between younger/elderly and long-lived Italians.</span>
+                 </span>
+                 观察到，在比较年轻和老年个体与一组极其长寿（85至99岁）的个体时，<span class="gene-name">VEGFA</span>基因启动子区域内某些多态性的频率存在显著差异。这些发现表明，<span class="gene-name">VEGFA</span>基因本身的遗传变异性可能有助于决定人类寿命。这进一步支持了影响<span class="gene-name">VEGFA</span>表达或功能的遗传因素可能在调控人类寿命长短中发挥作用的观点。</p>
+              <p>然而，需要注意的是，<span class="gene-name">VEGFA</span>基因变异对寿命和健康结局的影响可能具有疾病特异性。例如，一项研究
+                  <span class="source-highlight" data-year="2021">
+                      <span class="label">Source:</span> <span class="journal">Cancers</span>
+                      <span class="metric impact-factor" data-value="6.5"><i class="fas fa-chart-line"></i> IF: 6.5</span>
+                      <span class="metric jcr-quartile q1"><i class="fas fa-layer-group"></i> JCR: Q1</span>
+                      <span class="metric citations" data-citations="30"><i class="fas fa-users"></i> Citations: 30</span>
+                      <sup>62</sup>
+                      <span class="tooltip-text">Q1 study highlighting a specific VEGFA polymorphism linked to shorter survival in head and neck cancer patients.</span>
+                  </span>
+                  发现，一个特定的<span class="gene-name">VEGFA</span>基因多态性与头颈癌患者的总生存期缩短相关。这凸显了<span class="gene-name">VEGFA</span>特定基因变异与寿命之间的关系可能很复杂，并且可能因所研究的具体变异、研究人群以及是否存在其他潜在健康状况而异。</p>
+              <p>有趣的是，一项研究
+                  <span class="source-highlight" data-year="2021">
+                       <span class="label">Source:</span> <span class="journal">Aging</span>
+                       <span class="metric impact-factor" data-value="5.9"><i class="fas fa-chart-line"></i> IF: 5.9</span>
+                       <span class="metric jcr-quartile q1"><i class="fas fa-layer-group"></i> JCR: Q1</span>
+                       <span class="metric citations" data-citations="101"><i class="fas fa-users"></i> Citations: 101</span>
+                       <sup>63</sup>
+                       <span class="tooltip-text">Q1 study suggesting a shared genetic regulatory mechanism influencing both VEGFA levels and telomere shortening rate.</span>
+                  </span>
+                  发现了一种潜在的共享遗传调控机制，该机制既影响<span class="gene-name">VEGFA</span>的水平，也影响端粒缩短的速率（一个公认的细胞衰老标志）。这表明<span class="gene-name">VEGFA</span>与细胞层面的基本衰老过程之间可能存在联系，意味着<span class="gene-name">VEGFA</span>对寿命的影响可能至少部分是通过其对细胞衰老机制（如端粒维持）的影响来介导的。</p>
+
+             <h3><i class="fas fa-table"></i> 关键人类遗传学研究结果总结</h3>
+              <div class="data-table-container">
+                  <table class="data-table">
+                      <thead>
+                          <tr>
+                              <th>基因</th>
+                              <th>SNP</th>
+                              <th>研究人群</th>
+                              <th>与寿命/疾病的关联</th>
+                              <th>推测的作用机制</th>
+                              <th>文献片段</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <td><span class="gene-italic">FLT1</span> (<span class="gene-name">VEGFR1</span>)</td>
+                              <td>rs3794396</td>
+                              <td>大型队列</td>
+                              <td>寿命延长 (降低高血压死亡风险)</td>
+                              <td>长寿基因型可能增强血管内皮的韧性机制以对抗高血压相关应激</td>
+                              <td class="snippet-ref">41</td>
+                          </tr>
+                          <tr>
+                              <td><span class="gene-italic">VEGFA</span></td>
+                              <td>-2578C/A, -1190G/A, -1154G/A, -634G/C</td>
+                              <td>意大利人群</td>
+                              <td>年轻/老年组与长寿组之间等位基因、基因型和单倍型频率存在差异</td>
+                              <td><span class="gene-italic"><span class="gene-name">VEGFA</span></span> 基因变异性可能是长寿的决定因素之一</td>
+                              <td class="snippet-ref">61</td>
+                          </tr>
+                          <tr>
+                              <td><span class="gene-italic">VEGFA</span></td>
+                              <td>rs13207351</td>
+                              <td>头颈癌患者</td>
+                              <td>纯合A型与喉癌患者较短的总生存期相关</td>
+                              <td>遗传变异可能影响肿瘤中的血管生成和细胞凋亡</td>
+                              <td class="snippet-ref">62</td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+        </section>
+
+        <section id="modulation-effects">
+            <h2><i class="fas fa-pills"></i> 直接调控对寿命的影响</h2>
+            <p>研究还探索了直接调控<span class="gene-name">VEGFA</span>活性对生物体寿命的影响，主要通过在动物模型中进行干预。如前所述，一个重要的发现是，在老年小鼠中增强<span class="gene-name">VEGFA</span>信号
+                <span class="source-highlight" data-year="2021"> <!-- Verify Year -->
+                    <span class="label">Source:</span> <span class="journal">Science</span>
+                     <span class="metric impact-factor" data-value="41.8"><i class="fas fa-chart-line"></i> IF: 41.8</span>
+                     <span class="metric jcr-quartile q1"><i class="fas fa-layer-group"></i> JCR: Q1</span>
+                     <span class="metric citations" data-citations="417"><i class="fas fa-users"></i> Citations: 417</span>
+                     <sup>19</sup>
+                     <span class="tooltip-text">The key study showing lifespan extension in mice via increased VEGFA signaling.</span>
+                 </span>
+                 可以显著延长其寿命并改善与健康寿命相关的多项参数。这提供了令人信服的证据，表明调控<span class="gene-name">VEGFA</span>活性确实可以影响生物体的寿命（至少在动物模型中）。</p>
+            <p>相反地，虽然抑制<span class="gene-name">VEGFA</span>活性在以过度血管生成为特征的疾病（如湿性AMD和多种癌症）中已证明具有治疗益处<sup>2</sup>，但需要考虑的是，将<span class="gene-name">VEGFA</span>水平抑制到某个临界阈值以下可能对健康衰老产生负面后果。例如，眼部长期抗<span class="gene-name">VEGF</span>治疗在某些情况下与视网膜健康的不利影响相关<sup>27</sup>。这强调了要实现潜在的寿命益处，需要在<span class="gene-name">VEGFA</span>活性方面达到微妙的平衡，因为信号不足和信号过强都可能导致不良结果。</p>
+            <p>在神经退行性疾病（如ALS）的动物模型中进行的基因治疗研究表明，递送<span class="gene-name">VEGFA</span>可以延长生存期<sup>66</sup>，这表明在可能显著影响寿命的疾病中，<span class="gene-name">VEGFA</span>具有潜在的治疗作用。这提示，通过基因治疗对<span class="gene-name">VEGFA</span>水平进行靶向调控可能是在特定疾病背景下延长寿命的一种有前景的策略。</p>
+            <p>必须指出的是，虽然上调<span class="gene-name">VEGFA</span>在小鼠中显示出延长寿命的效果<sup>19</sup>，但与<span class="gene-name">VEGFA</span>水平升高相关的肿瘤发生风险增加是一个值得认真考虑的重要问题<sup>21</sup>。一些研究甚至表明上调<span class="gene-name">VEGFA</span>会减少肿瘤负荷，但这种明显的矛盾需要进一步研究，以充分理解<span class="gene-name">VEGFA</span>、衰老和癌症发展之间复杂的相互作用，特别是考虑到剂量和特定<span class="gene-name">VEGFA</span>异构体的作用。</p>
+        </section>
+
+        <section id="underlying-mechanisms-details">
+            <h2><i class="fas fa-cogs"></i> <span class="gene-name">VEGFA</span>影响寿命的潜在机制细化</h2>
+             <p><span class="gene-name">VEGFA</span>通过多种相互关联的机制影响寿命：</p>
+             <ul>
+                 <li><strong>血管生成调控：</strong> 一项主要机制<sup>19</sup>。通过促进新血管形成，<span class="gene-name">VEGFA</span>确保组织获得充足的氧气和营养供应，这对于维持器官功能和防止年龄相关衰退至关重要。研究表明，通过增强<span class="gene-name">VEGFA</span>信号可以抵消与年龄相关的毛细血管损失<sup>19</sup>。因此，通过<span class="gene-name">VEGFA</span>介导的血管生成维持健康的血管系统是其对寿命产生积极影响的关键途径。</li>
+                 <li><strong>细胞衰老：</strong> <span class="gene-name">VEGFA</span>与细胞衰老（以导致衰老的稳定细胞周期停滞为特征的过程）的关系是复杂且依赖于具体情境的<sup>20</sup>。虽然在特定病理条件下（如眼部<sup>25</sup>）观察到<span class="gene-name">VEGFA</span>增加会诱导衰老，但维持充足的<span class="gene-name">VEGFA</span>信号可能通过支持血管健康、确保足够的组织氧合和营养输送来防止过早衰老<sup>19</sup>。</li>
+                 <li><strong>炎症调节：</strong> <span class="gene-name">VEGFA</span>在调节炎症过程中也发挥作用，炎症日益被认为是衰老和年龄相关疾病的关键因素<sup>14</sup>。慢性低度炎症（“炎症衰老”）是衰老的标志，因此<span class="gene-name">VEGFA</span>影响炎症通路的能力可能影响寿命。</li>
+                 <li><strong>其他细胞过程：</strong> 除上述关键机制外，<span class="gene-name">VEGFA</span>还参与多种与衰老和寿命相关的其他细胞过程。这些包括促进成肌细胞分化<sup>30</sup>，支持神经元存活和功能<sup>3</sup>，以及与其他生长因子和细胞因子的信号通路相互作用<sup>22</sup>。这些多样化的功能可能以复杂且相互关联的方式共同构成了<span class="gene-name">VEGFA</span>对衰老过程乃至最终对寿命的整体影响。</li>
+             </ul>
+        </section>
+
+        <section id="complexity-context">
+            <h2><i class="fas fa-balance-scale"></i> 复杂性：剂量依赖性与组织特异性</h2>
+             <p>证明<span class="gene-name">VEGFA</span>增加可延长小鼠寿命的研究<sup>19</sup>特别提到是“适度增加”，暗示存在剂量依赖效应。极高水平可能有害，如在眼部疾病<sup>25</sup>和潜在的癌症风险<sup>21</sup>中所见。这指向<span class="gene-name">VEGFA</span>可能存在一个治疗窗口。此外，<span class="gene-name">VEGFA</span>在肌肉再生<sup>30</sup>、眼部健康<sup>25</sup>、大脑功能<sup>3</sup>甚至卵巢<sup>83</sup>中的作用凸显了其对衰老的组织特异性影响。<span class="gene-name">VEGFA</span>对寿命的影响很可能是组织特异性的，不同组织可能需要不同水平才能达到最佳功能。</p>
+        </section>
+
+         <section id="therapeutic-implications">
+             <h2><i class="fas fa-briefcase-medical"></i> 治疗意义与未来方向</h2>
+             <p>增强<span class="gene-name">VEGFA</span>信号可延长小鼠寿命的发现<sup>19</sup>提示了针对人类健康衰老的潜在治疗策略。然而，将这些发现转化为临床应用需要仔细考虑剂量和副作用，特别是肿瘤发生的风险<sup>21</sup>。靶向<span class="gene-name">VEGFA</span>已用于治疗湿性AMD<sup>2</sup>和癌症<sup>2</sup>等疾病，但眼部的长期抑制可能有害<sup>27</sup>。使用特定的<span class="gene-name">VEGFA</span>异构体<sup>3</sup>或组织特异性递送可能是降低风险的一种方法。利用<span class="gene-name">VEGFA</span>进行的基因治疗在神经退行性疾病的动物模型中显示出前景<sup>53</sup>。然而，衰老可能损害组织对<span class="gene-name">VEGFA</span>的反应性<sup>24</sup>。将<span class="gene-name">VEGF</span>靶向治疗与抗衰老干预相结合的综合方法可能是有益的<sup>49</sup>。</p>
+             <p><span class="gene-name">VEGF</span>家族的其他成员也在寿命中扮演角色：
+                <ul>
+                    <li><strong><span class="gene-name">VEGF-B</span>:</strong> 具有抗凋亡作用，血管生成活性极小<sup>40</sup>。在老年小鼠中过表达<span class="gene-name">VEGF-B</span>186逆转了一些与年龄相关的心脏问题<sup>94</sup>。</li>
+                    <li><strong><span class="gene-name">VEGF-C</span>:</strong> 参与淋巴管生成<sup>4</sup>。在老年小鼠中进行<span class="gene-name">VEGF-C</span>基因治疗恢复了脑脊液引流<sup>96</sup>。抗体递送<span class="gene-name">VEGF-C</span>减少了炎症<sup>97</sup>。低<span class="gene-name">VEGF-C</span>水平与冠心病患者较高的死亡率相关<sup>103</sup>。</li>
+                 </ul>
+             </p>
+         </section>
+
+        <!-- ADDED: Key Studies Summary Table Section -->
+        <section id="key-studies-summary">
+            <h2><i class="fas fa-magnifying-glass-chart"></i> 关键研究概览 (可排序)</h2>
+            <p>下表汇总了报告中引用的具有影响因子和引用次数的关键研究。点击表头可按相应列排序。</p>
+            <div class="data-table-container">
+                <table class="data-table sortable-table" id="key-studies-table">
+<thead>
+                        <tr>
+                            <th data-sort-key="journal">文献 (编号) <span class="sort-icon"><i class="fas fa-sort"></i></span></th> 
+                            <th data-sort-key="if" data-sort-type="number">影响因子 (IF) <span class="sort-icon"><i class="fas fa-sort"></i></span></th>
+                            <th data-sort-key="citations" data-sort-type="number">引用量 <span class="sort-icon"><i class="fas fa-sort"></i></span></th>
+                            <th data-sort-key="year" data-sort-type="number">年份 <span class="sort-icon"><i class="fas fa-sort"></i></span></th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        <!-- Table rows will be populated by JavaScript -->
+                        <tr><td colspan="5" style="text-align: center;"><i>加载中...</i></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="conclusion">
+            <h2><i class="fas fa-flag-checkered"></i> 结论</h2>
+            <p><span class="gene-name">VEGFA</span>与寿命的关系是复杂的，根据不同因素，既有益处也有害处。在动物模型中，维持充足的<span class="gene-name">VEGFA</span>信号似乎对健康衰老至关重要。<span class="gene-name">VEGFA</span>及其受体的基因变异与人类长寿相关。调控<span class="gene-name">VEGFA</span>具有治疗潜力，但必须考虑剂量、组织特异性和风险。其他<span class="gene-name">VEGF</span>家族成员也发挥着重要作用。未来的研究应侧重于异构体特异性机制、最佳调控策略以及其他<span class="gene-name">VEGF</span>家族成员在长寿中的作用。对<span class="gene-name">VEGFA</span>通路的细致理解对于开发促进健康衰老和延长人类寿命的有效干预措施至关重要。</p>
+        </section>
+
+        <section class="works-cited" id="works-cited">
+            <h4><i class="fas fa-book"></i> 参考文献</h4>
+             <ol>
+                 <li><span class="c3">Counteracting age-related VEGF signaling insufficiency promotes healthy aging and extends life span - ResearchGate, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.researchgate.net/publication/353560185_Counteracting_age-related_VEGF_signaling_insufficiency_promotes_healthy_aging_and_extends_life_span" target="_blank" rel="noopener noreferrer">https://www.researchgate.net/publication/353560185_Counteracting_age-related_VEGF_signaling_insufficiency_promotes_healthy_aging_and_extends_life_span</a></span></li>
+                 <li><span class="c3">Increased VEGF&#8208;A promotes multiple distinct aging diseases of the eye through shared pathomechanisms - EMBO Press, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.embopress.org/doi/10.15252/emmm.201505613" target="_blank" rel="noopener noreferrer">https://www.embopress.org/doi/10.15252/emmm.201505613</a></span></li>
+                 <li><span class="c3">VEGFA promotes skeletal muscle regeneration in aging - PMC - PubMed Central, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10539483/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC10539483/</a></span></li>
+                 <li><span class="c3">Vascular endothelial growth factor receptor 1 gene (FLT1) longevity variant increases lifespan by reducing mortality risk posed by hypertension - PubMed Central, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10257998/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC10257998/</a></span></li>
+                 <!-- ... Existing references 42-60 ... -->
+                 <li><span class="c3">Role of VEGF gene variability in longevity: a lesson from the Italian population - PubMed, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pubmed.ncbi.nlm.nih.gov/17574707/" target="_blank" rel="noopener noreferrer">https://pubmed.ncbi.nlm.nih.gov/17574707/</a></span></li>
+                 <li><span class="c3">Genetic Variation in the Vascular Endothelial Growth Factor (VEGFA) Gene at rs13207351 Is Associated with Overall Survival of Patients with Head and Neck Cancer - MDPI, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.mdpi.com/2072-6694/13/5/1163" target="_blank" rel="noopener noreferrer">https://www.mdpi.com/2072-6694/13/5/1163</a></span></li>
+                 <li><span class="c3">A genetic determinant of VEGF-A levels is associated with telomere attrition - Aging-US, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.aging-us.com/article/203636/text" target="_blank" rel="noopener noreferrer">https://www.aging-us.com/article/203636/text</a></span></li>
+                 <!-- ... Rest of the references ... -->
+                 <li><span class="c3">Exploring the Intracrine Functions of VEGF-A - MDPI, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.mdpi.com/2218-273X/11/1/128" target="_blank" rel="noopener noreferrer">https://www.mdpi.com/2218-273X/11/1/128</a></span></li>
+                 <li><span class="c3">(PDF) VEGFA: Structure, Function, and Therapeutic Implications - ResearchGate, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.researchgate.net/publication/389920625_VEGFA_Structure_Function_and_Therapeutic_Implications" target="_blank" rel="noopener noreferrer">https://www.researchgate.net/publication/389920625_VEGFA_Structure_Function_and_Therapeutic_Implications</a></span></li>
+                 <li><span class="c3">Diverse roles for VEGF-A in the nervous system | Development | The Company of Biologists, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://journals.biologists.com/dev/article/139/8/1371/45651/Diverse-roles-for-VEGF-A-in-the-nervous-system" target="_blank" rel="noopener noreferrer">https://journals.biologists.com/dev/article/139/8/1371/45651/Diverse-roles-for-VEGF-A-in-the-nervous-system</a></span></li>
+                 <li><span class="c3">VEGF in Signaling and Disease: Beyond Discovery and Development - PMC, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6410740/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC6410740/</a></span></li>
+                 <li><span class="c3">Recent advances of anti-angiogenic inhibitors targeting VEGF/VEGFR axis - Frontiers, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2023.1307860/full" target="_blank" rel="noopener noreferrer">https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2023.1307860/full</a></span></li>
+                 <li><span class="c3">VEGFA protein expression summary, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.proteinatlas.org/ENSG00000112715-VEGFA" target="_blank" rel="noopener noreferrer">https://www.proteinatlas.org/ENSG00000112715-VEGFA</a></span></li>
+                 <li><span class="c3">What are the therapeutic candidates targeting VEGF-A?, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://synapse.patsnap.com/article/what-are-the-therapeutic-candidates-targeting-vegf-a" target="_blank" rel="noopener noreferrer">https://synapse.patsnap.com/article/what-are-the-therapeutic-candidates-targeting-vegf-a</a></span></li>
+                 <li><span class="c3">Molecular Pharmacology of VEGF-A Isoforms: Binding and Signalling at VEGFR2 - PMC, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5979509/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC5979509/</a></span></li>
+                 <li><span class="c3">Autocrine VEGF Isoforms Differentially Regulate Endothelial Cell Behavior - Frontiers, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.frontiersin.org/journals/cell-and-developmental-biology/articles/10.3389/fcell.2016.00099/full" target="_blank" rel="noopener noreferrer">https://www.frontiersin.org/journals/cell-and-developmental-biology/articles/10.3389/fcell.2016.00099/full</a></span></li>
+                 <li><span class="c3">Shifts in the Vascular endothelial growth factor (Vegf) isoforms result in transcriptome changes correlated with early neural stem cell proliferation and differentiation in mouse forebrain - PubMed Central, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4096862/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC4096862/</a></span></li>
+                 <li><span class="c3">Molecular Pharmacology of VEGF-A Isoforms: Binding and Signalling at VEGFR2 - MDPI, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.mdpi.com/1422-0067/19/4/1264" target="_blank" rel="noopener noreferrer">https://www.mdpi.com/1422-0067/19/4/1264</a></span></li>
+                 <li><span class="c3">Extracellular regulation of VEGF: isoforms, proteolysis, and vascular ..., accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3977708/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC3977708/</a></span></li>
+                 <li><span class="c3">Vascular Endothelial Growth Factor (VEGF) Production by the Monkey Corpus Luteum During the Menstrual Cycle: Isoform-Selective Messenger RNA Expression In Vivo and Hypoxia-Regulated Protein Secretion In Vitro1 - Oxford Academic, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://academic.oup.com/biolreprod/article/73/5/927/2666852" target="_blank" rel="noopener noreferrer">https://academic.oup.com/biolreprod/article/73/5/927/2666852</a></span></li>
+                 <li><span class="c3">VEGFA Isoforms as Pro-Angiogenic Therapeutics for Cerebrovascular Diseases - MDPI, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.mdpi.com/2218-273X/13/4/702" target="_blank" rel="noopener noreferrer">https://www.mdpi.com/2218-273X/13/4/702</a></span></li>
+                 <li><span class="c3">Arteriolar and venular patterning in retinas of mice selectively expressing VEGF isoforms, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.jci.org/articles/view/14362" target="_blank" rel="noopener noreferrer">https://www.jci.org/articles/view/14362</a></span></li>
+                 <li><span class="c3">VEGF Signaling in Neurological Disorders - MDPI, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.mdpi.com/1422-0067/19/1/275" target="_blank" rel="noopener noreferrer">https://www.mdpi.com/1422-0067/19/1/275</a></span></li>
+                 <li><span class="c3">Role and Therapeutic Potential of VEGF in the Nervous System | Physiological Reviews, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://journals.physiology.org/doi/full/10.1152/physrev.00031.2008" target="_blank" rel="noopener noreferrer">https://journals.physiology.org/doi/full/10.1152/physrev.00031.2008</a></span></li>
+                 <li><span class="c3">VEGF: a critical player in neurodegeneration - PMC - PubMed Central, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC300888/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC300888/</a></span></li>
+                 <!-- Ref 19 already listed -->
+                 <li><span class="c3">Counteracting age-related VEGF signaling insufficiency promotes ..., accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pubmed.ncbi.nlm.nih.gov/34326210/" target="_blank" rel="noopener noreferrer">https://pubmed.ncbi.nlm.nih.gov/34326210/</a></span></li>
+                 <li><span class="c3">Counteracting age-related VEGF signaling insufficiency promotes healthy aging and extends life span [2021] : r/science - Reddit, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.reddit.com/r/science/comments/ovpfbb/counteracting_agerelated_vegf_signaling/" target="_blank" rel="noopener noreferrer">https://www.reddit.com/r/science/comments/ovpfbb/counteracting_agerelated_vegf_signaling/</a></span></li>
+                 <li><span class="c3">Extending life span with VEGF - Biomedica, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.bmgrp.com/extending-life-span-with-vegf/" target="_blank" rel="noopener noreferrer">https://www.bmgrp.com/extending-life-span-with-vegf/</a></span></li>
+                 <li><span class="c3">VEGF Upregulation Slows Age-Related Capillary Density Loss, Extending Health and Life Span in Mice - Fight Aging!, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.fightaging.org/archives/2021/08/vegf-upregulation-slows-age-related-capillary-density-loss-extending-health-and-life-span-in-mice/" target="_blank" rel="noopener noreferrer">https://www.fightaging.org/archives/2021/08/vegf-upregulation-slows-age-related-capillary-density-loss-extending-health-and-life-span-in-mice/</a></span></li>
+                 <li><span class="c3">Invited Review: The Role of Angiogenesis in Cardiovascular Aging - PMC - PubMed Central, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4101916/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC4101916/</a></span></li>
+                 <!-- Ref 25 already listed -->
+                 <li><span class="c3">Increased VEGF&#8208;A promotes multiple distinct aging diseases of the eye through shared pathomechanisms - EMBO Press, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.embopress.org/doi/abs/10.15252/emmm.201505613" target="_blank" rel="noopener noreferrer">https://www.embopress.org/doi/abs/10.15252/emmm.201505613</a></span></li>
+                 <li><span class="c3">Angiogenesis factor found to promote three age-related diseases of the eye - ScienceDaily, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.sciencedaily.com/releases/2016/04/160412110010.htm" target="_blank" rel="noopener noreferrer">https://www.sciencedaily.com/releases/2016/04/160412110010.htm</a></span></li>
+                 <li><span class="c3">Increased VEGF-A promotes multiple distinct aging diseases of the eye through shared pathomechanisms - PubMed, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pubmed.ncbi.nlm.nih.gov/26912740/" target="_blank" rel="noopener noreferrer">https://pubmed.ncbi.nlm.nih.gov/26912740/</a></span></li>
+                 <li><span class="c3">Increased VEGF&#8208;A promotes multiple distinct aging diseases of the eye through shared pathomechanisms - PubMed Central, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4772957/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC4772957/</a></span></li>
+                 <!-- Ref 30 already listed -->
+                 <li><span class="c3">VEGFA Promotes Skeletal Muscle Regeneration in Aging | Request PDF - ResearchGate, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.researchgate.net/publication/369625031_VEGFA_Promotes_Skeletal_Muscle_Regeneration_in_Aging" target="_blank" rel="noopener noreferrer">https://www.researchgate.net/publication/369625031_VEGFA_Promotes_Skeletal_Muscle_Regeneration_in_Aging</a></span></li>
+                 <li><span class="c3">VEGFA Promotes Skeletal Muscle Regeneration in Aging - PubMed, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pubmed.ncbi.nlm.nih.gov/36988414/" target="_blank" rel="noopener noreferrer">https://pubmed.ncbi.nlm.nih.gov/36988414/</a></span></li>
+                 <li><span class="c3">Elucidating VEGF Biology: A Journey of Discovery and Clinical Translation, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.ahajournals.org/doi/10.1161/ATVBAHA.124.319574?doi=10.1161/ATVBAHA.124.319574" target="_blank" rel="noopener noreferrer">https://www.ahajournals.org/doi/10.1161/ATVBAHA.124.319574?doi=10.1161/ATVBAHA.124.319574</a></span></li>
+                 <li><span class="c3">Neovascular age-related macular degeneration: disease pathogenesis and current state of molecular biomarkers predicting treatment response&mdash;a scoping review, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://bmjophth.bmj.com/content/9/1/e001516" target="_blank" rel="noopener noreferrer">https://bmjophth.bmj.com/content/9/1/e001516</a></span></li>
+                 <li><span class="c3">Treatment of neovascular age-related macular degeneration with anti-vascular endothelial growth factor drugs: progress from mechanisms to clinical applications - Frontiers, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.frontiersin.org/journals/medicine/articles/10.3389/fmed.2024.1411278/full" target="_blank" rel="noopener noreferrer">https://www.frontiersin.org/journals/medicine/articles/10.3389/fmed.2024.1411278/full</a></span></li>
+                 <li><span class="c3">Targeting VEGF-A to Treat Cancer and Age-Related Macular Degeneration - ResearchGate, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.researchgate.net/publication/6743966_Targeting_VEGF-A_to_Treat_Cancer_and_Age-Related_Macular_Degeneration" target="_blank" rel="noopener noreferrer">https://www.researchgate.net/publication/6743966_Targeting_VEGF-A_to_Treat_Cancer_and_Age-Related_Macular_Degeneration</a></span></li>
+                 <li><span class="c3">Application and mechanism of anti-VEGF drugs in age-related macular degeneration, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2022.943915/full" target="_blank" rel="noopener noreferrer">https://www.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2022.943915/full</a></span></li>
+                 <li><span class="c3">vascular endothelial growth factor (VEGF) - Content - Health Encyclopedia - University of Rochester Medical Center, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.urmc.rochester.edu/encyclopedia/content?ContentTypeID=167&amp;ContentID=vegf" target="_blank" rel="noopener noreferrer">https://www.urmc.rochester.edu/encyclopedia/content?ContentTypeID=167&amp;ContentID=vegf</a></span></li>
+                 <li><span class="c3">Wet AMD: anti-VEGF treatments in the elderly population - The British Journal of Cardiology, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://bjcardio.co.uk/2009/01/wet-amd-anti-vegf-treatments-in-the-elderly-population/" target="_blank" rel="noopener noreferrer">https://bjcardio.co.uk/2009/01/wet-amd-anti-vegf-treatments-in-the-elderly-population/</a></span></li>
+                 <li><span class="c3">The Role of the VEGF Family in Atherosclerosis Development and Its Potential as Treatment Targets - MDPI, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.mdpi.com/1422-0067/23/2/931" target="_blank" rel="noopener noreferrer">https://www.mdpi.com/1422-0067/23/2/931</a></span></li>
+                 <!-- Ref 41 already listed -->
+                 <li><span class="c3">Variation in VEGFA and risk of cardiovascular disease in the UK Biobank - Frontiers, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.frontiersin.org/journals/cardiovascular-medicine/articles/10.3389/fcvm.2023.1240288/full" target="_blank" rel="noopener noreferrer">https://www.frontiersin.org/journals/cardiovascular-medicine/articles/10.3389/fcvm.2023.1240288/full</a></span></li>
+                 <li><span class="c3">The Role of the VEGF Family in Coronary Heart Disease - Frontiers, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.frontiersin.org/journals/cardiovascular-medicine/articles/10.3389/fcvm.2021.738325/full" target="_blank" rel="noopener noreferrer">https://www.frontiersin.org/journals/cardiovascular-medicine/articles/10.3389/fcvm.2021.738325/full</a></span></li>
+                 <li><span class="c3">Vascular Endothelial Growth Factor (VEGF) and Its Role in the Cardiovascular System, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11117514/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC11117514/</a></span></li>
+                 <li><span class="c3">Plasma VEGFA and PGF impact longitudinal tau and cognition in preclinical Alzheimer&#39;s disease | Brain | Oxford Academic, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://academic.oup.com/brain/article-abstract/147/6/2158/7601241" target="_blank" rel="noopener noreferrer">https://academic.oup.com/brain/article-abstract/147/6/2158/7601241</a></span></li>
+                 <li><span class="c3">S-adenosylmethionine administration inhibits levodopa -induced vascular endothelial growth factor-A expression - Aging-US, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.aging-us.com/article/103863/pdf" target="_blank" rel="noopener noreferrer">https://www.aging-us.com/article/103863/pdf</a></span></li>
+                 <li><span class="c3">Elevated vascular endothelial growth factor a is associated with disruption of default network connectivity in older adults - PMC - PubMed Central, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11978527/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC11978527/</a></span></li>
+                 <li><span class="c3">VEGF&#39;s Relationship to Brain Aging Biomarkers (P3.029) - Neurology.org, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.neurology.org/doi/10.1212/WNL.90.15_supplement.P3.029" target="_blank" rel="noopener noreferrer">https://www.neurology.org/doi/10.1212/WNL.90.15_supplement.P3.029</a></span></li>
+                 <li><span class="c3">The role of VEGF in vascular dementia: impact of aging and cellular senescence | Request PDF - ResearchGate, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.researchgate.net/publication/390098632_The_role_of_VEGF_in_vascular_dementia_impact_of_aging_and_cellular_senescence" target="_blank" rel="noopener noreferrer">https://www.researchgate.net/publication/390098632_The_role_of_VEGF_in_vascular_dementia_impact_of_aging_and_cellular_senescence</a></span></li>
+                 <li><span class="c3">Association of 10 VEGF Family Genes with Alzheimer&#39;s Disease Pathology at Single Cell Resolution | bioRxiv, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.biorxiv.org/content/10.1101/2024.04.12.589221v1.full-text" target="_blank" rel="noopener noreferrer">https://www.biorxiv.org/content/10.1101/2024.04.12.589221v1.full-text</a></span></li>
+                 <li><span class="c3">Plasma VEGFA and PGF impact longitudinal tau and cognition in preclinical Alzheimer&#39;s disease - PubMed, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pubmed.ncbi.nlm.nih.gov/38315899/" target="_blank" rel="noopener noreferrer">https://pubmed.ncbi.nlm.nih.gov/38315899/</a></span></li>
+                 <li><span class="c3">Whole blood transcript and protein abundance of the vascular endothelial growth factor family relate to cognitive performance - UCL Discovery, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://discovery.ucl.ac.uk/id/eprint/10164412/1/1-s2.0-S0197458023000027-main.pdf" target="_blank" rel="noopener noreferrer">https://discovery.ucl.ac.uk/id/eprint/10164412/1/1-s2.0-S0197458023000027-main.pdf</a></span></li>
+                 <li><span class="c3">Therapeutic effects of the transplantation of VEGF overexpressing bone marrow mesenchymal stem cells in the hippocampus of murine model of Alzheimer&#39;s disease - Frontiers, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.frontiersin.org/journals/aging-neuroscience/articles/10.3389/fnagi.2014.00030/full" target="_blank" rel="noopener noreferrer">https://www.frontiersin.org/journals/aging-neuroscience/articles/10.3389/fnagi.2014.00030/full</a></span></li>
+                 <li><span class="c3">The Role of Vascular Endothelial Growth Factor in Neurodegeneration and Cognitive Decline: Exploring Interactions With Biomarkers of Alzheimer Disease - eScholarship.org, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://escholarship.org/uc/item/49h734sv" target="_blank" rel="noopener noreferrer">https://escholarship.org/uc/item/49h734sv</a></span></li>
+                 <li><span class="c3">Intravitreal Anti-VEGF Drugs and Signals of Dementia and Parkinson-Like Events: Analysis of the VigiBase Database of Spontaneous Reports - Frontiers, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2020.00315/full" target="_blank" rel="noopener noreferrer">https://www.frontiersin.org/journals/pharmacology/articles/10.3389/fphar.2020.00315/full</a></span></li>
+                 <li><span class="c3">Effect of VEGF on neuronal degeneration and interaction between Alzheimer&#39;s disease biomarkers - European Review for Medical and Pharmacological Sciences, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.europeanreview.org/wp/wp-content/uploads/3649-3657.pdf" target="_blank" rel="noopener noreferrer">https://www.europeanreview.org/wp/wp-content/uploads/3649-3657.pdf</a></span></li>
+                 <li><span class="c3">Brain expression of the vascular endothelial growth factor gene family in cognitive aging and alzheimer&#39;s disease - PubMed, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pubmed.ncbi.nlm.nih.gov/31332262/" target="_blank" rel="noopener noreferrer">https://pubmed.ncbi.nlm.nih.gov/31332262/</a></span></li>
+                 <li><span class="c3">Vascular endothelial growth factor receptor 1 gene (FLT1) longevity variant increases lifespan by reducing mortality risk posed by hypertension - Aging-US, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.aging-us.com/article/204722/text" target="_blank" rel="noopener noreferrer">https://www.aging-us.com/article/204722/text</a></span></li>
+                 <li><span class="c3">Vascular endothelial growth factor receptor 1 gene (FLT1) longevity variant increases lifespan by reducing mortality risk posed - Aging-US, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.aging-us.com/article/204722/pdf" target="_blank" rel="noopener noreferrer">https://www.aging-us.com/article/204722/pdf</a></span></li>
+                 <li><span class="c3">Genes That Extend Lifespan May Do So by Mitigating the Increased Risk of Death Posed by Having Hypertension - Oxford Academic, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://academic.oup.com/ajh/article/36/12/631/7240477" target="_blank" rel="noopener noreferrer">https://academic.oup.com/ajh/article/36/12/631/7240477</a></span></li>
+                 <!-- Ref 61, 62, 63 already listed -->
+                 <li><span class="c3">Elucidating VEGF Biology: A Journey of Discovery and Clinical Translation, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.ahajournals.org/doi/10.1161/ATVBAHA.124.319574" target="_blank" rel="noopener noreferrer">https://www.ahajournals.org/doi/10.1161/ATVBAHA.124.319574</a></span></li>
+                 <li><span class="c3">Blockage of VEGF-Induced Angiogenesis by Preventing VEGF Secretion | Circulation Research - American Heart Association Journals, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.ahajournals.org/doi/10.1161/01.RES.0000129194.61747.bf" target="_blank" rel="noopener noreferrer">https://www.ahajournals.org/doi/10.1161/01.RES.0000129194.61747.bf</a></span></li>
+                 <li><span class="c3">VEGF delivery with retrogradely transported lentivector prolongs survival in a mouse ALS model - PubMed, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pubmed.ncbi.nlm.nih.gov/15164063/" target="_blank" rel="noopener noreferrer">https://pubmed.ncbi.nlm.nih.gov/15164063/</a></span></li>
+                 <li><span class="c3">Correlation between VEGF serum levels and age in the populations of... - ResearchGate, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.researchgate.net/figure/Correlation-between-VEGF-serum-levels-and-age-in-the-populations-of-Campora-Gioi-and_fig7_49968063" target="_blank" rel="noopener noreferrer">https://www.researchgate.net/figure/Correlation-between-VEGF-serum-levels-and-age-in-the-populations-of-Campora-Gioi-and_fig7_49968063</a></span></li>
+                 <li><span class="c3">Effects of Aging on Angiogenesis | Circulation Research, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.ahajournals.org/doi/10.1161/circresaha.111.246116" target="_blank" rel="noopener noreferrer">https://www.ahajournals.org/doi/10.1161/circresaha.111.246116</a></span></li>
+                 <li><span class="c3">Human organ rejuvenation by VEGF-A: Lessons from the skin - PMC, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9232104/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC9232104/</a></span></li>
+                 <li><span class="c3">Understanding angiogenesis during aging: opportunities for discoveries and new models, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://journals.physiology.org/doi/full/10.1152/japplphysiol.00112.2018" target="_blank" rel="noopener noreferrer">https://journals.physiology.org/doi/full/10.1152/japplphysiol.00112.2018</a></span></li>
+                 <li><span class="c3">Angiogenesis, Cancer, and Vascular Aging - PMC, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5660731/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC5660731/</a></span></li>
+                 <li><span class="c3">Vascular endothelial senescence: from mechanisms to pathophysiology, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://journals.physiology.org/doi/full/10.1152/japplphysiol.91353.2008" target="_blank" rel="noopener noreferrer">https://journals.physiology.org/doi/full/10.1152/japplphysiol.91353.2008</a></span></li>
+                 <li><span class="c3">Vascular endothelial senescence: from mechanisms to pathophysiology - PMC, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2636933/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC2636933/</a></span></li>
+                 <li><span class="c3">Mechanisms and consequences of endothelial cell senescence - PMC, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10026597/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC10026597/</a></span></li>
+                 <li><span class="c3">Mechanisms of Cellular Senescence: Cell Cycle Arrest and Senescence Associated Secretory Phenotype - Frontiers, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.frontiersin.org/journals/cell-and-developmental-biology/articles/10.3389/fcell.2021.645593/full" target="_blank" rel="noopener noreferrer">https://www.frontiersin.org/journals/cell-and-developmental-biology/articles/10.3389/fcell.2021.645593/full</a></span></li>
+                 <li><span class="c3">Vascular Cell Senescence | Circulation Research - American Heart Association Journals, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.ahajournals.org/doi/full/10.1161/01.res.0000256837.40544.4a" target="_blank" rel="noopener noreferrer">https://www.ahajournals.org/doi/full/10.1161/01.res.0000256837.40544.4a</a></span></li>
+                 <li><span class="c3">Cellular Senescence and Ageing: Mechanisms and Interventions - Frontiers, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.frontiersin.org/journals/aging/articles/10.3389/fragi.2022.866718/full" target="_blank" rel="noopener noreferrer">https://www.frontiersin.org/journals/aging/articles/10.3389/fragi.2022.866718/full</a></span></li>
+                 <li><span class="c3">Mechanisms and functions of cellular senescence - JCI, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.jci.org/articles/view/95148" target="_blank" rel="noopener noreferrer">https://www.jci.org/articles/view/95148</a></span></li>
+                 <li><span class="c3">Senescence mechanisms and targets in the heart - Oxford Academic, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://academic.oup.com/cardiovascres/advance-article-abstract/doi/10.1093/cvr/cvab161/6272222?redirectedFrom=fulltext&amp;itm_content=cardiovascres&amp;itm_source=trendmd-widget&amp;itm_campaign=trendmd-pilot&amp;itm_medium=sidebar" target="_blank" rel="noopener noreferrer">https://academic.oup.com/cardiovascres/advance-article-abstract/doi/10.1093/cvr/cvab161/6272222?redirectedFrom=fulltext&amp;itm_content=cardiovascres&amp;itm_source=trendmd-widget&amp;itm_campaign=trendmd-pilot&amp;itm_medium=sidebar</a></span></li>
+                 <li><span class="c3">Abstract Tu023: The VEGF-A splice variants as a mechanism of impaired Inflammatory Angiogenesis in the context of advanced aging. | Circulation Research - American Heart Association Journals, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.ahajournals.org/doi/10.1161/res.135.suppl_1.Tu023" target="_blank" rel="noopener noreferrer">https://www.ahajournals.org/doi/10.1161/res.135.suppl_1.Tu023</a></span></li>
+                 <li><span class="c3">Vascular Endothelial Growth Factor (VEGF)-D Stimulates VEGF-A, Stanniocalcin-1, and Neuropilin-2 and Has Potent Angiogenic Effects | Arteriosclerosis, Thrombosis, and Vascular Biology, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.ahajournals.org/doi/10.1161/atvbaha.111.225961" target="_blank" rel="noopener noreferrer">https://www.ahajournals.org/doi/10.1161/atvbaha.111.225961</a></span></li>
+                 <li><span class="c3">Vascular Endothelial Growth Factor-A (VEGF-A) Mediates Activin A-Induced Human Trophoblast Endothelial-Like Tube Formation - Oxford Academic, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://academic.oup.com/endo/article/156/11/4257/2423139" target="_blank" rel="noopener noreferrer">https://academic.oup.com/endo/article/156/11/4257/2423139</a></span></li>
+                 <li><span class="c3">Do Aging and Parity Affect VEGF-A/VEGFR Content and Signaling in the Ovary?&mdash;A Mouse Model Study - MDPI, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.mdpi.com/1422-0067/24/4/3318" target="_blank" rel="noopener noreferrer">https://www.mdpi.com/1422-0067/24/4/3318</a></span></li>
+                 <li><span class="c3">An Anti-VEGF-B Antibody Reduces Abnormal Tumor Vasculature and Enhances the Effects of Chemotherapy - MDPI, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.mdpi.com/2072-6694/16/10/1902" target="_blank" rel="noopener noreferrer">https://www.mdpi.com/2072-6694/16/10/1902</a></span></li>
+                 <li><span class="c3">VEGF levels could affect outcomes in elderly breast cancer women - AACR Journals, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://aacrjournals.org/cancerres/article/65/9_Supplement/597/521033/VEGF-levels-could-affect-outcomes-in-elderly" target="_blank" rel="noopener noreferrer">https://aacrjournals.org/cancerres/article/65/9_Supplement/597/521033/VEGF-levels-could-affect-outcomes-in-elderly</a></span></li>
+                 <li><span class="c3">Identification of VEGFs-related gene signature for predicting microangiogenesis and hepatocellular carcinoma prognosis - Aging-US, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.aging-us.com/article/205931/text" target="_blank" rel="noopener noreferrer">https://www.aging-us.com/article/205931/text</a></span></li>
+                 <li><span class="c3">Abstract 299: Impaired Inflammatory Angiogenesis in the Context of Aging is the Result of the Uncoupling of Macrophage Il-1beta-VEGF Expression and the Switch of VEGF Isoforms | Arteriosclerosis, Thrombosis, and Vascular Biology, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.ahajournals.org/doi/10.1161/atvb.43.suppl_1.299" target="_blank" rel="noopener noreferrer">https://www.ahajournals.org/doi/10.1161/atvb.43.suppl_1.299</a></span></li>
+                 <li><span class="c3">Aging Impairs VEGF-Mediated, Androgen-Dependent Regulation of Angiogenesis | Molecular Endocrinology | Oxford Academic, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://academic.oup.com/mend/article/28/9/1487/2623286" target="_blank" rel="noopener noreferrer">https://academic.oup.com/mend/article/28/9/1487/2623286</a></span></li>
+                 <li><span class="c3">VEGF-B: A survival, or an angiogenic factor? - PMC, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2802739/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC2802739/</a></span></li>
+                 <li><span class="c3">VEGF-B inhibits apoptosis via VEGFR-1&ndash;mediated suppression of the expression of BH3-only protein genes in mice and rats - PubMed Central, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2230661/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC2230661/</a></span></li>
+                 <li><span class="c3">Therapeutic Potential of VEGF-B in Coronary Heart Disease and Heart Failure: Dream or Vision? - MDPI, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.mdpi.com/2073-4409/11/24/4134" target="_blank" rel="noopener noreferrer">https://www.mdpi.com/2073-4409/11/24/4134</a></span></li>
+                 <li><span class="c3">(PDF) Synergistic effects of GDNF and VEGF on lifespan and disease progression in a familial ALS rat model - ResearchGate, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.researchgate.net/publication/236948465_Synergistic_effects_of_GDNF_and_VEGF_on_lifespan_and_disease_progression_in_a_familial_ALS_rat_model" target="_blank" rel="noopener noreferrer">https://www.researchgate.net/publication/236948465_Synergistic_effects_of_GDNF_and_VEGF_on_lifespan_and_disease_progression_in_a_familial_ALS_rat_model</a></span></li>
+                 <li><span class="c3">VEGF-B Promotes Endocardium-Derived Coronary Vessel Development and Cardiac Regeneration | Circulation - American Heart Association Journals, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.ahajournals.org/doi/10.1161/CIRCULATIONAHA.120.050635" target="_blank" rel="noopener noreferrer">https://www.ahajournals.org/doi/10.1161/CIRCULATIONAHA.120.050635</a></span></li>
+                 <li><span class="c3">Beneficial effects of vascular endothelial growth factor B gene transfer in the aged heart | Cardiovascular Research | Oxford Academic, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://academic.oup.com/cardiovascres/advance-article/doi/10.1093/cvr/cvaf046/8090035?searchresult=1" target="_blank" rel="noopener noreferrer">https://academic.oup.com/cardiovascres/advance-article/doi/10.1093/cvr/cvaf046/8090035?searchresult=1</a></span></li>
+                 <li><span class="c3">Emerging Roles for VEGF-D in Human Disease - MDPI, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.mdpi.com/2218-273X/8/1/1" target="_blank" rel="noopener noreferrer">https://www.mdpi.com/2218-273X/8/1/1</a></span></li>
+                 <li><span class="c3">Gene Therapy with VEGF-C Restores Lost Lymphatic Drainage of Cerebrospinal Fluid in Aged Mice - Fight Aging!, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.fightaging.org/archives/2025/03/gene-therapy-with-vegf-c-restores-lost-lymphatic-drainage-of-cerebrospinal-fluid-in-aged-mice/?nc" target="_blank" rel="noopener noreferrer">https://www.fightaging.org/archives/2025/03/gene-therapy-with-vegf-c-restores-lost-lymphatic-drainage-of-cerebrospinal-fluid-in-aged-mice/?nc</a></span></li>
+                 <li><span class="c3">Antibody-Mediated Delivery of VEGF-C Promotes Long-Lasting Lymphatic Expansion That Reduces Recurrent Inflammation - PMC, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9818868/" target="_blank" rel="noopener noreferrer">https://pmc.ncbi.nlm.nih.gov/articles/PMC9818868/</a></span></li>
+                 <li><span class="c3">Recombinant Human VEGF-C (Cys156Ser) Protein 752-VC-025 - R&amp;D Systems, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.rndsystems.com/products/recombinant-human-vegf-c-cys156ser-protein_752-vc" target="_blank" rel="noopener noreferrer">https://www.rndsystems.com/products/recombinant-human-vegf-c-cys156ser-protein_752-vc</a></span></li>
+                 <li><span class="c3">VEGFC acts as a double-edged sword in renal cell carcinoma aggressiveness, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.thno.org/v09p0661.htm" target="_blank" rel="noopener noreferrer">https://www.thno.org/v09p0661.htm</a></span></li>
+                 <li><span class="c3">VEGF-C/VEGFR-3 signalling in macrophages ameliorates acute lung injury - ERS Publications, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://publications.ersnet.org/content/erj/59/4/2100880" target="_blank" rel="noopener noreferrer">https://publications.ersnet.org/content/erj/59/4/2100880</a></span></li>
+                 <li><span class="c3">Vascular Endothelial Growth Factor C (VEGF-C) Sensitizes Lymphatic Endothelial Cells to Oxidative-Stress-Induced Apoptosis through DNA Damage and Mitochondrial Dysfunction: Implications for Lymphedema - MDPI, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.mdpi.com/1422-0067/25/14/7828" target="_blank" rel="noopener noreferrer">https://www.mdpi.com/1422-0067/25/14/7828</a></span></li>
+                 <li><span class="c3">Doxycycline Reduces Plasma VEGF-C/sVEGFR-3 and Improves Pathology in Lymphatic Filariasis | PLOS Pathogens, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://journals.plos.org/plospathogens/article?id=10.1371/journal.ppat.0020092" target="_blank" rel="noopener noreferrer">https://journals.plos.org/plospathogens/article?id=10.1371/journal.ppat.0020092</a></span></li>
+                 <li><span class="c3">VEGF&#8208;C and Mortality in Patients With Suspected or Known Coronary Artery Disease, accessed April 13, 2025, </span><span class="c2"><a class="c1" href="https://www.ahajournals.org/doi/10.1161/JAHA.118.010355" target="_blank" rel="noopener noreferrer">https://www.ahajournals.org/doi/10.1161/JAHA.118.010355</a></span></li>
+             </ol>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM fully loaded and parsed - Running scripts");
+
+            // --- Gene Name Italicization ---
+             const paragraphs = document.querySelectorAll('p, li, td, h3, h2, h4');
+             paragraphs.forEach(el => {
+                  try {
+                      el.innerHTML = el.innerHTML.replace(/(?<!<span class="gene-name">)(?<!<span class="gene-italic">)\b(<span class="gene-italic">)?(VEGFA|FLT1|VEGFR1|VEGF|VEGF-B|VEGF-C)(<\/span>)?\b(?!<\/span>)/g, (match, p1, p2, p3) => {
+                           if (p1 && p3) return `<span class="gene-name">${p1}${p2}${p3}</span>`;
+                           return `<span class="gene-name">${p2}</span>`;
+                      });
+                  } catch (e) {
+                      console.error("Error processing innerHTML for gene name replacement:", el, e);
+                  }
+             });
+
+            // --- Sortable Key Studies Table ---
+                        // --- Sortable Key Studies Table ---
+            const table = document.getElementById('key-studies-table');
+            const tbody = table.querySelector('tbody');
+            const headers = table.querySelectorAll('thead th[data-sort-key]');
+            let keyStudiesData = [];
+            const addedRefs = new Set(); // Keep track of added reference numbers to avoid duplicates
+            let currentSort = { key: null, direction: 'desc' };
+
+            // 1. Extract Data (Handling Duplicates)
+            const sources = document.querySelectorAll('.source-highlight');
+            sources.forEach(source => {
+                const journalEl = source.querySelector('.journal');
+                const ifEl = source.querySelector('.impact-factor');
+                const citationsEl = source.querySelector('.citations');
+                const refEl = source.querySelector('sup');
+                const year = source.getAttribute('data-year');
+                const refNum = refEl ? refEl.textContent.trim() : null; // Get ref number
+
+                // Only add if we have all data AND this ref number hasn't been added yet
+                if (journalEl && ifEl && citationsEl && refNum && year && !addedRefs.has(refNum)) {
+                    keyStudiesData.push({
+                        journal: journalEl.textContent.trim(),
+                        if: parseFloat(ifEl.getAttribute('data-value')) || 0,
+                        citations: parseInt(citationsEl.getAttribute('data-citations'), 10) || 0,
+                        year: parseInt(year, 10) || 0,
+                        ref: refNum
+                    });
+                    addedRefs.add(refNum); // Mark this ref number as added
+                }
+            });
+
+            // 2. Populate Table Function (Updated for combined first column)
+            function populateTable(data) {
+                tbody.innerHTML = ''; // Clear existing rows
+                if (data.length === 0) {
+                     // Updated colspan to 4
+                     tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;"><i>未找到关键研究数据。</i></td></tr>';
+                     return;
+                }
+                data.forEach(item => {
+                    const row = tbody.insertRow();
+
+                    // Create combined first cell
+                    const firstCell = row.insertCell();
+                    firstCell.textContent = `${item.journal} [`; // Add journal text
+                    const refLink = document.createElement('a');
+                    refLink.href = `#works-cited`; // Link to the section
+                    // Attempt to link directly to the reference item if possible
+                    // Find the li corresponding to this reference number
+                    const refListItem = document.querySelector(`.works-cited li sup[title="ref-${item.ref}"]`); // Assuming you add title="ref-X" to the sup in the main text
+                    if (refListItem && refListItem.closest('li')) {
+                       const liId = `ref-item-${item.ref}`;
+                       refListItem.closest('li').id = liId; // Give the li an ID
+                       refLink.href = `#${liId}`; // Link directly to the li
+                    }
+                    refLink.textContent = item.ref; // Add ref number text
+                    firstCell.appendChild(refLink); // Append the link
+                    firstCell.appendChild(document.createTextNode(']')); // Add closing bracket
+
+                    // Add other cells
+                    row.insertCell().textContent = item.if.toFixed(1);
+                    row.insertCell().textContent = item.citations;
+                    row.insertCell().textContent = item.year;
+                });
+            }
+
+            // 3. Sort Data Function (No changes needed here)
+            function sortData(key, direction, type = 'string') {
+                keyStudiesData.sort((a, b) => {
+                    let valA = a[key];
+                    let valB = b[key];
+
+                    if (type === 'number') {
+                        valA = Number(valA);
+                        valB = Number(valB);
+                    }
+
+                    // Handle potential null/undefined/NaN during comparison gracefully
+                    if (valA == null || (type === 'number' && isNaN(valA))) valA = type === 'number' ? (direction === 'asc' ? Infinity : -Infinity) : '';
+                    if (valB == null || (type === 'number' && isNaN(valB))) valB = type === 'number' ? (direction === 'asc' ? Infinity : -Infinity) : '';
+
+
+                    if (valA < valB) {
+                        return direction === 'asc' ? -1 : 1;
+                    }
+                    if (valA > valB) {
+                        return direction === 'asc' ? 1 : -1;
+                    }
+                    // Secondary sort by journal name if primary values are equal
+                    if (key !== 'journal') {
+                         return a.journal.localeCompare(b.journal);
+                    }
+                    return 0;
+                });
+            }
+
+            // 4. Update Header Icons Function (No changes needed here)
+            function updateIcons(activeHeader, direction) {
+                 headers.forEach(th => {
+                     th.removeAttribute('aria-sort');
+                     const icon = th.querySelector('.sort-icon i');
+                     if (icon) icon.className = 'fas fa-sort'; // Reset icon
+                 });
+
+                 if (activeHeader) {
+                     activeHeader.setAttribute('aria-sort', direction === 'asc' ? 'ascending' : 'descending');
+                     const icon = activeHeader.querySelector('.sort-icon i');
+                     if (icon) icon.className = direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+                 }
+            }
+
+            // 5. Add Event Listeners to Headers (No changes needed here, relies on data-sort-key)
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const key = header.getAttribute('data-sort-key');
+                    const type = header.getAttribute('data-sort-type') || 'string';
+                    let direction = 'desc';
+
+                    if (currentSort.key === key) {
+                        direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        direction = 'desc'; // Default to descending for new column
+                    }
+
+                    currentSort = { key, direction };
+                    sortData(key, direction, type);
+                    populateTable(keyStudiesData);
+                    updateIcons(header, direction);
+                });
+            });
+
+            // Initial population (default sort: descending year)
+            currentSort = { key: 'year', direction: 'desc' }; // Set initial sort
+            sortData(currentSort.key, currentSort.direction, 'number');
+            populateTable(keyStudiesData);
+            updateIcons(table.querySelector('th[data-sort-key="year"]'), currentSort.direction); // Update icon for initial sort
+
+
+            // --- Optional: Citation Highlighting ---
+            const citationSpans = document.querySelectorAll('.source-highlight .citations');
+            citationSpans.forEach(span => {
+                const count = parseInt(span.getAttribute('data-citations'), 10);
+                if (!isNaN(count)) { // Check if count is a valid number
+                    if (count > 400) span.classList.add('citations-very-high');
+                    else if (count > 100) span.classList.add('citations-high');
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>

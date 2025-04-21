@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>和弦理论基础</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #36454F; /* Charcoal */
+            --secondary-color: #4B4B4B; /* Dark Gray */
+            --bg-color: #FAFAFA; /* Very light gray */
+            --light-accent: #E0E0E0; /* Light Gray */
+            --dark-accent: #707070; /* Medium Gray */
+            --text-color: #333333; /* Dark Gray for text */
+        }
+
+        /* Basic Reset & Typography */
+        * {
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+        }
+
+        body {
+            font-family: 'Noto Sans SC', 'Noto Sans JP', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+        }
+
+        h1 {
+            font-weight: 300;
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        h2 {
+            font-weight: 400;
+            font-size: 1.8rem;
+            margin: 1.5em 0 0.5em;
+            border-bottom: 1px solid var(--light-accent);
+            padding-bottom: 0.3em;
+        }
+
+        h3 {
+            font-weight: 400;
+            font-size: 1.4rem;
+            margin: 1.2em 0 0.5em;
+            color: var(--secondary-color);
+        }
+
+        p {
+            margin: 0 0 1.2em;
+        }
+
+        /* Layout: Container, Header, Sidebar, Content */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-wrap: wrap;
+            /* *** FIX: Add align-items: flex-start *** */
+            align-items: flex-start; /* Align items to the top, helps with sticky positioning */
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 1px solid var(--light-accent);
+            width: 100%; /* Ensure header spans full width */
+            background-color: var(--bg-color); /* Ensure header background */
+        }
+
+        /* Desktop Layout (Sidebar + Content) */
+        @media (min-width: 768px) {
+            .container {
+                 margin-top: 20px; /* Add some space below the header */
+            }
+            .sidebar {
+                width: 250px;
+                position: sticky;
+                top: 20px; /* Stick 20px from the top */
+                height: calc(100vh - 40px); /* Limit height to viewport minus top offset */
+                overflow-y: auto; /* Allow sidebar content to scroll */
+                padding: 20px 0; /* Padding inside the sidebar */
+            }
+
+            .content {
+                /* Adjust width calculation to account for sidebar + gap */
+                width: calc(100% - 250px - 40px);
+                margin-left: 40px; /* Space between sidebar and content */
+                padding-top: 20px; /* Align top padding with sidebar */
+            }
+        }
+
+        /* Mobile Layout (No Sidebar) */
+        @media (max-width: 767px) {
+            .sidebar {
+                display: none; /* Hide sidebar on small screens */
+            }
+
+            .content {
+                width: 100%; /* Content takes full width */
+                margin-top: 20px;
+                padding: 0 10px; /* Adjust padding for mobile */
+            }
+             h1 {
+                font-size: 2rem;
+            }
+             h2 {
+                font-size: 1.6rem;
+            }
+             h3 {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Table of Contents (Sidebar) Styling */
+        .toc {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc li {
+            margin-bottom: 10px;
+        }
+
+        .toc a {
+            text-decoration: none;
+            color: var(--secondary-color);
+            transition: color 0.2s, border-left-color 0.2s, background-color 0.2s;
+            display: block;
+            padding: 5px 15px; /* Adjusted padding */
+            border-left: 3px solid transparent;
+        }
+
+        .toc a:hover, .toc a.active {
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            background-color: rgba(0,0,0,0.03);
+        }
+
+        .toc-sub {
+            list-style-type: none;
+            padding-left: 20px;
+            margin-top: 5px;
+            font-size: 0.95em;
+        }
+        .toc-sub a {
+             padding-left: 25px; /* Indent sub-links further */
+        }
+
+        /* Chart Container */
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            margin: 30px 0;
+            border: 1px solid var(--light-accent);
+            background-color: #fff; /* Ensure charts have a background */
+        }
+
+        /* Chord Table */
+        .chord-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+
+        .chord-table th, .chord-table td {
+            border: 1px solid var(--light-accent);
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .chord-table th {
+            background-color: rgba(0,0,0,0.03);
+            font-weight: 600;
+        }
+
+        .chord-table tr:nth-child(even) {
+            background-color: rgba(0,0,0,0.01);
+        }
+
+        /* Chord Examples */
+        .chord-example {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+            justify-content: space-around;
+        }
+
+        .chord-card {
+            background-color: #fff;
+            border: 1px solid var(--light-accent);
+            border-radius: 5px;
+            padding: 15px;
+            width: 200px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Better vertical spacing */
+            min-height: 100px; /* Ensure cards have some height */
+        }
+        .chord-card h4 {
+            margin-top: 0;
+            margin-bottom: 0.5em;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+        .chord-card p {
+            margin-bottom: 0;
+            font-size: 0.9em;
+            color: var(--secondary-color);
+        }
+
+        .chord-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+        }
+
+        /* Piano */
+        .piano-container {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            background-color: #f0f0f0; /* Add subtle background */
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid var(--light-accent);
+            overflow-x: auto; /* Allow horizontal scroll if needed */
+        }
+
+        .piano {
+            display: inline-flex; /* Use inline-flex */
+            position: relative;
+            height: 150px;
+            border: 1px solid #999;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .white-key {
+            width: 40px;
+            height: 150px;
+            background: white;
+            border: 1px solid #ccc;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+            position: relative; /* Keep relative */
+            z-index: 1;
+            cursor: pointer;
+            box-shadow: inset 0 -2px 3px rgba(0,0,0,0.1);
+            transition: background-color 0.1s ease;
+        }
+
+        .white-key:not(:last-child) {
+            border-right: none; /* Avoid double borders */
+        }
+
+        .white-key:hover {
+            background: #f2f2f2;
+        }
+
+        .white-key.active {
+            background: #a7d7f5; /* More noticeable active color */
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.2);
+        }
+
+        .black-key {
+            width: 24px;
+            height: 90px;
+            background: linear-gradient(to bottom, #333, #111); /* Gradient for depth */
+            position: absolute;
+            z-index: 2;
+            border-radius: 0 0 4px 4px;
+            cursor: pointer;
+            border: 1px solid #000;
+            border-top: none;
+            box-shadow: -1px 0 2px rgba(255,255,255,0.2) inset, 0 -3px 3px rgba(0,0,0,0.4);
+            transition: background 0.1s ease;
+        }
+
+        .black-key:hover {
+            background: linear-gradient(to bottom, #555, #333);
+        }
+
+        .black-key.active {
+            background: linear-gradient(to bottom, #3d85c6, #1e4e7a); /* Active blue */
+            box-shadow: -1px 0 1px rgba(255,255,255,0.1) inset, 0 -2px 2px rgba(0,0,0,0.3);
+        }
+
+        /* Piano key positioning (relative to white keys) */
+        /* C# D# F# G# A# */
+        .black-key[data-note="C#"] { left: calc(40px * 1 - 12px); }
+        .black-key[data-note="D#"] { left: calc(40px * 2 - 12px); }
+        .black-key[data-note="F#"] { left: calc(40px * 4 - 12px); }
+        .black-key[data-note="G#"] { left: calc(40px * 5 - 12px); }
+        .black-key[data-note="A#"] { left: calc(40px * 6 - 12px); }
+
+
+        /* Quiz */
+        .quiz-container {
+            background-color: #fff; /* White background for quiz */
+            border: 1px solid var(--light-accent);
+            border-radius: 5px;
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .quiz-container h3 {
+            margin-top: 0;
+            border-bottom: 1px solid var(--light-accent);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-options label {
+            display: block;
+            padding: 12px 15px;
+            margin: 8px 0;
+            background-color: #f8f8f8;
+            border: 1px solid var(--light-accent);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .quiz-options label:hover {
+            background-color: #e9e9e9;
+            border-color: #ccc;
+        }
+        .quiz-options input[type="radio"] {
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .quiz-result {
+            margin-top: 20px;
+            padding: 15px;
+            display: none;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .quiz-correct {
+            background-color: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+            color: #388E3C; /* Darker green text */
+        }
+
+        .quiz-incorrect {
+            background-color: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.5);
+            color: #D32F2F; /* Darker red text */
+        }
+
+        button#quiz-submit {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s;
+        }
+        button#quiz-submit:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Animation */
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .celebrate {
+            animation: celebrate 0.5s ease-in-out;
+        }
+
+        /* Utility */
+        .text-center {
+             text-align: center;
+             font-size: 0.9em;
+             color: var(--dark-accent);
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>和弦的理论与类型</h1>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <ul class="toc">
+                <li><a href="#introduction">和弦的定义</a></li>
+                <li><a href="#basic-chords">基础和弦类型</a>
+                    <ul class="toc-sub">
+                        <li><a href="#triads">三和弦</a></li>
+                        <li><a href="#seventh-chords">七和弦</a></li>
+                    </ul>
+                </li>
+                <li><a href="#extended-chords">扩展和弦</a></li>
+                <li><a href="#altered-chords">变化和弦</a></li>
+                <li><a href="#special-chords">特殊和弦</a></li>
+                <li><a href="#interactive">互动探索</a></li>
+                <li><a href="#quiz">和弦知识小测验</a></li>
+                <li><a href="#conclusion">总结</a></li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <section id="introduction">
+                <h2>和弦的定义</h2>
+                <p>和弦是同时演奏的三个或更多音符的组合，是西方音乐理论中的基本构成要素。和弦为音乐提供了和声结构，创造出丰富的音乐色彩和情感表达。</p>
+
+                <p>从理论上讲，和弦是根据特定的音程关系构建的。最基本的和弦是三和弦，由三个音符组成，这些音符按照特定的三度音程叠置而成。</p>
+
+                <div class="piano-container">
+                    <div id="piano" class="piano">
+                        <!-- Piano keys will be generated by JavaScript -->
+                    </div>
+                </div>
+                <p class="text-center">⬆️ 点击钢琴键体验C大三和弦的声音（C-E-G）</p>
+            </section>
+
+            <section id="basic-chords">
+                <h2>基础和弦类型</h2>
+                <p>和弦有多种类型，从最基本的三和弦到复杂的扩展和变化和弦。以下我们将分类介绍主要的和弦类型。</p>
+
+                <div id="chordTypesChart" class="chart-container"></div>
+
+                <section id="triads">
+                    <h3>三和弦</h3>
+                    <p>三和弦是最基础的和弦类型，由三个音符组成，这些音符以三度音程叠加。根据音程结构的不同，三和弦可分为四种基本类型：</p>
+
+                    <table class="chord-table">
+                        <thead>
+                            <tr>
+                                <th>三和弦类型</th>
+                                <th>结构</th>
+                                <th>音程构成</th>
+                                <th>例子（C为根音）</th>
+                                <th>情感特点</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>大三和弦 (Major)</td>
+                                <td>根音-大三度-纯五度</td>
+                                <td>大三度+小三度</td>
+                                <td>C-E-G</td>
+                                <td>明亮、稳定、欢快</td>
+                            </tr>
+                            <tr>
+                                <td>小三和弦 (Minor)</td>
+                                <td>根音-小三度-纯五度</td>
+                                <td>小三度+大三度</td>
+                                <td>C-E♭-G</td>
+                                <td>忧郁、柔和、深沉</td>
+                            </tr>
+                            <tr>
+                                <td>减三和弦 (Diminished)</td>
+                                <td>根音-小三度-减五度</td>
+                                <td>小三度+小三度</td>
+                                <td>C-E♭-G♭</td>
+                                <td>紧张、不稳定、神秘</td>
+                            </tr>
+                            <tr>
+                                <td>增三和弦 (Augmented)</td>
+                                <td>根音-大三度-增五度</td>
+                                <td>大三度+大三度</td>
+                                <td>C-E-G♯</td>
+                                <td>不安、梦幻、过渡性</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="chord-example">
+                        <div class="chord-card" data-notes="C,E,G">
+                            <h4>C大三和弦</h4>
+                            <p>C-E-G</p>
+                        </div>
+                        <div class="chord-card" data-notes="C,Eb,G">
+                            <h4>C小三和弦</h4>
+                            <p>C-E♭-G</p>
+                        </div>
+                        <div class="chord-card" data-notes="C,Eb,Gb">
+                            <h4>C减三和弦</h4>
+                            <p>C-E♭-G♭</p>
+                        </div>
+                        <div class="chord-card" data-notes="C,E,G#">
+                            <h4>C增三和弦</h4>
+                            <p>C-E-G♯</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="seventh-chords">
+                    <h3>七和弦</h3>
+                    <p>七和弦是在三和弦的基础上添加了一个七度音的和弦。根据三和弦的类型和添加的七度音的不同，七和弦可以分为多种类型：</p>
+
+                    <table class="chord-table">
+                        <thead>
+                            <tr>
+                                <th>七和弦类型</th>
+                                <th>结构</th>
+                                <th>例子（C为根音）</th>
+                                <th>常见应用</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>大七和弦 (Major 7th)</td>
+                                <td>大三和弦 + 大七度</td>
+                                <td>C-E-G-B</td>
+                                <td>爵士、流行音乐中的温暖和声</td>
+                            </tr>
+                            <tr>
+                                <td>属七和弦 (Dominant 7th)</td>
+                                <td>大三和弦 + 小七度</td>
+                                <td>C-E-G-B♭</td>
+                                <td>古典和流行音乐中常见，有张力，倾向于解决到主和弦</td>
+                            </tr>
+                            <tr>
+                                <td>小七和弦 (Minor 7th)</td>
+                                <td>小三和弦 + 小七度</td>
+                                <td>C-E♭-G-B♭</td>
+                                <td>爵士、R&B、放克中的柔和、丰富和声</td>
+                            </tr>
+                            <tr>
+                                <td>半减七和弦 (Half-diminished 7th)</td>
+                                <td>减三和弦 + 小七度 (m7♭5)</td>
+                                <td>C-E♭-G♭-B♭</td>
+                                <td>过渡和声，常用于小调的II-V-I进行</td>
+                            </tr>
+                            <tr>
+                                <td>减七和弦 (Diminished 7th)</td>
+                                <td>减三和弦 + 减七度 (dim7)</td>
+                                <td>C-E♭-G♭-B♭♭(等音为A)</td>
+                                <td>强烈的不稳定感，对称结构，用于戏剧性转调或连接</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="chord-example">
+                        <div class="chord-card" data-notes="C,E,G,B">
+                            <h4>CMaj7</h4>
+                            <p>大七和弦</p>
+                        </div>
+                        <div class="chord-card" data-notes="C,E,G,Bb">
+                            <h4>C7</h4>
+                            <p>属七和弦</p>
+                        </div>
+                         <div class="chord-card" data-notes="C,Eb,G,Bb">
+                            <h4>Cm7</h4>
+                            <p>小七和弦</p>
+                        </div>
+                         <div class="chord-card" data-notes="C,Eb,Gb,Bb">
+                            <h4>Cm7(b5)</h4>
+                             <p>半减七和弦</p>
+                        </div>
+                         <div class="chord-card" data-notes="C,Eb,Gb,A"> <!-- Using A instead of Bbb for simplicity -->
+                            <h4>Cdim7</h4>
+                            <p>减七和弦</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section id="extended-chords">
+                <h2>扩展和弦</h2>
+                <p>扩展和弦是在七和弦的基础上继续向上叠加三度音程（九度、十一度、十三度）而构成的和弦。这些和弦常见于爵士乐、融合音乐和现代流行音乐中，提供了更复杂、更丰富的和声色彩。</p>
+
+                <table class="chord-table">
+                    <thead>
+                        <tr>
+                            <th>扩展和弦类型</th>
+                            <th>构成</th>
+                            <th>例子（C为根音）</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>九和弦 (9th)</td>
+                            <td>七和弦 + 九度音</td>
+                            <td>Cmaj9: C-E-G-B-D <br/> C9: C-E-G-B♭-D <br/> Cm9: C-E♭-G-B♭-D</td>
+                            <td>在七和弦上增加色彩。</td>
+                        </tr>
+                        <tr>
+                            <td>十一和弦 (11th)</td>
+                            <td>九和弦 + 十一度音</td>
+                             <td>C11: C-(E)-G-B♭-D-F <br/> Cm11: C-E♭-G-B♭-D-F</td>
+                            <td>通常省略三音（避免与四度冲突）或五音。属十一和弦（C11）的11音常被视为sus4。</td>
+                        </tr>
+                        <tr>
+                            <td>十三和弦 (13th)</td>
+                            <td>十一和弦 + 十三度音</td>
+                            <td>C13: C-E-G-B♭-(D)-(F)-A <br/> Cmaj13: C-E-G-B-(D)-(F)-A <br/> Cm13: C-E♭-G-B♭-(D)-(F)-A</td>
+                            <td>最复杂的扩展和弦。实践中常省略十一音、五音，有时甚至省略九音。</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>注意：</strong> 在实际演奏中，扩展和弦通常会省略一些音符（特别是内部音，如五音、有时是三音或十一音），以避免音响过于密集或产生不和谐的音程关系（如属和弦中的三音和十一音之间的大二度）。省略哪些音取决于和弦类型、音乐风格和声部进行。</p>
+            </section>
+
+            <section id="altered-chords">
+                <h2>变化和弦</h2>
+                <p>变化和弦（Altered Chords）通常指变化属和弦（Altered Dominant Chords），它们是通过升高或降低属七和弦中的五音或/和九音（有时包括十一音/十三音）来创造更强烈的张力，以增强其解决到主和弦的倾向。这些和弦在爵士乐中尤为常见。</p>
+
+                <p>常见的变化包括：</p>
+                <ul>
+                    <li><strong>变化五音：</strong>
+                        <ul>
+                            <li>增五音 (♯5 或 +5): 如 C7(♯5) = C-E-G♯-B♭</li>
+                            <li>减五音 (♭5): 如 C7(♭5) = C-E-G♭-B♭</li>
+                        </ul>
+                    </li>
+                     <li><strong>变化九音：</strong>
+                        <ul>
+                             <li>增九音 (♯9): 如 C7(♯9) = C-E-G-B♭-D♯</li>
+                             <li>减九音 (♭9): 如 C7(♭9) = C-E-G-B♭-D♭</li>
+                        </ul>
+                     </li>
+                     <li><strong>组合变化：</strong> 可以同时变化五音和九音，例如：
+                        <ul>
+                            <li>C7(♭9♯5): C-E-G♯-B♭-D♭</li>
+                            <li>C7(♯9♭5): C-E-G♭-B♭-D♯</li>
+                            <li>C7alt (Altered Chord): 通常包含♭9, ♯9, ♭5, ♯5 中的一种或多种变化音，具体构成取决于上下文，常指包含♭9和♯9或♭9和♭5/♯5的和弦。</li>
+                        </ul>
+                     </li>
+                </ul>
+
+                 <div id="alteredChordsChart" class="chart-container"></div>
+            </section>
+
+            <section id="special-chords">
+                <h2>特殊和弦</h2>
+                 <p>除了基于三度叠加构建的标准和弦外，还有一些具有特殊结构或功能的和弦，在各种音乐风格中广泛使用：</p>
+
+                <table class="chord-table">
+                    <thead>
+                        <tr>
+                            <th>特殊和弦类型</th>
+                            <th>构成（以C为根音）</th>
+                             <th>特点与应用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>挂四和弦 (sus4)</td>
+                             <td>C-F-G (根音-纯四度-纯五度)</td>
+                             <td>用四度音替代三度音，产生悬置感，通常解决回原来的大/小三和弦。常见于流行、摇滚、民间音乐。</td>
+                        </tr>
+                        <tr>
+                            <td>挂二和弦 (sus2)</td>
+                            <td>C-D-G (根音-大二度-纯五度)</td>
+                             <td>用大二度音替代三度音，声音明亮、开放，但不像sus4那样有强烈的解决倾向。</td>
+                        </tr>
+                        <tr>
+                            <td>加六和弦 (add6 / 6)</td>
+                             <td>C6: C-E-G-A (大三和弦 + 大六度) <br/> Cm6: C-E♭-G-A (小三和弦 + 大六度)</td>
+                             <td>在三和弦上添加大六度音（而非七度音）。C6声音温暖、略带复古感，常见于爵士、流行。Cm6声音复杂、略带神秘感，常见于爵士、电影配乐。</td>
+                        </tr>
+                        <tr>
+                            <td>加九和弦 (add9)</td>
+                             <td>C(add9): C-E-G-D (大三和弦 + 大九度) <br/> Cm(add9): C-E♭-G-D (小三和弦 + 大九度)</td>
+                             <td>在三和弦上添加九度音（而非七度音），为和弦增添色彩和亮度，但不改变其基本功能。</td>
+                        </tr>
+                        <tr>
+                            <td>强力和弦 (Power Chord / 5)</td>
+                            <td>C5: C-G (根音 + 纯五度)</td>
+                            <td>只有根音和五音（有时重复根音），省略三音。声音强劲、中性（无大/小调色彩），是摇滚和重金属音乐的基础。</td>
+                        </tr>
+                          <tr>
+                             <td>四度和弦 (Quartal Chord)</td>
+                             <td>例如：C-F-B♭ 或 E-A-D</td>
+                             <td>基于四度音程叠加构建，而非三度。声音现代、空旷或不明确，常见于现代古典、爵士乐。</td>
+                         </tr>
+                          <tr>
+                             <td>多重和弦 (Polychord)</td>
+                             <td>例如：G大三和弦 / C大三和弦</td>
+                             <td>同时演奏两个或多个不同的和弦。创造复杂、有时不和谐的音响，常见于现代音乐。</td>
+                         </tr>
+                    </tbody>
+                </table>
+
+                <div class="chord-example">
+                    <div class="chord-card" data-notes="C,F,G">
+                        <h4>Csus4</h4>
+                        <p>C-F-G</p>
+                    </div>
+                    <div class="chord-card" data-notes="C,D,G">
+                        <h4>Csus2</h4>
+                        <p>C-D-G</p>
+                    </div>
+                    <div class="chord-card" data-notes="C,E,G,A">
+                        <h4>C6</h4>
+                        <p>C-E-G-A</p>
+                    </div>
+                     <div class="chord-card" data-notes="C,E,G,D">
+                        <h4>C(add9)</h4>
+                         <p>C-E-G-D</p>
+                    </div>
+                     <div class="chord-card" data-notes="C,G">
+                        <h4>C5</h4>
+                        <p>C-G (强力和弦)</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="interactive">
+                <h2>和弦互动探索</h2>
+                 <p>下图通过一个条形图展示了一些常见和弦类型在不同音乐风格中的大致使用频率。颜色代表了该和弦通常传达的情感色彩或功能特征。点击条形可以查看更多信息（此功能为示意）。</p>
+
+                <div id="chordRelationshipChart" class="chart-container"></div>
+            </section>
+
+            <section id="quiz">
+                <h2>和弦知识小测验</h2>
+                <div class="quiz-container">
+                    <h3>测试您对和弦类型的理解</h3>
+                    <p><strong>问题：</strong> 以下哪个和弦构成是 C 小七和弦 (Cm7)？</p>
+
+                    <div class="quiz-options">
+                        <label>
+                            <input type="radio" name="chord-quiz" value="1">
+                            C - E - G - B （这是 Cmaj7）
+                        </label>
+                        <label>
+                            <input type="radio" name="chord-quiz" value="2">
+                            C - E - G - B♭ （这是 C7，属七和弦）
+                        </label>
+                        <label>
+                            <input type="radio" name="chord-quiz" value="3">
+                             C - E♭ - G - B♭ （根音 + 小三度 + 纯五度 + 小七度）
+                        </label>
+                        <label>
+                            <input type="radio" name="chord-quiz" value="4">
+                            C - E♭ - G♭ - B♭ （这是 Cm7♭5，半减七和弦）
+                        </label>
+                    </div>
+
+                    <button id="quiz-submit">
+                        提交答案
+                    </button>
+
+                    <div id="quiz-result" class="quiz-result"></div>
+                </div>
+            </section>
+
+            <section id="conclusion">
+                <h2>总结</h2>
+                <p>和弦是音乐的基石，构成了和声的基础，赋予音乐深度、色彩和情感。从简单的三和弦到复杂的扩展和变化和弦，每种类型都有其独特的音响效果和功能。</p>
+
+                <p>和弦类型可以大致归纳为：</p>
+                <ol>
+                     <li><strong>三和弦 (Triads):</strong> 大、小、增、减 - 构成和声的基本框架。</li>
+                    <li><strong>七和弦 (Seventh Chords):</strong> 在三和弦上加七度音，增加了复杂性和功能性（如属七的解决倾向）。主要有大七、属七、小七、半减七、减七。</li>
+                     <li><strong>扩展和弦 (Extended Chords):</strong> 在七和弦上继续叠加九、十一、十三度音，常见于爵士等需要丰富色彩的音乐。</li>
+                     <li><strong>变化和弦 (Altered Chords):</strong> 通常指变化属和弦，通过改变五音/九音增加张力。</li>
+                     <li><strong>挂留和弦 (Suspended Chords):</strong> Sus4 和 Sus2，用四度或二度代替三度，产生悬置感。</li>
+                    <li><strong>附加音和弦 (Added Note Chords):</strong> 如 add6, add9，在三和弦基础上添加音符而不构成七和弦。</li>
+                     <li><strong>其他特殊和弦：</strong> 如强力和弦 (Power Chords)，四度和弦，多重和弦等。</li>
+                </ol>
+
+                <p>虽然基本和弦类型大约有几十种，但考虑到所有12个根音、不同的转位、省略音和细微变化，实际应用中的和弦组合数量极其庞大。理解和弦的构建原理、音响特性及其在和声进行中的作用，对于作曲、编曲、演奏和即兴都是至关重要的技能。</p>
+
+                <p>不断探索和实践各种和弦，是提升音乐理解和表达能力的关键途径。</p>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // 生成钢琴键盘
+        function generatePiano() {
+            const piano = document.getElementById('piano');
+            if (!piano) return; // Exit if piano element not found
+            piano.innerHTML = ''; // Clear previous keys if any
+
+            const whiteNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+            const blackNotes = ['C#', 'D#', 'F#', 'G#', 'A#'];
+            const initialActive = ['C', 'E', 'G']; // C Major chord
+
+            let whiteKeyIndex = 0;
+
+            // Create white keys
+            whiteNotes.forEach(note => {
+                const whiteKey = document.createElement('div');
+                whiteKey.className = 'white-key';
+                whiteKey.dataset.note = note;
+                if (initialActive.includes(note)) {
+                    whiteKey.classList.add('active');
+                }
+                piano.appendChild(whiteKey);
+
+                // Add corresponding black key if applicable
+                // Black keys are positioned relative to the preceding white key
+                if (note !== 'E' && note !== 'B') {
+                     const blackNote = blackNotes.shift(); // Get the next black note
+                     if (blackNote) {
+                        const blackKey = document.createElement('div');
+                        blackKey.className = 'black-key';
+                        blackKey.dataset.note = blackNote;
+                        // Position based on the current white key index
+                        blackKey.style.left = `${(whiteKeyIndex + 1) * 40 - 12}px`; // 40 is white key width, 12 is half black key width
+                        piano.appendChild(blackKey);
+                     }
+                }
+                whiteKeyIndex++;
+            });
+
+             // Attach event listeners AFTER all keys are added
+            const keys = piano.querySelectorAll('.white-key, .black-key');
+            keys.forEach(key => {
+                 key.addEventListener('click', () => {
+                    const note = key.dataset.note;
+                    playNote(note);
+                    // Highlight clicked key temporarily
+                    key.classList.add('active');
+                    setTimeout(() => key.classList.remove('active'), 500);
+                 });
+            });
+        }
+
+        // Audio Context for sound playback
+        let audioContext;
+        function getAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            return audioContext;
+        }
+
+        // Note Frequencies (Middle C = C4)
+        const noteFrequencies = {
+            // Octave 4
+            'C': 261.63, 'C#': 277.18, 'Db': 277.18,
+            'D': 293.66, 'D#': 311.13, 'Eb': 311.13,
+            'E': 329.63,
+            'F': 349.23, 'F#': 369.99, 'Gb': 369.99,
+            'G': 392.00, 'G#': 415.30, 'Ab': 415.30,
+            'A': 440.00, 'A#': 466.16, 'Bb': 466.16,
+            'B': 493.88,
+             // Octave 3 (for notes like Gb, Eb in examples if needed lower)
+             'Gb3': 185.00, // Gb in Cdim triad
+             'Eb3': 155.56, // Eb in C minor triad etc.
+             'A3': 220.00, // A in Cdim7
+             'Bb3': 233.08, // Bb lower
+             'G#3': 207.65, // G# in Caug
+             // Octave 5 (for higher notes like D in Cadd9)
+             'D5': 587.33
+        };
+
+         // Function to map simple note names (like Eb) to specific frequencies
+         // Tries current octave first, then lower/higher if needed for common examples
+         function getFrequencyForNote(note) {
+            if (noteFrequencies[note]) return noteFrequencies[note];
+            // Basic fallback logic for common chord notes
+            if (note === 'Eb') return noteFrequencies['Eb']; // Assume Eb4
+            if (note === 'Gb') return noteFrequencies['Gb']; // Assume Gb4
+            if (note === 'Bb') return noteFrequencies['Bb']; // Assume Bb4
+            if (note === 'G#') return noteFrequencies['G#']; // Assume G#4
+            if (note === 'A' && note.includes('dim7')) return noteFrequencies['A3']; // A in Cdim7 often lower
+            if (note === 'D' && note.includes('add9')) return noteFrequencies['D5']; // D in Cadd9 often higher
+            // Default to C4 if not found (should improve this mapping)
+            console.warn(`Frequency not found for note: ${note}. Defaulting.`);
+            return noteFrequencies['C'];
+         }
+
+
+        // Play a single note
+        function playNote(note) {
+            try {
+                 const ctx = getAudioContext();
+                 const frequency = getFrequencyForNote(note);
+                 if (!frequency) {
+                     console.error(`Cannot play note: ${note}, frequency unknown.`);
+                     return;
+                 }
+
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+
+                 oscillator.type = 'sine'; // or 'triangle', 'sawtooth', 'square'
+                 oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
+
+                 gainNode.gain.setValueAtTime(0.5, ctx.currentTime); // Start volume
+                 // Fade out quickly
+                 gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.8);
+
+                 oscillator.connect(gainNode);
+                 gainNode.connect(ctx.destination);
+
+                 oscillator.start(ctx.currentTime);
+                 oscillator.stop(ctx.currentTime + 0.8); // Stop after 0.8 seconds
+            } catch (e) {
+                console.error("Web Audio API error:", e);
+            }
+        }
+
+         // Play a chord (multiple notes)
+         function playChord(notes) {
+             const ctx = getAudioContext();
+             const playTime = ctx.currentTime + 0.05; // Start slightly in the future
+
+             notes.forEach(note => {
+                try {
+                    const frequency = getFrequencyForNote(note);
+                    if (!frequency) {
+                        console.error(`Cannot play note in chord: ${note}, frequency unknown.`);
+                        return;
+                    }
+
+                    const oscillator = ctx.createOscillator();
+                    const gainNode = ctx.createGain();
+
+                    oscillator.type = 'triangle'; // Triangle often sounds softer for chords
+                    oscillator.frequency.setValueAtTime(frequency, playTime);
+
+                    gainNode.gain.setValueAtTime(0.3, playTime); // Lower volume for chords
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, playTime + 1.0); // Longer fade
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(ctx.destination);
+
+                    oscillator.start(playTime);
+                    oscillator.stop(playTime + 1.0);
+                } catch (e) {
+                    console.error("Web Audio API error during chord playback:", e);
+                }
+            });
+        }
+
+        // Chord Card click event setup
+        function setupChordCards() {
+            const chordCards = document.querySelectorAll('.chord-card');
+            chordCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    // Ensure AudioContext is resumed (required after user interaction)
+                    const ctx = getAudioContext();
+                    if (ctx.state === 'suspended') {
+                        ctx.resume();
+                    }
+
+                    const notesString = card.dataset.notes;
+                    if (notesString) {
+                        const notes = notesString.split(',').map(n => n.trim());
+                        console.log("Playing chord:", notes);
+
+                        // Play arpeggio first (optional)
+                        notes.forEach((note, index) => {
+                            setTimeout(() => {
+                                playNote(note);
+                            }, index * 150); // Staggered start
+                        });
+
+                        // Play full chord after arpeggio
+                        setTimeout(() => {
+                            playChord(notes);
+                        }, notes.length * 150 + 50); // Delay after last arpeggio note
+
+
+                        // Animation
+                        card.classList.add('celebrate');
+                        setTimeout(() => {
+                            card.classList.remove('celebrate');
+                        }, 500);
+                    }
+                });
+            });
+        }
+
+        // Quiz Logic
+        function setupQuiz() {
+            const quizSubmit = document.getElementById('quiz-submit');
+            const quizResult = document.getElementById('quiz-result');
+            const options = document.querySelectorAll('input[name="chord-quiz"]');
+
+            if (!quizSubmit || !quizResult) return;
+
+            quizSubmit.addEventListener('click', () => {
+                const selectedAnswer = document.querySelector('input[name="chord-quiz"]:checked');
+
+                quizResult.style.display = 'none'; // Hide previous result first
+
+                if (!selectedAnswer) {
+                    quizResult.textContent = '请选择一个答案！';
+                    quizResult.className = 'quiz-result quiz-incorrect'; // Use incorrect style for alert
+                    quizResult.style.display = 'block';
+                    return;
+                }
+
+                // Correct answer value is '3' (C - Eb - G - Bb)
+                if (selectedAnswer.value === '3') {
+                    quizResult.innerHTML = '<p><strong>正确！</strong> C小七和弦 (Cm7) 由根音(C)、小三度(E♭)、纯五度(G) 和小七度(B♭) 组成。</p>';
+                    quizResult.className = 'quiz-result quiz-correct';
+                } else {
+                     quizResult.innerHTML = '<p><strong>不正确。</strong> 正确答案是 C - E♭ - G - B♭。C小七和弦 (Cm7) 是一个小三和弦 (C-E♭-G) 加上一个小七度音 (B♭)。</p>';
+                     quizResult.className = 'quiz-result quiz-incorrect';
+                }
+
+                quizResult.style.display = 'block';
+
+                 // Optional: Scroll to the result
+                 quizResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+
+            // Clear result if user changes selection
+            options.forEach(option => {
+                option.addEventListener('change', () => {
+                    quizResult.style.display = 'none';
+                });
+            });
+        }
+
+        // Initialize ECharts Charts
+        function initCharts() {
+            try {
+                // Chart 1: Chord Types Pie Chart
+                const chordTypesChartDom = document.getElementById('chordTypesChart');
+                if (chordTypesChartDom) {
+                    const chordTypesChart = echarts.init(chordTypesChartDom);
+                    chordTypesChart.setOption({
+                        title: { text: '主要和弦类型构成', subtext: '概念性分类', left: 'center' },
+                        tooltip: { trigger: 'item', formatter: '{a} <br/>{b}: {c} 种 ({d}%)' },
+                        legend: { orient: 'vertical', left: 'left', top: 'middle' },
+                        series: [{
+                            name: '和弦类型', type: 'pie', radius: ['40%', '70%'], avoidLabelOverlap: true,
+                            label: { show: true, formatter: '{b}\n({d}%)' },
+                            emphasis: { label: { show: true, fontSize: 16, fontWeight: 'bold' } },
+                            labelLine: { show: true },
+                            data: [
+                                {value: 4, name: '基础三和弦'},
+                                {value: 5, name: '基础七和弦'},
+                                {value: 3, name: '扩展和弦 (9/11/13)'},
+                                {value: 4, name: '变化和弦 (Altered)'}, // Simplified count
+                                {value: 5, name: '特殊/附加音和弦'} // sus, add, power etc.
+                            ]
+                        }]
+                    });
+                }
+
+                // Chart 2: Altered Chords Radar Chart
+                const alteredChordsChartDom = document.getElementById('alteredChordsChart');
+                 if (alteredChordsChartDom) {
+                     const alteredChordsChart = echarts.init(alteredChordsChartDom);
+                     alteredChordsChart.setOption({
+                         title: { text: '变化属和弦音响特性 (示意)', left: 'center' },
+                         tooltip: { trigger: 'item' },
+                         legend: { data: ['C7(♭5)', 'C7(♯5)', 'C7(♭9)', 'C7(♯9)'], top: 'bottom'},
+                         radar: {
+                             indicator: [
+                                {name: '张力/不协和度', max: 10},
+                                 {name: '色彩复杂度', max: 10},
+                                 {name: '解决倾向', max: 10},
+                                {name: '现代感/爵士感', max: 10},
+                                {name: '亮度/暗度', max: 10} // Higher = Brighter
+                            ],
+                            shape: 'circle',
+                            splitNumber: 5,
+                            axisName: { formatter: '{value}', color: '#444' },
+                         },
+                         series: [{
+                             type: 'radar',
+                             data: [
+                                { value: [7, 7, 8, 6, 4], name: 'C7(♭5)' }, // Tense, complex, resolves, jazzy, darker
+                                { value: [6, 6, 7, 5, 7], name: 'C7(♯5)' }, // Less tense than b5, complex, resolves, jazzy, brighter
+                                { value: [9, 8, 9, 8, 3], name: 'C7(♭9)' }, // Very tense, complex, strong resolve, very jazzy, very dark
+                                { value: [8, 9, 7, 9, 6], name: 'C7(♯9)' }  // Bluesy/Jazzy tension, very complex, resolves, very jazzy, slightly brighter than b9
+                             ]
+                         }]
+                     });
+                 }
+
+                 // Chart 3: Chord Usage Bar Chart
+                 const chordRelationshipChartDom = document.getElementById('chordRelationshipChart');
+                 if (chordRelationshipChartDom) {
+                     const chordRelationshipChart = echarts.init(chordRelationshipChartDom);
+                     chordRelationshipChart.setOption({
+                         title: { text: '常见和弦类型应用频率与情感色彩 (示意)', left: 'center' },
+                         tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                         legend: { data: ['使用频率'], top: 'bottom' },
+                         grid: { left: '3%', right: '4%', bottom: '10%', containLabel: true },
+                         xAxis: { type: 'category', data: ['大三', '小三', '减三', '增三', '属七', '大七', '小七', '减七', 'sus4', 'sus2', 'add9', 'Power'], axisLabel: { interval: 0, rotate: 30 } },
+                         yAxis: { type: 'value', name: '相对频率' },
+                         series: [{
+                             name: '使用频率', type: 'bar',
+                             data: [
+                                 { value: 90, itemStyle: { color: '#FFB74D' }, tooltip: { formatter: '{b}: 常用, 明亮/稳定' } }, // Major
+                                 { value: 80, itemStyle: { color: '#7986CB' }, tooltip: { formatter: '{b}: 常用, 柔和/忧郁' } }, // Minor
+                                 { value: 25, itemStyle: { color: '#E57373' }, tooltip: { formatter: '{b}: 少用, 紧张/不稳定' } }, // Dim
+                                 { value: 15, itemStyle: { color: '#4DD0E1' }, tooltip: { formatter: '{b}: 罕见, 梦幻/悬疑' } }, // Aug
+                                 { value: 85, itemStyle: { color: '#FF8A65' }, tooltip: { formatter: '{b}: 非常常用, 有张力/导向性' } }, // Dom7
+                                 { value: 45, itemStyle: { color: '#AED581' }, tooltip: { formatter: '{b}: 常用 (爵士/流行), 温暖/丰富' } }, // Maj7
+                                 { value: 65, itemStyle: { color: '#9575CD' }, tooltip: { formatter: '{b}: 常用 (爵士/R&B), 柔和/复杂' } }, // Min7
+                                 { value: 20, itemStyle: { color: '#F06292' }, tooltip: { formatter: '{b}: 少用, 极度紧张/戏剧性' } }, // Dim7
+                                 { value: 50, itemStyle: { color: '#4FC3F7' }, tooltip: { formatter: '{b}: 常用 (流行/摇滚), 悬置/期待解决' } }, // sus4
+                                 { value: 40, itemStyle: { color: '#81C784' }, tooltip: { formatter: '{b}: 较常用, 开放/明亮' } }, // sus2
+                                 { value: 35, itemStyle: { color: '#BA68C8' }, tooltip: { formatter: '{b}: 较常用, 丰富色彩/流行感' } }, // add9
+                                 { value: 70, itemStyle: { color: '#A1887F' }, tooltip: { formatter: '{b}: 非常常用 (摇滚), 强力/中性' } }  // Power
+                             ]
+                         }]
+                     });
+                 }
+
+                // Resize charts on window resize
+                window.addEventListener('resize', () => {
+                    chordTypesChartDom && echarts.getInstanceByDom(chordTypesChartDom)?.resize();
+                    alteredChordsChartDom && echarts.getInstanceByDom(alteredChordsChartDom)?.resize();
+                    chordRelationshipChartDom && echarts.getInstanceByDom(chordRelationshipChartDom)?.resize();
+                });
+
+            } catch (e) {
+                console.error("ECharts initialization failed:", e);
+            }
+        }
+
+        // Scroll Spy for Table of Contents highlighting
+        function setupScrollSpy() {
+            const sections = document.querySelectorAll('main section[id]');
+            const navLinks = document.querySelectorAll('.toc a');
+            if (sections.length === 0 || navLinks.length === 0) return;
+
+            const observerOptions = {
+                root: null, // relative to viewport
+                rootMargin: '0px 0px -50% 0px', // Trigger when section is halfway scrolled past top
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                let lastVisibleSectionId = null;
+
+                 entries.forEach(entry => {
+                     if (entry.isIntersecting) {
+                         lastVisibleSectionId = entry.target.getAttribute('id');
+                     }
+                 });
+
+                // Find the *first* currently visible section based on scroll position as fallback/primary
+                let currentSectionId = '';
+                 for (let i = sections.length - 1; i >= 0; i--) {
+                     const section = sections[i];
+                     const rect = section.getBoundingClientRect();
+                     // Check if the top of the section is above the vertical center of the viewport
+                     if (rect.top <= window.innerHeight / 2) {
+                         currentSectionId = section.getAttribute('id');
+                         break; // Found the current section based on scroll position
+                     }
+                 }
+                 // If IntersectionObserver found something more recent, use that
+                  if (lastVisibleSectionId) {
+                     // currentSectionId = lastVisibleSectionId; // Decided against this, scroll position seems more reliable
+                  }
+
+                 navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    const subLinks = link.parentElement.querySelectorAll('.toc-sub a'); // Check sublinks too
+                    subLinks.forEach(sublink => sublink.classList.remove('active'));
+
+                    const href = link.getAttribute('href');
+                    if (href === `#${currentSectionId}`) {
+                        link.classList.add('active');
+                        // Also activate parent if it's a sub-link
+                        const parentLi = link.closest('ul.toc-sub')?.parentElement;
+                         if (parentLi) {
+                            parentLi.querySelector('a')?.classList.add('active');
+                         }
+                    }
+                });
+            }, observerOptions);
+
+             sections.forEach(section => {
+                 observer.observe(section);
+             });
+
+             // Fallback for initial load or browsers without IntersectionObserver (less accurate)
+             if (!('IntersectionObserver' in window)) {
+                window.addEventListener('scroll', () => {
+                    let current = '';
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop;
+                        if (window.pageYOffset >= sectionTop - 150) { // Adjust offset as needed
+                            current = section.getAttribute('id');
+                        }
+                    });
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${current}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                });
+                // Trigger scroll once on load for initial state
+                 window.dispatchEvent(new Event('scroll'));
+             }
+        }
+
+        // Initialize all functionalities on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM Loaded. Initializing...");
+            generatePiano();
+            setupChordCards();
+            setupQuiz();
+            initCharts();
+            setupScrollSpy();
+            console.log("Initialization complete.");
+
+             // Add a small delay before activating scroll spy to ensure layout is stable
+            // setTimeout(setupScrollSpy, 100);
+        });
+    </script>
+</body>
+</html>

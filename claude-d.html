@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>和弦理论解析</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-light: #93c5fd;
+            --secondary: #8b5cf6;
+            --accent: #f59e0b;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #ffffff;
+            --bg-alt: #f9fafb;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+            color: var(--text);
+            background-color: var(--bg-alt);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .content-wrapper {
+            display: flex;
+            gap: 2rem;
+        }
+
+        #toc {
+            position: sticky;
+            top: 2rem;
+            width: 250px;
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            align-self: flex-start;
+            max-height: calc(100vh - 4rem);
+            overflow-y: auto;
+        }
+
+        #toc ul {
+            list-style: none;
+        }
+
+        #toc li {
+            margin-bottom: 0.75rem;
+        }
+
+        #toc a {
+            text-decoration: none;
+            color: var(--text);
+            display: block;
+            padding: 0.25rem 0;
+            transition: color 0.2s;
+        }
+
+        #toc a:hover {
+            color: var(--primary);
+        }
+
+        #toc .toc-subtitle {
+            padding-left: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        #toc .active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            background: linear-gradient(to right, var(--primary-light), var(--primary));
+            color: white;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .chart-container {
+            height: 400px;
+            width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-size: 1.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        h3 {
+            margin: 1.5rem 0 0.75rem;
+            color: var(--secondary);
+        }
+
+        p, ul, ol {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .piano-container {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            min-height: 150px;
+        }
+
+        .piano-key {
+            position: relative;
+            height: 150px;
+            width: 40px;
+            border: 1px solid #333;
+            border-radius: 0 0 4px 4px;
+            background-color: white;
+            margin-right: -1px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .piano-key.black {
+            position: absolute;
+            height: 90px;
+            width: 24px;
+            background-color: #333;
+            margin-left: -12px;
+            z-index: 1;
+        }
+
+        .piano-key.active {
+            background-color: var(--accent);
+        }
+
+        .piano-key.black.active {
+            background-color: var(--primary);
+        }
+
+        .key-name {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .black .key-name {
+            color: white;
+            bottom: 5px;
+            font-size: 0.7rem;
+        }
+
+        .quiz-container {
+            background: linear-gradient(to right, #f0f9ff, #e0f2fe);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--primary);
+            position: relative;
+        }
+
+        .quiz-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .quiz-question {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option:hover {
+            background-color: #f8fafc;
+            border-color: var(--primary-light);
+        }
+
+        .option.selected {
+            background-color: #eff6ff;
+            border-color: var(--primary);
+        }
+
+        .option.correct {
+            background-color: #d1fae5;
+            border-color: #10b981;
+        }
+
+        .option.incorrect {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .selected .option-radio {
+            border-color: var(--primary);
+        }
+
+        .selected .option-radio::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--primary);
+        }
+
+        .correct .option-radio {
+            border-color: #10b981;
+        }
+
+        .correct .option-radio::after {
+            background-color: #10b981;
+        }
+
+        .incorrect .option-radio {
+            border-color: #ef4444;
+        }
+
+        .incorrect .option-radio::after {
+            background-color: #ef4444;
+        }
+
+        .check-button {
+            padding: 0.6rem 1.2rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .check-button:hover {
+            background-color: #2563eb;
+        }
+
+        .check-button:disabled {
+            background-color: #93c5fd;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .feedback.incorrect {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .chord-demo {
+            margin-top: 1.5rem;
+        }
+
+        .chord-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .chord-button {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-light);
+            color: var(--text);
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .chord-button:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .chord-button.active {
+            background-color: var(--primary);
+            color: white;
+            font-weight: bold;
+        }
+
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .inversion-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        .chord-formula {
+            font-family: monospace;
+            padding: 0.2rem 0.4rem;
+            background-color: #f1f5f9;
+            border-radius: 0.3rem;
+            color: var(--primary);
+        }
+
+        figure {
+            margin: 1.5rem 0;
+        }
+
+        figcaption {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            display: block;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+
+            #toc {
+                display: none;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-bg"></div>
+        <h1>和弦的奇妙世界</h1>
+        <p>探索音乐理论中的和弦构成、分类与应用</p>
+    </header>
+
+    <div class="container">
+        <div class="content-wrapper">
+            <nav id="toc">
+                <h3>目录</h3>
+                <ul>
+                    <li><a href="#intro">和弦基础</a></li>
+                    <li><a href="#construction">和弦构成</a></li>
+                    <li><a href="#triad">三和弦分类</a></li>
+                    <li class="toc-subtitle"><a href="#major-triad">大三和弦</a></li>
+                    <li class="toc-subtitle"><a href="#minor-triad">小三和弦</a></li>
+                    <li class="toc-subtitle"><a href="#augmented-triad">增三和弦</a></li>
+                    <li class="toc-subtitle"><a href="#diminished-triad">减三和弦</a></li>
+                    <li><a href="#seventh">七和弦分类</a></li>
+                    <li><a href="#extended">扩展和弦</a></li>
+                    <li><a href="#inversions">和弦转位</a></li>
+                    <li><a href="#functional">和弦功能</a></li>
+                    <li><a href="#progressions">常见和弦进行</a></li>
+                    <li><a href="#interactive">互动和弦演示</a></li>
+                </ul>
+            </nav>
+
+            <div class="main-content">
+                <section class="card full-width" id="intro">
+                    <div class="card-header">和弦基础</div>
+                    <div class="card-content">
+                        <h2>什么是和弦？</h2>
+                        <p>和弦是三个或更多音符的组合，这些音符同时发声形成一个和谐的整体。和弦是现代音乐和声学中最基本的元素之一，它是构成音乐"垂直维度"的基础。</p>
+                        
+                        <p>简单来说，当我们在钢琴上同时按下多个键，或在吉他上同时弹奏多根弦时，就形成了和弦。</p>
+                        
+                        <div class="chart-container" id="chord-overview-chart"></div>
+                    </div>
+                </section>
+
+                <section class="card full-width" id="construction">
+                    <div class="card-header">和弦构成</div>
+                    <div class="card-content">
+                        <h2>和弦是如何构成的？</h2>
+                        <p>和弦通常由根音（最低音）开始，向上按照特定的音程关系堆叠而成。最常见的堆叠方式是按照三度音程（跳过一个音符）构建，这就是为什么大多数基本和弦被称为"三度和声"。</p>
+                        
+                        <p>音乐中使用的音高可以用数字表示，以方便分析和弦结构：</p>
+                        
+                        <ul>
+                            <li>1（根音）：和弦的基础，决定和弦的名称</li>
+                            <li>3：三音，决定和弦的性质（大调或小调）</li>
+                            <li>5：五音，提供和声的稳定性</li>
+                            <li>7：七音，为和弦增添色彩和张力</li>
+                            <li>9、11、13：扩展音，进一步丰富和声色彩</li>
+                        </ul>
+
+                        <figure>
+                            <img src="https://kimi-image-search.app.msh.team/?q=piano keyboard with C major chord highlighted" alt="钢琴上的C大三和弦示意图" width="600">
+                            <figcaption>钢琴键盘上的C大三和弦（C-E-G音组成）</figcaption>
+                        </figure>
+                    </div>
+                </section>
+
+                <section class="card" id="triad">
+                    <div class="card-header">三和弦分类</div>
+                    <div class="card-content">
+                        <h2>三和弦：最基本的和弦类型</h2>
+                        <p>三和弦由三个音组成，包括根音、三音和五音。根据三音和五音与根音的关系，三和弦可分为四种基本类型。</p>
+                        
+                        <div class="chart-container" id="triad-chart"></div>
+                    </div>
+                </section>
+
+                <section class="card" id="major-triad">
+                    <div class="card-header">大三和弦</div>
+                    <div class="card-content">
+                        <h3>大三和弦 (Major Triad)</h3>
+                        <p>大三和弦由根音、大三度和纯五度组成。它具有明亮、愉快的音色，是大调音乐的基础。</p>
+                        
+                        <p>构成公式：<span class="chord-formula">1 - 3 - 5</span></p>
+                        
+                        <p>以C大三和弦为例：C - E - G</p>
+                        
+                        <div class="piano-container" id="c-major-piano"></div>
+                    </div>
+                </section>
+
+                <section class="card" id="minor-triad">
+                    <div class="card-header">小三和弦</div>
+                    <div class="card-content">
+                        <h3>小三和弦 (Minor Triad)</h3>
+                        <p>小三和弦由根音、小三度和纯五度组成。它通常被认为具有忧郁、严肃的音色，是小调音乐的基础。</p>
+                        
+                        <p>构成公式：<span class="chord-formula">1 - ♭3 - 5</span></p>
+                        
+                        <p>以C小三和弦为例：C - E♭ - G</p>
+                        
+                        <div class="piano-container" id="c-minor-piano"></div>
+                    </div>
+                </section>
+
+                <section class="card" id="augmented-triad">
+                    <div class="card-header">增三和弦</div>
+                    <div class="card-content">
+                        <h3>增三和弦 (Augmented Triad)</h3>
+                        <p>增三和弦由根音、大三度和增五度组成。它具有紧张、不稳定的音色，常用于创造悬疑或戏剧性效果。</p>
+                        
+                        <p>构成公式：<span class="chord-formula">1 - 3 - #5</span></p>
+                        
+                        <p>以C增三和弦为例：C - E - G#</p>
+                        
+                        <div class="piano-container" id="c-augmented-piano"></div>
+                    </div>
+                </section>
+
+                <section class="card" id="diminished-triad">
+                    <div class="card-header">减三和弦</div>
+                    <div class="card-content">
+                        <h3>减三和弦 (Diminished Triad)</h3>
+                        <p>减三和弦由根音、小三度和减五度组成。它具有强烈的不协和音色，通常用于表达紧张或过渡。</p>
+                        
+                        <p>构成公式：<span class="chord-formula">1 - ♭3 - ♭5</span></p>
+                        
+                        <p>以C减三和弦为例：C - E♭ - G♭</p>
+                        
+                        <div class="piano-container" id="c-diminished-piano"></div>
+                    </div>
+                </section>
+
+                <section class="card full-width" id="seventh">
+                    <div class="card-header">七和弦分类</div>
+                    <div class="card-content">
+                        <h2>七和弦：增添色彩的和弦</h2>
+                        <p>七和弦是在三和弦的基础上加入七音（距离根音七度音程）构成的四音和弦。七和弦增加了和声的复杂性和表现力。</p>
+                        
+                        <p>以下是几种常见的七和弦类型：</p>
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>七和弦类型</th>
+                                    <th>构成</th>
+                                    <th>示例 (C为根音)</th>
+                                    <th>音乐特点</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>大七和弦 (Maj7)</td>
+                                    <td>大三和弦 + 大七度</td>
+                                    <td>C - E - G - B</td>
+                                    <td>柔和、明亮、梦幻</td>
+                                </tr>
+                                <tr>
+                                    <td>属七和弦 (Dom7)</td>
+                                    <td>大三和弦 + 小七度</td>
+                                    <td>C - E - G - B♭</td>
+                                    <td>带有张力、需要解决</td>
+                                </tr>
+                                <tr>
+                                    <td>小七和弦 (min7)</td>
+                                    <td>小三和弦 + 小七度</td>
+                                    <td>C - E♭ - G - B♭</td>
+                                    <td>柔和忧郁、常用于爵士</td>
+                                </tr>
+                                <tr>
+                                    <td>半减七和弦 (m7♭5)</td>
+                                    <td>减三和弦 + 小七度</td>
+                                    <td>C - E♭ - G♭ - B♭</td>
+                                    <td>不稳定、过渡性强</td>
+                                </tr>
+                                <tr>
+                                    <td>减七和弦 (dim7)</td>
+                                    <td>减三和弦 + 减七度</td>
+                                    <td>C - E♭ - G♭ - A</td>
+                                    <td>极不稳定、高张力</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="chart-container" id="seventh-chart"></div>
+                    </div>
+                </section>
+
+                <section class="card full-width" id="extended">
+                    <div class="card-header">扩展和弦</div>
+                    <div class="card-content">
+                        <h2>扩展和弦：丰富和声色彩</h2>
+                        <p>扩展和弦是指在七和弦的基础上继续添加更高的音，如九音、十一音和十三音。这些和弦在爵士、R&B和现代流行音乐中广泛使用。</p>
+                        
+                        <ul>
+                            <li><strong>九和弦 (9th)</strong>：在七和弦上添加九音 (例如：C9 = C - E - G - B♭ - D)</li>
+                            <li><strong>十一和弦 (11th)</strong>：在九和弦上添加十一音 (例如：C11 = C - E - G - B♭ - D - F)</li>
+                            <li><strong>十三和弦 (13th)</strong>：在十一和弦上添加十三音 (例如：C13 = C - E - G - B♭ - D - F - A)</li>
+                        </ul>
+                        
+                        <p>扩展和弦的每个音都可以进行变化（升高或降低），从而创造出更丰富的和声色彩和表现力。</p>
+                        
+                        <figure>
+                            <img src="https://kimi-image-search.app.msh.team/?q=extended piano chords chart" alt="扩展和弦示意图" width="600">
+                            <figcaption>扩展和弦结构示意图，展示了从三和弦到十三和弦的演变</figcaption>
+                        </figure>
+                    </div>
+                </section>
+
+                <section class="card" id="inversions">
+                    <div class="card-header">和弦转位</div>
+                    <div class="card-content">
+                        <h2>和弦转位：改变和弦的排列方式</h2>
+                        <p>和弦转位是指改变和弦中音符的排列顺序，使得根音不再是最低音。通过转位，可以使同一个和弦产生不同的音色和进行感。</p>
+                        
+                        <p>以C大三和弦为例，它有三种形式：</p>
+                        <ul>
+                            <li><strong>原位</strong>：C - E - G（根音在最低部）</li>
+                            <li><strong>第一转位</strong>：E - G - C（三音在最低部），也称为六和弦</li>
+                            <li><strong>第二转位</strong>：G - C - E（五音在最低部），也称为四六和弦</li>
+                        </ul>
+                        
+                        <div class="chord-demo">
+                            <p>C大三和弦的转位示例：</p>
+                            <div class="inversion-buttons">
+                                <button class="chord-button active" id="root-pos">原位</button>
+                                <button class="chord-button" id="first-inv">第一转位</button>
+                                <button class="chord-button" id="second-inv">第二转位</button>
+                            </div>
+                            <div class="piano-container" id="inversion-piano"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card" id="functional">
+                    <div class="card-header">和弦功能</div>
+                    <div class="card-content">
+                        <h2>和弦的功能性</h2>
+                        <p>在调性音乐中，每个和弦都有特定的功能，主要分为三类：</p>
+                        
+                        <ul>
+                            <li><strong>主和弦(Tonic)</strong>：I级和弦，提供稳定感和归属感，通常是乐段的终点</li>
+                            <li><strong>属和弦(Dominant)</strong>：V级和弦，创造张力，推动和声向主和弦移动</li>
+                            <li><strong>下属和弦(Subdominant)</strong>：IV级和弦，连接主和弦和属和弦，拓展和声空间</li>
+                        </ul>
+                        
+                        <div class="chart-container" id="functional-chart"></div>
+                    </div>
+                </section>
+
+                <section class="card" id="progressions">
+                    <div class="card-header">常见和弦进行</div>
+                    <div class="card-content">
+                        <h2>常见和弦进行</h2>
+                        <p>和弦进行是和弦的连续排列，形成音乐中的和声框架。以下是一些最常见的和弦进行：</p>
+                        
+                        <ul>
+                            <li><strong>I-IV-V-I</strong>：最基本的和弦进行，大量使用于民谣、流行和古典音乐</li>
+                            <li><strong>I-V-vi-IV</strong>：流行音乐中最常用的进行之一，情绪丰富</li>
+                            <li><strong>ii-V-I</strong>：爵士乐的基本进行，常用于即兴演奏</li>
+                            <li><strong>I-vi-IV-V</strong>：50年代经典进行，常见于早期摇滚和流行歌曲</li>
+                        </ul>
+                        
+                        <div class="chart-container" id="progression-chart"></div>
+                    </div>
+                </section>
+
+                <section class="card full-width" id="interactive">
+                    <div class="card-header">互动和弦演示</div>
+                    <div class="card-content">
+                        <h2>探索和弦世界</h2>
+                        <p>点击下面的按钮来聆听不同类型的和弦。这将帮助你理解和弦的声音特性和情感色彩。</p>
+                        
+                        <div class="chord-demo">
+                            <div class="chord-buttons">
+                                <button class="chord-button active" id="play-c-major">C大三和弦</button>
+                                <button class="chord-button" id="play-c-minor">C小三和弦</button>
+                                <button class="chord-button" id="play-c-aug">C增三和弦</button>
+                                <button class="chord-button" id="play-c-dim">C减三和弦</button>
+                                <button class="chord-button" id="play-c-dom7">C属七和弦</button>
+                                <button class="chord-button" id="play-c-maj7">C大七和弦</button>
+                                <button class="chord-button" id="play-c-min7">C小七和弦</button>
+                            </div>
+                            <div class="piano-container" id="demo-piano"></div>
+                        </div>
+
+                        <div class="quiz-container">
+                            <div class="quiz-title">和弦识别挑战</div>
+                            <div class="quiz-question">以下哪个和弦公式代表小七和弦（min7）？</div>
+                            <div class="options-container">
+                                <div class="option" data-value="a">
+                                    <div class="option-radio"></div>
+                                    <div>1 - 3 - 5 - 7</div>
+                                </div>
+                                <div class="option" data-value="b">
+                                    <div class="option-radio"></div>
+                                    <div>1 - 3 - 5 - ♭7</div>
+                                </div>
+                                <div class="option" data-value="c">
+                                    <div class="option-radio"></div>
+                                    <div>1 - ♭3 - 5 - ♭7</div>
+                                </div>
+                                <div class="option" data-value="d">
+                                    <div class="option-radio"></div>
+                                    <div>1 - ♭3 - ♭5 - ♭♭7</div>
+                                </div>
+                            </div>
+                            <button class="check-button" disabled>检查答案</button>
+                            <div class="feedback"></div>
+                        </div>
+                        
+                        <div class="confetti-container"></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 创建钢琴键盘并显示和弦
+        function createPiano(containerId, activeNotes) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            // 定义钢琴键音符
+            const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+            const octave = 4; // 中央C所在的八度
+            
+            // 创建一个八度的钢琴键
+            for (let i = 0; i < notes.length; i++) {
+                const note = notes[i];
+                const isBlack = note.includes('#');
+                const keyDiv = document.createElement('div');
+                keyDiv.className = `piano-key ${isBlack ? 'black' : ''}`;
+                
+                // 添加音符名称
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'key-name';
+                nameSpan.textContent = note;
+                keyDiv.appendChild(nameSpan);
+                
+                // 将黑键放置在相应的位置
+                if (isBlack) {
+                    keyDiv.style.left = `${i * 40 - 12}px`;
+                } else {
+                    keyDiv.style.left = `${i * 40}px`;
+                }
+                
+                // 高亮显示当前和弦中的音符
+                const noteWithOctave = `${note}${octave}`;
+                if (activeNotes.includes(noteWithOctave)) {
+                    keyDiv.classList.add('active');
+                }
+                
+                container.appendChild(keyDiv);
+            }
+        }
+
+        // 创建和弦概述图表
+        function createChordOverviewChart() {
+            const chart = echarts.init(document.getElementById('chord-overview-chart'));
+            
+            const option = {
+                title: {
+                    text: '和弦分类概览',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: {c}'
+                },
+                series: [
+                    {
+                        name: '和弦类型',
+                        type: 'treemap',
+                        data: [
+                            {
+                                name: '三和弦',
+                                value: 4,
+                                children: [
+                                    { name: '大三和弦', value: 1 },
+                                    { name: '小三和弦', value: 1 },
+                                    { name: '增三和弦', value: 1 },
+                                    { name: '减三和弦', value: 1 }
+                                ]
+                            },
+                            {
+                                name: '七和弦',
+                                value: 5,
+                                children: [
+                                    { name: '大七和弦', value: 1 },
+                                    { name: '属七和弦', value: 1 },
+                                    { name: '小七和弦', value: 1 },
+                                    { name: '半减七和弦', value: 1 },
+                                    { name: '减七和弦', value: 1 }
+                                ]
+                            },
+                            {
+                                name: '扩展和弦',
+                                value: 3,
+                                children: [
+                                    { name: '九和弦', value: 1 },
+                                    { name: '十一和弦', value: 1 },
+                                    { name: '十三和弦', value: 1 }
+                                ]
+                            },
+                            {
+                                name: '变化和弦',
+                                value: 4,
+                                children: [
+                                    { name: '增六和弦', value: 1 },
+                                    { name: '那不勒斯和弦', value: 1 },
+                                    { name: '挂留和弦', value: 1 },
+                                    { name: '变化和弦', value: 1 }
+                                ]
+                            }
+                        ],
+                        levels: [
+                            {
+                                itemStyle: {
+                                    borderWidth: 0,
+                                    gapWidth: 5
+                                }
+                            },
+                            {
+                                itemStyle: {
+                                    gapWidth: 1
+                                }
+                            }
+                        ],
+                        breadcrumb: {
+                            show: false
+                        }
+                    }
+                ]
+            };
+            
+            chart.setOption(option);
+            
+            // 窗口大小变化时调整图表大小
+            window.addEventListener('resize', function() {
+                chart.resize();
+            });
+        }
+
+        // 创建三和弦雷达图
+        function createTriadChart() {
+            const chart = echarts.init(document.getElementById('triad-chart'));
+            
+            const option = {
+                title: {
+                    text: '四种三和弦的特性对比',
+                    left: 'center'
+                },
+                tooltip: {},
+                radar: {
+                    indicator: [
+                        { name: '明亮度', max: 100 },
+                        { name: '稳定性', max: 100 },
+                        { name: '张力', max: 100 },
+                        { name: '情感复杂度', max: 100 },
+                        { name: '常用性', max: 100 }
+                    ],
+                    radius: '60%'
+                },
+                series: [{
+                    type: 'radar',
+                    data: [
+                        {
+                            value: [90, 85, 20, 40, 95],
+                            name: '大三和弦',
+                            areaStyle: {
+                                color: 'rgba(59, 130, 246, 0.2)'
+                            },
+                            lineStyle: {
+                                color: '#3b82f6'
+                            },
+                            itemStyle: {
+                                color: '#3b82f6'
+                            }
+                        },
+                        {
+                            value: [30, 70, 40, 80, 90],
+                            name: '小三和弦',
+                            areaStyle: {
+                                color: 'rgba(139, 92, 246, 0.2)'
+                            },
+                            lineStyle: {
+                                color: '#8b5cf6'
+                            },
+                            itemStyle: {
+                                color: '#8b5cf6'
+                            }
+                        },
+                        {
+                            value: [60, 20, 90, 75, 30],
+                            name: '增三和弦',
+                            areaStyle: {
+                                color: 'rgba(245, 158, 11, 0.2)'
+                            },
+                            lineStyle: {
+                                color: '#f59e0b'
+                            },
+                            itemStyle: {
+                                color: '#f59e0b'
+                            }
+                        },
+                        {
+                            value: [10, 15, 100, 85, 40],
+                            name: '减三和弦',
+                            areaStyle: {
+                                color: 'rgba(239, 68, 68, 0.2)'
+                            },
+                            lineStyle: {
+                                color: '#ef4444'
+                            },
+                            itemStyle: {
+                                color: '#ef4444'
+                            }
+                        }
+                    ]
+                }]
+            };
+            
+            chart.setOption(option);
+            
+            window.addEventListener('resize', function() {
+                chart.resize();
+            });
+        }
+
+        // 创建七和弦柱状图
+        function createSeventhChart() {
+            const chart = echarts.init(document.getElementById('seventh-chart'));
+            
+            const option = {
+                title: {
+                    text: '常见七和弦的特点',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['稳定性', '张力', '常用性'],
+                    bottom: 10
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '15%',
+                    top: '15%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['大七和弦', '属七和弦', '小七和弦', '半减七和弦', '减七和弦'],
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 30
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    max: 100
+                },
+                series: [
+                    {
+                        name: '稳定性',
+                        type: 'bar',
+                        data: [80, 40, 65, 30, 10],
+                        itemStyle: {
+                            color: '#3b82f6'
+                        }
+                    },
+                    {
+                        name: '张力',
+                        type: 'bar',
+                        data: [40, 80, 50, 75, 95],
+                        itemStyle: {
+                            color: '#8b5cf6'
+                        }
+                    },
+                    {
+                        name: '常用性',
+                        type: 'bar',
+                        data: [70, 90, 85, 50, 40],
+                        itemStyle: {
+                            color: '#f59e0b'
+                        }
+                    }
+                ]
+            };
+            
+            chart.setOption(option);
+            
+            window.addEventListener('resize', function() {
+                chart.resize();
+            });
+        }
+
+        // 创建和弦功能饼图
+        function createFunctionalChart() {
+            const chart = echarts.init(document.getElementById('functional-chart'));
+            
+            const option = {
+                title: {
+                    text: '调性音乐中的和弦功能分布',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: ['主和弦(I)', '下属和弦(IV)', '属和弦(V)', '副主和弦(vi)', '副属和弦(ii)', '其他和弦']
+                },
+                series: [
+                    {
+                        name: '和弦功能',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['50%', '50%'],
+                        data: [
+                            { value: 35, name: '主和弦(I)' },
+                            { value: 20, name: '下属和弦(IV)' },
+                            { value: 25, name: '属和弦(V)' },
+                            { value: 10, name: '副主和弦(vi)' },
+                            { value: 7, name: '副属和弦(ii)' },
+                            { value: 3, name: '其他和弦' }
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        },
+                        itemStyle: {
+                            color: function(params) {
+                                const colorList = ['#3b82f6', '#8b5cf6', '#f59e0b', '#10b981', '#ef4444', '#6b7280'];
+                                return colorList[params.dataIndex];
+                            }
+                        }
+                    }
+                ]
+            };
+            
+            chart.setOption(option);
+            
+            window.addEventListener('resize', function() {
+                chart.resize();
+            });
+        }
+
+        // 创建和弦进行图表
+        function createProgressionChart() {
+            const chart = echarts.init(document.getElementById('progression-chart'));
+            
+            const option = {
+                title: {
+                    text: '流行音乐中常见和弦进行的使用频率',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['I-IV-V-I', 'I-V-vi-IV', 'ii-V-I', 'I-vi-IV-V', '其他进行'],
+                    axisLabel: {
+                        interval: 0
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '使用频率 (%)'
+                },
+                series: [
+                    {
+                        data: [25, 30, 15, 10, 20],
+                        type: 'bar',
+                        itemStyle: {
+                            color: function(params) {
+                                const colorList = ['#3b82f6', '#8b5cf6', '#f59e0b', '#10b981', '#6b7280'];
+                                return colorList[params.dataIndex];
+                            }
+                        }
+                    }
+                ]
+            };
+            
+            chart.setOption(option);
+            
+            window.addEventListener('resize', function() {
+                chart.resize();
+            });
+        }
+
+        // 和弦数据
+        const chords = {
+            cMajor: ['C4', 'E4', 'G4'],
+            cMinor: ['C4', 'D#4', 'G4'],  // Eb表示为D#
+            cAugmented: ['C4', 'E4', 'G#4'],
+            cDiminished: ['C4', 'D#4', 'F#4'],  // Eb和Gb表示为D#和F#
+            cDom7: ['C4', 'E4', 'G4', 'A#4'],  // Bb表示为A#
+            cMaj7: ['C4', 'E4', 'G4', 'B4'],
+            cMin7: ['C4', 'D#4', 'G4', 'A#4']  // Eb和Bb表示为D#和A#
+        };
+
+        // 和弦转位
+        const inversions = {
+            root: ['C4', 'E4', 'G4'],
+            first: ['E4', 'G4', 'C5'],
+            second: ['G4', 'C5', 'E5']
+        };
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 创建各种钢琴键盘展示
+            createPiano('c-major-piano', chords.cMajor);
+            createPiano('c-minor-piano', chords.cMinor);
+            createPiano('c-augmented-piano', chords.cAugmented);
+            createPiano('c-diminished-piano', chords.cDiminished);
+            createPiano('demo-piano', chords.cMajor);  // 默认显示C大三和弦
+            createPiano('inversion-piano', inversions.root);  // 默认显示原位
+
+            // 创建各种图表
+            createChordOverviewChart();
+            createTriadChart();
+            createSeventhChart();
+            createFunctionalChart();
+            createProgressionChart();
+
+            // 处理互动演示部分的按钮点击事件
+            document.querySelectorAll('.chord-buttons button').forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除之前选中的按钮高亮
+                    document.querySelectorAll('.chord-buttons button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // 高亮当前按钮
+                    this.classList.add('active');
+                    
+                    // 根据按钮ID更新钢琴展示
+                    let chordToShow;
+                    switch(this.id) {
+                        case 'play-c-major':
+                            chordToShow = chords.cMajor;
+                            break;
+                        case 'play-c-minor':
+                            chordToShow = chords.cMinor;
+                            break;
+                        case 'play-c-aug':
+                            chordToShow = chords.cAugmented;
+                            break;
+                        case 'play-c-dim':
+                            chordToShow = chords.cDiminished;
+                            break;
+                        case 'play-c-dom7':
+                            chordToShow = chords.cDom7;
+                            break;
+                        case 'play-c-maj7':
+                            chordToShow = chords.cMaj7;
+                            break;
+                        case 'play-c-min7':
+                            chordToShow = chords.cMin7;
+                            break;
+                    }
+                    
+                    createPiano('demo-piano', chordToShow);
+                });
+            });
+
+            // 处理和弦转位演示
+            document.querySelectorAll('.inversion-buttons button').forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除之前选中的按钮高亮
+                    document.querySelectorAll('.inversion-buttons button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // 高亮当前按钮
+                    this.classList.add('active');
+                    
+                    // 根据按钮ID更新钢琴展示
+                    let inversionToShow;
+                    switch(this.id) {
+                        case 'root-pos':
+                            inversionToShow = inversions.root;
+                            break;
+                        case 'first-inv':
+                            inversionToShow = inversions.first;
+                            break;
+                        case 'second-inv':
+                            inversionToShow = inversions.second;
+                            break;
+                    }
+                    
+                    createPiano('inversion-piano', inversionToShow);
+                });
+            });
+
+            // 处理测验部分
+            const options = document.querySelectorAll('.option');
+            const checkButton = document.querySelector('.check-button');
+            const feedback = document.querySelector('.feedback');
+            
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    // 移除之前选中的选项
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // 选中当前选项
+                    this.classList.add('selected');
+                    
+                    // 启用检查按钮
+                    checkButton.disabled = false;
+                });
+            });
+            
+            checkButton.addEventListener('click', function() {
+                const selectedOption = document.querySelector('.option.selected');
+                const isCorrect = selectedOption.dataset.value === 'c'; // 正确答案是C选项
+                
+                // 移除之前的反馈样式
+                options.forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                });
+                
+                if (isCorrect) {
+                    selectedOption.classList.add('correct');
+                    feedback.textContent = '正确！小七和弦由根音、小三度、纯五度和小七度组成 (1-♭3-5-♭7)。';
+                    feedback.classList.add('correct');
+                    feedback.classList.remove('incorrect');
+                    createConfetti();
+                } else {
+                    selectedOption.classList.add('incorrect');
+                    // 显示正确答案
+                    document.querySelector('.option[data-value="c"]').classList.add('correct');
+                    feedback.textContent = '不正确。小七和弦由根音、小三度、纯五度和小七度组成 (1-♭3-5-♭7)。';
+                    feedback.classList.add('incorrect');
+                    feedback.classList.remove('correct');
+                }
+                
+                feedback.style.display = 'block';
+                checkButton.disabled = true;
+            });
+
+            // 实现滚动监听（简化版的scroll-spy）
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('#toc a');
+            
+            function updateActiveLink() {
+                const scrollPosition = window.scrollY;
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id');
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${sectionId}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', updateActiveLink);
+            updateActiveLink(); // 初始化
+            
+            // 点击导航链接时平滑滚动
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 50,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+
+        // 创建彩色纸屑效果（在答题正确时显示）
+        function createConfetti() {
+            const confettiContainer = document.querySelector('.confetti-container');
+            confettiContainer. innerHTML = '';
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'absolute';
+                confetti.style.width = `${Math.random() * 10 + 5}px`;
+                confetti.style.height = `${Math.random() * 10 + 5}px`;
+                confetti.style.background = getRandomColor();
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.top = '-10px';
+                confetti.style.borderRadius = `${Math.random() > 0.5 ? '50%' : '0'}`;
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                
+                confettiContainer.appendChild(confetti);
+                
+                // 设置动画
+                const duration = Math.random() * 3 + 2;
+                const delay = Math.random() * 2;
+                
+                confetti.animate(
+                    [
+                        { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+                        { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                    ],
+                    {
+                        duration: duration * 1000,
+                        delay: delay * 1000,
+                        fill: 'forwards',
+                        easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+                    }
+                );
+                
+                // 清理彩色纸屑
+                setTimeout(() => {
+                    confetti.remove();
+                }, (duration + delay) * 1000 + 500);
+            }
+        }
+
+        // 生成随机颜色
+        function getRandomColor() {
+            const colors = [
+                '#3b82f6', '#8b5cf6', '#f59e0b', '#10b981', '#ef4444', 
+                '#ec4899', '#d97706', '#2563eb', '#059669', '#7c3aed'
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+    </script>
+</body>
+</html>

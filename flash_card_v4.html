@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Flashcards with Audio</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+            user-select: none; /* Prevent text selection */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        #flashcard-container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            /* Base max-width for smaller/medium screens */
+            max-width: 500px;
+            transition: max-width 0.3s ease; /* Smooth transition for resizing */
+        }
+
+        #card-status {
+            font-size: 0.9em;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        #card {
+            background-color: #eefcff; /* Light blue background */
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+             /* Base min-height for smaller/medium screens */
+            min-height: 250px;
+            padding: 25px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, min-height 0.3s ease; /* Smooth transition */
+            position: relative;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+
+        #card:hover {
+             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+             transform: translateY(-3px);
+        }
+
+        #card-content {
+           /* Container */
+        }
+
+        #card-front { /* Meaning */
+             /* Base font size for smaller/medium screens */
+            font-size: 1.4em;
+            color: #333;
+            line-height: 1.6;
+             transition: font-size 0.3s ease; /* Smooth transition */
+        }
+
+        #card-back { /* Word and Pronunciation Section */
+            display: none; /* Hidden by default */
+            text-align: center;
+            align-items: center; /* Align word and icon vertically */
+            justify-content: center; /* Center content horizontally */
+            flex-direction: column; /* Stack word above pronunciation (if shown) */
+        }
+
+        #card-word-container {
+            display: flex; /* Use flex to put word and icon side-by-side */
+            align-items: center; /* Vertically align word and icon */
+            justify-content: center; /* Center them together */
+            margin-bottom: 10px; /* Space below word/icon */
+            flex-wrap: wrap; /* Allow wrapping if word is very long */
+        }
+
+        #card-word {
+             /* Base font size for smaller/medium screens */
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #0056b3;
+            margin: 0; /* Remove default margins */
+             /* Base margin for smaller/medium screens */
+            margin-right: 10px; /* Adjust as needed with icon padding */
+            word-break: break-all;
+            transition: font-size 0.3s ease, margin-right 0.3s ease; /* Smooth transition */
+        }
+
+        #speak-icon {
+            /* Base font size for smaller/medium screens */
+            font-size: 1.8em;
+            cursor: pointer;
+            color: #007bff; /* Icon color */
+            transition: color 0.2s ease, font-size 0.3s ease; /* Smooth transition */
+            line-height: 1; /* Prevent extra vertical space */
+            /* --- INCREASE PADDING HERE --- */
+            padding: 12px; /* Increase clickable area significantly */
+            /* --- END CHANGE --- */
+            display: inline-block; /* Needed for proper alignment/padding */
+            vertical-align: middle; /* Helps ensure alignment with text */
+        }
+        #speak-icon:hover {
+            color: #0056b3;
+        }
+        #speak-icon:active {
+             transform: scale(0.9); /* Click effect - applied to the icon itself */
+        }
+
+
+        #card-pronunciation {
+             /* Base font size for smaller/medium screens */
+            font-size: 1.3em;
+            color: #555;
+            font-family: 'Lucida Sans Unicode', 'Arial Unicode MS', sans-serif;
+            margin-top: 5px; /* Space above pronunciation if shown */
+            /* This element will be hidden if pronunciation is empty */
+            transition: font-size 0.3s ease; /* Smooth transition */
+        }
+
+        #navigation button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            /* Base padding/font-size */
+            padding: 12px 25px;
+            font-size: 1em;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background-color 0.2s ease, padding 0.3s ease, font-size 0.3s ease; /* Smooth transition */
+        }
+
+        #navigation button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+
+        #navigation button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Responsive adjustments for SMALL screens */
+        @media (max-width: 480px) {
+            #flashcard-container {
+                padding: 20px 25px;
+            }
+            #card {
+                min-height: 220px; /* Adjust height for smaller screens */
+                padding: 20px;
+            }
+             #card-front {
+                font-size: 1.2em;
+            }
+             #card-word {
+                font-size: 2em;
+                margin-right: 5px; /* Slightly less margin on small screens */
+             }
+             #speak-icon {
+                 font-size: 1.5em;
+                 /* Padding remains 12px from base, which is good for touch */
+             }
+             #card-pronunciation {
+                font-size: 1.1em;
+            }
+            #navigation button {
+                padding: 10px 18px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Large screen adjustments */
+        @media (min-width: 992px) {
+            #flashcard-container {
+                max-width: 700px;
+                padding: 40px 50px;
+            }
+
+            #card {
+                min-height: 350px;
+                padding: 35px;
+            }
+
+            #card-front { /* Meaning */
+                font-size: 1.8em;
+                line-height: 1.7;
+            }
+
+            #card-word { /* Word */
+                font-size: 3.5em;
+                margin-right: 15px; /* More space for the larger icon */
+            }
+
+            #speak-icon {
+                font-size: 2.2em;
+                /* Padding remains 12px, still provides larger target */
+            }
+
+            #card-pronunciation { /* Pronunciation */
+                font-size: 1.6em;
+                margin-top: 10px;
+            }
+
+             #navigation button { /* Buttons */
+                padding: 14px 30px;
+                font-size: 1.1em;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="flashcard-container">
+        <div id="card-status">Card 1 / N</div>
+        <div id="card">
+            <div id="card-content">
+                <div id="card-front">Meaning</div>
+                <div id="card-back">
+                     <div id="card-word-container">
+                         <div id="card-word">Word</div>
+                         <span id="speak-icon" title="Speak word">🔊</span>
+                     </div>
+                    <div id="card-pronunciation">Pronunciation</div>
+                </div>
+            </div>
+        </div>
+        <div id="navigation">
+            <button id="prev-btn" disabled>Previous</button>
+            <button id="next-btn">Next</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // Word list based on your input
+        // ==========================================
+        const words = [
+            { word: "rumor / rumour", meaning: "information or a story that is passed from person to person but has not been proven to be true", pronunciation: "" },
+            { word: "hang on", meaning: "to wait for a short time", pronunciation: "" },
+            { word: "van", meaning: "a vehicle that is used for transporting goods and that is closed in on all sides", pronunciation: "" },
+            { word: "panic", meaning: "to be overcome with extreme fear", pronunciation: "" },
+            { word: "snack", meaning: "a small amount of food eaten between meals", pronunciation: "" },
+            { word: "path", meaning: "a track that is made by people or animals walking over the ground", pronunciation: "" },
+            { word: "cage", meaning: "a box made of wire or metal bars in which people keep animals or birds", pronunciation: "" },
+            { word: "thirsty", meaning: "having an uncomfortable feeling because you need something to drink", pronunciation: "" },
+            { word: "sweet", meaning: "a piece of candy", pronunciation: "" },
+            { word: "starve", meaning: "to suffer or die from lack of food", pronunciation: "" },
+            { word: "disgust", meaning: "to cause (someone) to have a strong feeling of dislike for something especially because it has a very unpleasant appearance, taste, smell, etc.", pronunciation: "" },
+            { word: "delicious", meaning: "very pleasant to taste", pronunciation: "" },
+            { word: "full", meaning: "having eaten all that is wanted", pronunciation: "" },
+            { word: "tin", meaning: "a closed metal container that is usually shaped like a cylinder and that holds food or drink", pronunciation: "" },
+            { word: "euro", meaning: "a monetary unit used by countries of the European Union since 1999", pronunciation: "" }
+        ];
+        // ==========================================
+
+        let currentCardIndex = 0;
+        let isFlipped = false;
+        const totalCards = words.length;
+
+        // Get DOM elements
+        const cardStatusElement = document.getElementById('card-status');
+        const cardElement = document.getElementById('card');
+        const cardFrontElement = document.getElementById('card-front');
+        const cardBackElement = document.getElementById('card-back');
+        const cardWordElement = document.getElementById('card-word');
+        const cardPronunciationElement = document.getElementById('card-pronunciation');
+        const speakIcon = document.getElementById('speak-icon'); // Get the speaker icon
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        // Speech Synthesis setup
+        let synth = null;
+        let voices = []; // Store available voices
+
+        function populateVoiceList() {
+            if(typeof speechSynthesis === 'undefined') {
+                 console.warn("Speech Synthesis not supported by this browser.");
+                 if (speakIcon) speakIcon.style.display = 'none';
+                 return;
+            }
+            // Filter for English voices immediately if possible
+             voices = synth.getVoices().filter(voice => voice.lang.startsWith('en'));
+            // console.log("Available English voices on initial load:", voices); // Debug
+
+             // If voices load async, they need this event listener
+             if (voices.length === 0 && typeof speechSynthesis.onvoiceschanged !== 'undefined') {
+                 speechSynthesis.onvoiceschanged = () => {
+                    voices = synth.getVoices().filter(voice => voice.lang.startsWith('en'));
+                    // console.log("Available English voices after onvoiceschanged:", voices); // Debug
+                 };
+             } else if (voices.length === 0 && synth.getVoices().length > 0) {
+                 console.warn("No English voices found initially, might use default.");
+             }
+        }
+
+        if ('speechSynthesis' in window) {
+             synth = window.speechSynthesis;
+             populateVoiceList();
+        } else {
+            console.warn("Speech Synthesis not supported by this browser.");
+            if (speakIcon) speakIcon.style.display = 'none';
+        }
+
+
+        // Function to speak the current word
+        function speakWord(event) {
+            event.stopPropagation(); // Prevent card flip
+
+            if (!synth) {
+                alert("Sorry, your browser doesn't support text-to-speech.");
+                return;
+            }
+
+            if (synth.speaking) {
+                synth.cancel();
+                // Optional: Add a slight delay if cancelling and restarting immediately is problematic
+                // setTimeout(() => { proceedWithSpeaking(); }, 100);
+                // return;
+            }
+            // Proceed even if we just cancelled, usually works fine
+            proceedWithSpeaking();
+        }
+
+        function proceedWithSpeaking() {
+            const wordToSpeak = words[currentCardIndex].word;
+            const primaryWord = wordToSpeak.split('/')[0].trim();
+
+            if (primaryWord) {
+                const utterance = new SpeechSynthesisUtterance(primaryWord);
+                utterance.lang = 'en-US'; // Target US English
+
+                // Attempt to select a preferred voice (using the potentially updated voices list)
+                 let selectedVoice = voices.find(voice => voice.lang === 'en-US' && voice.localService); // Prefer local US voice
+                 if (!selectedVoice) {
+                     selectedVoice = voices.find(voice => voice.lang === 'en-US'); // Any US voice
+                 }
+                 if (!selectedVoice) {
+                     selectedVoice = voices.find(voice => voice.lang === 'en-GB' && voice.localService); // Fallback local UK
+                 }
+                 if (!selectedVoice) {
+                     selectedVoice = voices.find(voice => voice.lang === 'en-GB'); // Any UK
+                 }
+                 if (!selectedVoice) {
+                     selectedVoice = voices.find(voice => voice.lang.startsWith('en') && voice.localService); // Any local English
+                 }
+                 if (!selectedVoice) {
+                     selectedVoice = voices.find(voice => voice.lang.startsWith('en')); // Any English
+                 }
+
+                 if (selectedVoice) {
+                     utterance.voice = selectedVoice;
+                     // console.log("Using voice:", selectedVoice.name, selectedVoice.lang); // Debug
+                 } else if (synth.getVoices().length > 0) {
+                     // console.log("Using default system voice for en-US."); // Debug
+                 } else {
+                      // console.log("Voice list might still be loading or empty. Using default."); // Debug
+                 }
+
+
+                utterance.onerror = (e) => {
+                     console.error('SpeechSynthesisUtterance.onerror', e);
+                     alert('An error occurred during speech synthesis.');
+                };
+                synth.speak(utterance);
+            } else {
+                console.warn("No word found to speak for this card.");
+            }
+        }
+
+
+        // Update card display content
+        function loadCard(index) {
+            if (index < 0 || index >= totalCards) {
+                console.error("Invalid card index:", index);
+                return;
+            }
+            const cardData = words[index];
+
+            isFlipped = false;
+            cardFrontElement.textContent = cardData.meaning;
+            cardWordElement.textContent = cardData.word;
+
+            if (cardData.pronunciation && cardData.pronunciation.trim() !== "") {
+                cardPronunciationElement.textContent = cardData.pronunciation;
+                cardPronunciationElement.style.display = 'block';
+            } else {
+                cardPronunciationElement.textContent = '';
+                cardPronunciationElement.style.display = 'none';
+            }
+
+            cardFrontElement.style.display = 'block';
+            cardBackElement.style.display = 'none';
+
+            cardStatusElement.textContent = `Card ${index + 1} / ${totalCards}`;
+            prevBtn.disabled = (index === 0);
+            nextBtn.disabled = (index === totalCards - 1);
+        }
+
+        // Flip the card
+        function flipCard() {
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                cardFrontElement.style.display = 'none';
+                cardBackElement.style.display = 'flex';
+            } else {
+                cardFrontElement.style.display = 'block';
+                cardBackElement.style.display = 'none';
+                if (synth && synth.speaking) {
+                    synth.cancel();
+                }
+            }
+        }
+
+        // Go to the next card
+        function nextCard() {
+            if (currentCardIndex < totalCards - 1) {
+                if (synth && synth.speaking) {
+                    synth.cancel();
+                }
+                currentCardIndex++;
+                loadCard(currentCardIndex);
+            }
+        }
+
+        // Go to the previous card
+        function prevCard() {
+            if (currentCardIndex > 0) {
+                if (synth && synth.speaking) {
+                    synth.cancel();
+                }
+                currentCardIndex--;
+                loadCard(currentCardIndex);
+            }
+        }
+
+        // --- Add Event Listeners ---
+        cardElement.addEventListener('click', flipCard);
+        nextBtn.addEventListener('click', nextCard);
+        prevBtn.addEventListener('click', prevCard);
+
+        // Add click listener for the speak icon (only if synth is supported)
+        if (synth && speakIcon) {
+            speakIcon.addEventListener('click', speakWord);
+        }
+
+        // Initial load of the first card
+        if (totalCards > 0) {
+            loadCard(currentCardIndex);
+        } else {
+            // Handle no words case
+            cardStatusElement.textContent = "No cards";
+            cardFrontElement.textContent = "Please add words to the 'words' array in the code.";
+            cardWordElement.textContent = "";
+            cardPronunciationElement.style.display = 'none';
+             if (speakIcon) speakIcon.style.display = 'none';
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+            cardElement.style.cursor = 'default';
+            cardElement.removeEventListener('click', flipCard);
+        }
+
+    </script>
+
+</body>
+</html>

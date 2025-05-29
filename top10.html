@@ -1,0 +1,3263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentation: The Top 10 Sexiest Women in the World 2025</title>
+    <style id="master-style-sheet">
+        /* Global Resets and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #1a0a2e;
+            --secondary-bg: #2d1645;
+            --accent-gold: #d4af37;
+            --text-light: #e6e6e6;
+            --text-muted: #c0c0c0;
+            --sidebar-width: 280px;
+            --header-height: 60px; 
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background-color: var(--primary-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+            display: flex;
+            overflow-x: hidden; /* Prevent horizontal scroll from sidebar */
+        }
+
+        /* Scrollbar Styling */
+        body::-webkit-scrollbar {
+            width: 10px;
+        }
+        body::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
+        body::-webkit-scrollbar-thumb {
+            background-color: var(--accent-gold);
+            border-radius: 5px;
+            border: 2px solid var(--secondary-bg);
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, #120721 0%, #1f0e31 100%);
+            padding: 20px;
+            border-right: 1px solid rgba(212, 175, 55, 0.2);
+            overflow-y: auto;
+            transition: transform 0.3s ease-in-out;
+            z-index: 100;
+        }
+
+        .sidebar-nav h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .sidebar-nav .slide-count {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #slide-toc {
+            list-style: none;
+        }
+
+        #slide-toc li a {
+            display: block;
+            padding: 10px 15px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+            margin-bottom: 5px;
+            border-left: 3px solid transparent;
+        }
+
+        #slide-toc li a:hover {
+            background-color: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+        }
+
+        #slide-toc li a.active {
+            background-color: rgba(212, 175, 55, 0.2);
+            color: var(--accent-gold);
+            font-weight: bold;
+            border-left: 3px solid var(--accent-gold);
+        }
+        
+        .action-buttons {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .action-buttons button {
+            font-family: 'Cormorant Garamond', serif;
+            background-color: var(--accent-gold);
+            color: var(--primary-bg);
+            border: none;
+            padding: 10px 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            width: 100%;
+        }
+
+        .action-buttons button:hover {
+            background-color: #c49d2b; /* Darker gold */
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Area (Scroll View) */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            padding: 20px;
+            overflow-y: auto;
+            height: 100vh; /* Make main content scrollable, not body */
+        }
+        .main-content::-webkit-scrollbar {
+            width: 10px;
+        }
+        .main-content::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
+        .main-content::-webkit-scrollbar-thumb {
+            background-color: var(--accent-gold);
+            border-radius: 5px;
+            border: 2px solid var(--secondary-bg);
+        }
+
+        .slide-wrapper {
+            width: 95%;
+            max-width: 1280px; 
+            margin: 30px auto;
+            background-color: transparent;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden; /* Important for scaled content */
+            position: relative; /* Context for scroll-margin-top */
+            scroll-margin-top: 20px; /* Offset for scroll position */
+        }
+
+        /* This div will contain the original <div class="slide"> */
+        .slide-wrapper > .slide {
+            width: 1280px; /* Original fixed width of slides */
+            height: 720px;  /* Original fixed height of slides */
+            transform-origin: top left;
+            /* The actual 'transform: scale()' will be applied by JavaScript */
+            /* The background and other styles come from the original slide's CSS */
+            margin: 0 !important; /* Override any margins on the .slide element itself */
+            position: relative !important; /* Override fixed/absolute if any on .slide */
+        }
+
+        /* Slideshow Mode */
+        .slideshow-view {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .slideshow-view.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .slideshow-slide-container {
+            width: 90vw;
+            height: calc(90vh - 60px); /* Account for controls */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Ensure slide stays within bounds */
+        }
+
+        .slideshow-slide-container > .slide {
+            width: 1280px;
+            height: 720px;
+            transform-origin: center center; /* Scale from center in slideshow */
+             /* transform: scale() applied by JS */
+        }
+
+        .slideshow-controls {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 10px;
+            background-color: rgba(0,0,0,0.5);
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .slideshow-controls button {
+            font-family: 'Cormorant Garamond', serif;
+            background-color: var(--accent-gold);
+            color: var(--primary-bg);
+            border: none;
+            padding: 8px 15px;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .slideshow-controls button:hover {
+            background-color: #c49d2b;
+        }
+        
+        .slideshow-controls button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+
+        #current-slide-indicator {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+        
+        /* Mobile Toggle for Sidebar */
+        .sidebar-toggle {
+            display: none; /* Hidden by default, shown on mobile */
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 101; /* Above sidebar when closed */
+            background-color: var(--accent-gold);
+            color: var(--primary-bg);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .sidebar-nav {
+                transform: translateX(-100%); /* Hide sidebar off-screen */
+                box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+            }
+            .sidebar-nav.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 10px;
+                padding-top: var(--header-height); /* Space for toggle */
+            }
+            .sidebar-toggle {
+                display: block;
+            }
+            .slide-wrapper {
+                width: 100%;
+                margin: 15px auto;
+            }
+             .slideshow-slide-container {
+                width: 95vw;
+                height: calc(90vh - 50px); /* Account for controls */
+            }
+            .slideshow-controls {
+                height: 50px;
+                gap: 10px;
+            }
+             .slideshow-controls button {
+                padding: 6px 10px;
+                font-size: 0.9rem;
+            }
+            #current-slide-indicator {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Styles extracted and prefixed from individual slides will be appended here by JavaScript */
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" id="sidebar-toggle-btn">&#9776;</button>
+    
+    <div class="sidebar-nav" id="sidebar">
+        <h3>Presentation</h3>
+        <div class="slide-count">Total Slides: <span id="total-slides-count">0</span></div>
+        <ul id="slide-toc">
+            <!-- Table of Contents items will be generated here by JavaScript -->
+        </ul>
+        <div class="action-buttons">
+            <button id="toggle-slideshow-btn">Enter Slideshow</button>
+        </div>
+    </div>
+
+    <div class="main-content" id="scroll-view">
+        <!-- Slide wrappers will be generated here by JavaScript -->
+    </div>
+
+    <div class="slideshow-view" id="slideshow-mode">
+        <div class="slideshow-slide-container" id="slideshow-current-slide-content">
+            <!-- Current slide content for slideshow mode will be injected here -->
+        </div>
+        <div class="slideshow-controls">
+            <button id="prev-slide-btn">&laquo; Prev</button>
+            <span id="current-slide-indicator">1 / N</span>
+            <button id="next-slide-btn">Next &raquo;</button>
+            <button id="exit-slideshow-btn">Exit Slideshow</button>
+        </div>
+    </div>
+
+    <script>
+        const rawSlideHTMLs = [
+// Slide 1: Title Slide
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Top 10 Sexiest Women in the World 2025</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1645 100%);
+            color: #e6e6e6;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(45, 22, 69, 0.9) 100%);
+        }
+        
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://kimi-image-search.app.msh.team/?q=elegant%20dark%20purple%20gold%20abstract%20background');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .content {
+            text-align: center;
+            z-index: 1;
+            padding: 2rem;
+            max-width: 80%;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1.2s forwards 0.5s;
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #c0c0c0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1.2s forwards 1s;
+        }
+        
+        .byline {
+            font-size: 1.2rem;
+            color: #a991c5;
+            font-style: italic;
+            margin-top: 3rem;
+            opacity: 0;
+            animation: fadeIn 1.2s forwards 1.5s;
+        }
+        
+        .gold-accent {
+            width: 150px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            margin: 2rem auto;
+            opacity: 0;
+            animation: expandWidth 1.5s forwards 1.2s;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes expandWidth {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 150px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="background"></div>
+        <div class="content">
+            <h1>The Top 10 Sexiest Women in the World</h1>
+            <div class="subtitle">Beyond Physical Beauty: A Celebration of Influence, Talent, and Charisma</div>
+            <div class="gold-accent"></div>
+            <div class="byline">2025 Edition</div>
+        </div>
+    </div>
+</body>
+</html>`,
+// Slide 2: Redefining Beauty
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redefining Beauty</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1645 100%);
+            color: #e6e6e6;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(45, 22, 69, 0.9) 100%);
+        }
+        
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://kimi-image-search.app.msh.team/?q=diverse%20beauty%20concept%20artistic%20elegant');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: -1;
+        }
+        
+        .left-panel {
+            width: 50%;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .right-panel {
+            width: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            color: #d4af37;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.3s;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: #c0c0c0;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.6s;
+        }
+        
+        .text-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.9s;
+        }
+        
+        .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .image-container {
+            width: 80%;
+            height: 70%;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            animation: fadeIn 1.2s forwards 1.2s;
+        }
+        
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s ease;
+        }
+        
+        .image-container:hover img {
+            transform: scale(1.05);
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="background"></div>
+        <div class="left-panel">
+            <h2>Redefining Beauty</h2>
+            <div class="subtitle">The Multifaceted Nature of Modern Attractiveness</div>
+            <div class="text-content">
+                <p>In 2025, what we define as "sexy" has evolved beyond physical appearance alone. Today's most captivating women embody a powerful combination of:</p>
+                <p><span class="highlight">Talent & Accomplishment</span> — The allure of expertise and mastery in their fields</p>
+                <p><span class="highlight">Influence & Impact</span> — The ability to inspire and create meaningful change</p>
+                <p><span class="highlight">Authenticity & Confidence</span> — The magnetic draw of self-assurance and genuine presence</p>
+                <p><span class="highlight">Cultural Significance</span> — The resonance of their personal brand across diverse audiences</p>
+            </div>
+        </div>
+        <div class="right-panel">
+            <div class="image-container">
+                <img src="https://kimi-image-search.app.msh.team/?q=diverse%20beauty%20concept%20artistic%20elegant" alt="Artistic representation of diverse beauty" />
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+// Slide 3: Zendaya
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zendaya</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1645 100%);
+            color: #e6e6e6;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(45, 22, 69, 0.9) 100%);
+        }
+        
+        .left-panel {
+            width: 55%;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .left-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: fadeIn 1.2s forwards 0.3s;
+        }
+        
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 30%, rgba(26, 10, 46, 0.9) 100%);
+        }
+        
+        .right-panel {
+            width: 45%;
+            padding: 3rem 3rem 3rem 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            margin-bottom: 0.5rem;
+            color: #d4af37;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.6s;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: #c0c0c0;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.8s;
+        }
+        
+        .gold-accent {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37, transparent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: expandWidth 1s forwards 1s;
+        }
+        
+        .text-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.2s;
+        }
+        
+        .attribute-list {
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.4s;
+        }
+        
+        .attribute {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .attribute-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #d4af37;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .attribute-text {
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .ranking {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(212, 175, 55, 0.9);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a0a2e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.6s;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes expandWidth {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 80px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="left-panel">
+            <img src="https://kimi-image-search.app.msh.team/?q=Zendaya%20elegant%20fashion%20red%20carpet%202025" alt="Zendaya elegant fashion" />
+            <div class="image-overlay"></div>
+            <div class="ranking">1</div>
+        </div>
+        <div class="right-panel">
+            <h2>Zendaya</h2>
+            <div class="subtitle">Elegance, Style, and Groundbreaking Talent</div>
+            <div class="gold-accent"></div>
+            <div class="text-content">
+                <p>Renowned for her impeccable style and transformative acting, Zendaya has established herself as a cultural icon whose influence transcends entertainment. Her ability to command attention while maintaining authenticity has made her a leading figure in Hollywood.</p>
+            </div>
+            <div class="attribute-list">
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Versatile Talent:</span> Award-winning performances across genres</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Fashion Icon:</span> Redefining red carpet elegance</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Cultural Impact:</span> Advocacy for representation in media</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Authentic Presence:</span> Grace under the spotlight</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+// Slide 4: Bella Hadid
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bella Hadid</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1645 100%);
+            color: #e6e6e6;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(45, 22, 69, 0.9) 100%);
+        }
+        
+        .right-panel { /* Image panel for Bella */
+            width: 55%;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            order: 2; /* Image on the right */
+        }
+        
+        .right-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: fadeIn 1.2s forwards 0.3s;
+        }
+        
+        .image-overlay { /* Adjusted for right panel image */
+            position: absolute;
+            top: 0;
+            right: 0; /* Gradient from right to left */
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(270deg, transparent 30%, rgba(26, 10, 46, 0.9) 100%);
+        }
+        
+        .left-panel { /* Text panel for Bella */
+            width: 45%;
+            padding: 3rem 1rem 3rem 3rem; /* Adjusted padding */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            order: 1; /* Text on the left */
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            margin-bottom: 0.5rem;
+            color: #d4af37;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.6s;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: #c0c0c0;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.8s;
+        }
+        
+        .gold-accent {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37, transparent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: expandWidth 1s forwards 1s;
+        }
+        
+        .text-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.2s;
+        }
+        
+        .attribute-list {
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.4s;
+        }
+        
+        .attribute {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .attribute-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #d4af37;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .attribute-text {
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .ranking { /* Adjusted for right panel image */
+            position: absolute;
+            top: 2rem;
+            right: 2rem; /* Ranking on the right image */
+            width: 60px;
+            height: 60px;
+            background-color: rgba(212, 175, 55, 0.9);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a0a2e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.6s;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes expandWidth {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 80px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="left-panel">
+            <h2>Bella Hadid</h2>
+            <div class="subtitle">Fashion Influence and Edgy Style</div>
+            <div class="gold-accent"></div>
+            <div class="text-content">
+                <p>A supermodel celebrated for her striking looks and influential presence in fashion, Bella Hadid has redefined modern beauty standards. Her distinctive features and confident runway presence have made her one of the most recognizable faces in the industry.</p>
+            </div>
+            <div class="attribute-list">
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Runway Dominance:</span> Coveted face of luxury fashion houses</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Distinctive Look:</span> Sculpted features that define a generation</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Style Evolution:</span> From high fashion to street style icon</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Global Appeal:</span> Resonance across diverse markets</div>
+                </div>
+            </div>
+        </div>
+        <div class="right-panel">
+            <img src="https://kimi-image-search.app.msh.team/?q=Bella%20Hadid%20high%20fashion%20runway%202025" alt="Bella Hadid high fashion" />
+            <div class="image-overlay"></div>
+            <div class="ranking">2</div>
+        </div>
+    </div>
+</body>
+</html>`,
+// Slide 5: Margot Robbie
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Margot Robbie</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1645 100%);
+            color: #e6e6e6;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(45, 22, 69, 0.9) 100%);
+        }
+        
+        .left-panel { /* Image panel for Margot */
+            width: 55%;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .left-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: fadeIn 1.2s forwards 0.3s;
+        }
+        
+        .image-overlay { /* Gradient from left to right */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 30%, rgba(26, 10, 46, 0.9) 100%);
+        }
+        
+        .right-panel { /* Text panel for Margot */
+            width: 45%;
+            padding: 3rem 3rem 3rem 1rem; /* Adjusted padding */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            margin-bottom: 0.5rem;
+            color: #d4af37;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.6s;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: #c0c0c0;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.8s;
+        }
+        
+        .gold-accent {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37, transparent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: expandWidth 1s forwards 1s;
+        }
+        
+        .text-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.2s;
+        }
+        
+        .attribute-list {
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.4s;
+        }
+        
+        .attribute {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .attribute-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #d4af37;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .attribute-text {
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .ranking { /* Ranking on the left image */
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(212, 175, 55, 0.9);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a0a2e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.6s;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes expandWidth {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 80px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="left-panel">
+            <img src="https://kimi-image-search.app.msh.team/?q=Margot%20Robbie%20elegant%20Hollywood%20glamour%202025" alt="Margot Robbie Hollywood glamour" />
+            <div class="image-overlay"></div>
+            <div class="ranking">3</div>
+        </div>
+        <div class="right-panel">
+            <h2>Margot Robbie</h2>
+            <div class="subtitle">Transformative Acting and Hollywood Glamour</div>
+            <div class="gold-accent"></div>
+            <div class="text-content">
+                <p>Known for her transformative acting and mesmerizing charm, Margot Robbie has redefined Hollywood glamour. Her ability to fully embody complex characters while maintaining an approachable elegance has made her one of cinema's most beloved stars.</p>
+            </div>
+            <div class="attribute-list">
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Versatile Performances:</span> Captivating range across diverse roles</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Classic Beauty:</span> Timeless appeal with contemporary edge</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Industry Power:</span> Acclaimed producer and advocate</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Effortless Charm:</span> Authentic personality that resonates</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+// Slide 6: Rihanna
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rihanna</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1645 100%);
+            color: #e6e6e6;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(45, 22, 69, 0.9) 100%);
+        }
+        
+        .right-panel { /* Image panel for Rihanna */
+            width: 55%;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            order: 2; /* Image on the right */
+        }
+        
+        .right-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: fadeIn 1.2s forwards 0.3s;
+        }
+        
+        .image-overlay { /* Gradient from right to left */
+            position: absolute;
+            top: 0;
+            right: 0; 
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(270deg, transparent 30%, rgba(26, 10, 46, 0.9) 100%);
+        }
+        
+        .left-panel { /* Text panel for Rihanna */
+            width: 45%;
+            padding: 3rem 1rem 3rem 3rem; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            order: 1; /* Text on the left */
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            margin-bottom: 0.5rem;
+            color: #d4af37;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.6s;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: #c0c0c0;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.8s;
+        }
+        
+        .gold-accent {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37, transparent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: expandWidth 1s forwards 1s;
+        }
+        
+        .text-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.2s;
+        }
+        
+        .attribute-list {
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.4s;
+        }
+        
+        .attribute {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .attribute-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #d4af37;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .attribute-text {
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .ranking { /* Ranking on the right image */
+            position: absolute;
+            top: 2rem;
+            right: 2rem; 
+            width: 60px;
+            height: 60px;
+            background-color: rgba(212, 175, 55, 0.9);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a0a2e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.6s;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes expandWidth {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 80px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="left-panel">
+            <h2>Rihanna</h2>
+            <div class="subtitle">Music Icon, Fashion Entrepreneur, Beauty Innovator</div>
+            <div class="gold-accent"></div>
+            <div class="text-content">
+                <p>A global icon of music and fashion, Rihanna's influence extends far beyond her impressive discography. As a groundbreaking entrepreneur, she has revolutionized the beauty and fashion industries while maintaining an authentic and unapologetic presence.</p>
+            </div>
+            <div class="attribute-list">
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Business Acumen:</span> Billion-dollar Fenty empire</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Cultural Impact:</span> Redefining beauty standards</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Fearless Style:</span> Bold fashion statements</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Authentic Voice:</span> Unapologetic self-expression</div>
+                </div>
+            </div>
+        </div>
+        <div class="right-panel">
+            <img src="https://kimi-image-search.app.msh.team/?q=Rihanna%20fashion%20icon%20Fenty%202025" alt="Rihanna fashion icon" />
+            <div class="image-overlay"></div>
+            <div class="ranking">4</div>
+        </div>
+    </div>
+</body>
+</html>`,
+// Slide 7: Gal Gadot
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gal Gadot</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1645 100%);
+            color: #e6e6e6;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(45, 22, 69, 0.9) 100%);
+        }
+        
+        .left-panel { /* Image panel for Gal */
+            width: 55%;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .left-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: fadeIn 1.2s forwards 0.3s;
+        }
+        
+        .image-overlay { /* Gradient from left to right */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 30%, rgba(26, 10, 46, 0.9) 100%);
+        }
+        
+        .right-panel { /* Text panel for Gal */
+            width: 45%;
+            padding: 3rem 3rem 3rem 1rem; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            margin-bottom: 0.5rem;
+            color: #d4af37;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.6s;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: #c0c0c0;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.8s;
+        }
+        
+        .gold-accent {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37, transparent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: expandWidth 1s forwards 1s;
+        }
+        
+        .text-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.2s;
+        }
+        
+        .attribute-list {
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.4s;
+        }
+        
+        .attribute {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .attribute-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #d4af37;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .attribute-text {
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .ranking { /* Ranking on the left image */
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(212, 175, 55, 0.9);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a0a2e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.6s;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes expandWidth {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 80px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="left-panel">
+            <img src="https://kimi-image-search.app.msh.team/?q=Gal%20Gadot%20elegant%20powerful%20wonder%20woman%202025" alt="Gal Gadot powerful elegance" />
+            <div class="image-overlay"></div>
+            <div class="ranking">5</div>
+        </div>
+        <div class="right-panel">
+            <h2>Gal Gadot</h2>
+            <div class="subtitle">Strength, Elegance, and Powerful Presence</div>
+            <div class="gold-accent"></div>
+            <div class="text-content">
+                <p>The embodiment of strength and beauty, Gal Gadot has become synonymous with her iconic role as Wonder Woman. Her combination of graceful elegance and powerful presence has made her a symbol of modern femininity that balances strength with compassion.</p>
+            </div>
+            <div class="attribute-list">
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Iconic Portrayal:</span> Redefining female heroism</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Natural Grace:</span> Effortless elegance in every appearance</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Global Appeal:</span> Cross-cultural admiration</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Authentic Leadership:</span> Advocacy for equality</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+// Slide 8: Priyanka Chopra
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Priyanka Chopra</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1645 100%);
+            color: #e6e6e6;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(45, 22, 69, 0.9) 100%);
+        }
+        
+        .right-panel { /* Image panel for Priyanka */
+            width: 55%;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            order: 2; /* Image on the right */
+        }
+        
+        .right-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: fadeIn 1.2s forwards 0.3s;
+        }
+        
+        .image-overlay { /* Gradient from right to left */
+            position: absolute;
+            top: 0;
+            right: 0; 
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(270deg, transparent 30%, rgba(26, 10, 46, 0.9) 100%);
+        }
+        
+        .left-panel { /* Text panel for Priyanka */
+            width: 45%;
+            padding: 3rem 1rem 3rem 3rem; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            order: 1; /* Text on the left */
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            margin-bottom: 0.5rem;
+            color: #d4af37;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.6s;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: #c0c0c0;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.8s;
+        }
+        
+        .gold-accent {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37, transparent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: expandWidth 1s forwards 1s;
+        }
+        
+        .text-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.2s;
+        }
+        
+        .attribute-list {
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.4s;
+        }
+        
+        .attribute {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .attribute-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #d4af37;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .attribute-text {
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .ranking { /* Ranking on the right image */
+            position: absolute;
+            top: 2rem;
+            right: 2rem; 
+            width: 60px;
+            height: 60px;
+            background-color: rgba(212, 175, 55, 0.9);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a0a2e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.6s;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes expandWidth {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 80px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="left-panel">
+            <h2>Priyanka Chopra</h2>
+            <div class="subtitle">Global Appeal and Versatile Talent</div>
+            <div class="gold-accent"></div>
+            <div class="text-content">
+                <p>A multi-talented actress, producer, and philanthropist, Priyanka Chopra has successfully bridged the gap between Bollywood and Hollywood. Her captivating presence, intelligence, and commitment to meaningful causes have established her as a global icon.</p>
+            </div>
+            <div class="attribute-list">
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Cross-Cultural Icon:</span> Transcending entertainment boundaries</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Versatile Talent:</span> Excellence across film and television</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Humanitarian Efforts:</span> UNICEF Goodwill Ambassador</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Eloquent Voice:</span> Thoughtful advocate for change</div>
+                </div>
+            </div>
+        </div>
+        <div class="right-panel">
+            <img src="https://kimi-image-search.app.msh.team/?q=Priyanka%20Chopra%20elegant%20red%20carpet%202025" alt="Priyanka Chopra elegant appearance" />
+            <div class="image-overlay"></div>
+            <div class="ranking">6</div>
+        </div>
+    </div>
+</body>
+</html>`,
+// Slide 9: Kim Kardashian
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kim Kardashian</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1645 100%);
+            color: #e6e6e6;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(45, 22, 69, 0.9) 100%);
+        }
+        
+        .left-panel { /* Image panel for Kim */
+            width: 55%;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .left-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: fadeIn 1.2s forwards 0.3s;
+        }
+        
+        .image-overlay { /* Gradient from left to right */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 30%, rgba(26, 10, 46, 0.9) 100%);
+        }
+        
+        .right-panel { /* Text panel for Kim */
+            width: 45%;
+            padding: 3rem 3rem 3rem 1rem; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            margin-bottom: 0.5rem;
+            color: #d4af37;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.6s;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: #c0c0c0;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.8s;
+        }
+        
+        .gold-accent {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37, transparent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: expandWidth 1s forwards 1s;
+        }
+        
+        .text-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.2s;
+        }
+        
+        .attribute-list {
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.4s;
+        }
+        
+        .attribute {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .attribute-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #d4af37;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .attribute-text {
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .ranking { /* Ranking on the left image */
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(212, 175, 55, 0.9);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a0a2e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.6s;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes expandWidth {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 80px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="left-panel">
+            <img src="https://kimi-image-search.app.msh.team/?q=Kim%20Kardashian%20business%20elegant%20fashion%20skims%202025" alt="Kim Kardashian business icon" />
+            <div class="image-overlay"></div>
+            <div class="ranking">7</div>
+        </div>
+        <div class="right-panel">
+            <h2>Kim Kardashian</h2>
+            <div class="subtitle">Media Influence and Business Acumen</div>
+            <div class="gold-accent"></div>
+            <div class="text-content">
+                <p>A media personality, businesswoman, and fashion icon, Kim Kardashian has transformed her public presence into a billion-dollar empire. Her entrepreneurial spirit and unwavering influence have redefined modern celebrity and business success.</p>
+            </div>
+            <div class="attribute-list">
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Business Empire:</span> SKIMS, KKW Beauty, and more</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Cultural Impact:</span> Reshaping beauty standards</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Media Mastery:</span> Unparalleled social influence</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Advocacy Work:</span> Criminal justice reform</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+// Slide 10: AngelaBaby
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AngelaBaby</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1645 100%);
+            color: #e6e6e6;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(45, 22, 69, 0.9) 100%);
+        }
+        
+        .right-panel { /* Image panel for AngelaBaby */
+            width: 55%;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            order: 2; /* Image on the right */
+        }
+        
+        .right-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: fadeIn 1.2s forwards 0.3s;
+        }
+        
+        .image-overlay { /* Gradient from right to left */
+            position: absolute;
+            top: 0;
+            right: 0; 
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(270deg, transparent 30%, rgba(26, 10, 46, 0.9) 100%);
+        }
+        
+        .left-panel { /* Text panel for AngelaBaby */
+            width: 45%;
+            padding: 3rem 1rem 3rem 3rem; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            order: 1; /* Text on the left */
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            margin-bottom: 0.5rem;
+            color: #d4af37;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.6s;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: #c0c0c0;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.8s;
+        }
+        
+        .gold-accent {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37, transparent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: expandWidth 1s forwards 1s;
+        }
+        
+        .text-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.2s;
+        }
+        
+        .attribute-list {
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.4s;
+        }
+        
+        .attribute {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .attribute-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #d4af37;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .attribute-text {
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .ranking { /* Ranking on the right image */
+            position: absolute;
+            top: 2rem;
+            right: 2rem; 
+            width: 60px;
+            height: 60px;
+            background-color: rgba(212, 175, 55, 0.9);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a0a2e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.6s;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes expandWidth {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 80px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="left-panel">
+            <h2>AngelaBaby</h2>
+            <div class="subtitle">International Icon with Delicate Beauty</div>
+            <div class="gold-accent"></div>
+            <div class="text-content">
+                <p>A Chinese model, actress, and singer, AngelaBaby has captivated audiences with her delicate features and youthful beauty. Her significant online presence and versatile career have established her as an international icon representing Asian beauty standards.</p>
+            </div>
+            <div class="attribute-list">
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Ethereal Beauty:</span> Delicate features and grace</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Digital Influence:</span> Massive social media following</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Fashion Presence:</span> Global brand ambassador</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Crossover Appeal:</span> Eastern and Western audiences</div>
+                </div>
+            </div>
+        </div>
+        <div class="right-panel">
+            <img src="https://kimi-image-search.app.msh.team/?q=AngelaBaby%20Chinese%20actress%20model%20elegant%202025" alt="AngelaBaby elegant appearance" />
+            <div class="image-overlay"></div>
+            <div class="ranking">8</div>
+        </div>
+    </div>
+</body>
+</html>`,
+// Slide 11: Kylie Jenner
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kylie Jenner</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1645 100%);
+            color: #e6e6e6;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(45, 22, 69, 0.9) 100%);
+        }
+        
+        .left-panel { /* Image panel for Kylie */
+            width: 55%;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .left-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: fadeIn 1.2s forwards 0.3s;
+        }
+        
+        .image-overlay { /* Gradient from left to right */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 30%, rgba(26, 10, 46, 0.9) 100%);
+        }
+        
+        .right-panel { /* Text panel for Kylie */
+            width: 45%;
+            padding: 3rem 3rem 3rem 1rem; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            margin-bottom: 0.5rem;
+            color: #d4af37;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.6s;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: #c0c0c0;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.8s;
+        }
+        
+        .gold-accent {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37, transparent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: expandWidth 1s forwards 1s;
+        }
+        
+        .text-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.2s;
+        }
+        
+        .attribute-list {
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.4s;
+        }
+        
+        .attribute {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .attribute-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #d4af37;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .attribute-text {
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .ranking { /* Ranking on the left image */
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(212, 175, 55, 0.9);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a0a2e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.6s;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes expandWidth {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 80px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="left-panel">
+            <img src="https://kimi-image-search.app.msh.team/?q=Kylie%20Jenner%20business%20cosmetics%20elegant%202025" alt="Kylie Jenner business mogul" />
+            <div class="image-overlay"></div>
+            <div class="ranking">9</div>
+        </div>
+        <div class="right-panel">
+            <h2>Kylie Jenner</h2>
+            <div class="subtitle">Social Media Presence and Entrepreneurial Success</div>
+            <div class="gold-accent"></div>
+            <div class="text-content">
+                <p>An American media personality, businesswoman, and socialite, Kylie Jenner has transformed her reality TV fame into a cosmetics empire. Her beauty, entrepreneurial success, and massive social media following have made her one of the most influential young women in the world.</p>
+            </div>
+            <div class="attribute-list">
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Business Prowess:</span> Kylie Cosmetics phenomenon</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Digital Influence:</span> Trend-setting social media presence</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Style Evolution:</span> Fashion-forward aesthetic</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Cultural Impact:</span> Reshaping beauty standards</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+// Slide 12: Dua Lipa
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dua Lipa</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1645 100%);
+            color: #e6e6e6;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(45, 22, 69, 0.9) 100%);
+        }
+        
+        .right-panel { /* Image panel for Dua Lipa */
+            width: 55%;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            order: 2; /* Image on the right */
+        }
+        
+        .right-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: fadeIn 1.2s forwards 0.3s;
+        }
+        
+        .image-overlay { /* Gradient from right to left */
+            position: absolute;
+            top: 0;
+            right: 0; 
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(270deg, transparent 30%, rgba(26, 10, 46, 0.9) 100%);
+        }
+        
+        .left-panel { /* Text panel for Dua Lipa */
+            width: 45%;
+            padding: 3rem 1rem 3rem 3rem; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            order: 1; /* Text on the left */
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            margin-bottom: 0.5rem;
+            color: #d4af37;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.6s;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: #c0c0c0;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.8s;
+        }
+        
+        .gold-accent {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37, transparent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: expandWidth 1s forwards 1s;
+        }
+        
+        .text-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.2s;
+        }
+        
+        .attribute-list {
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.4s;
+        }
+        
+        .attribute {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .attribute-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #d4af37;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .attribute-text {
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .ranking { /* Ranking on the right image */
+            position: absolute;
+            top: 2rem;
+            right: 2rem; 
+            width: 60px;
+            height: 60px;
+            background-color: rgba(212, 175, 55, 0.9);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a0a2e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.6s;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes expandWidth {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 80px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="left-panel">
+            <h2>Dua Lipa</h2>
+            <div class="subtitle">Bold Style and Musical Innovation</div>
+            <div class="gold-accent"></div>
+            <div class="text-content">
+                <p>A global pop sensation known for her bold fashion choices and powerful vocals, Dua Lipa has quickly risen as one of music's most exciting stars. Her confidence, distinctive style, and commitment to artistic expression have made her a defining voice of her generation.</p>
+            </div>
+            <div class="attribute-list">
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Musical Prowess:</span> Chart-topping hits and critical acclaim</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Fashion Forward:</span> Daring and influential style</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Stage Presence:</span> Captivating performances</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-dot"></div>
+                    <div class="attribute-text"><span class="highlight">Cultural Voice:</span> Advocacy for important causes</div>
+                </div>
+            </div>
+        </div>
+        <div class="right-panel">
+            <img src="https://kimi-image-search.app.msh.team/?q=Dua%20Lipa%20stage%20performance%20fashion%202025" alt="Dua Lipa bold style" />
+            <div class="image-overlay"></div>
+            <div class="ranking">10</div>
+        </div>
+    </div>
+</body>
+</html>`,
+// Slide 13: Interactive Poll
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Poll</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1645 100%);
+            color: #e6e6e6;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(45, 22, 69, 0.9) 100%);
+        }
+        
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://kimi-image-search.app.msh.team/?q=elegant%20dark%20purple%20gold%20abstract%20pattern');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: -1;
+        }
+        
+        .content {
+            text-align: center;
+            z-index: 1;
+            padding: 2rem;
+            max-width: 80%;
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: #d4af37;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.3s;
+        }
+        
+        .subtitle { /* Poll subtitle */
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: #c0c0c0;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.6s;
+        }
+        
+        .poll-container {
+            width: 70%;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.9s;
+        }
+        
+        .poll-question {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #fff;
+        }
+        
+        .poll-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .poll-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            padding: 1rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            text-align: left;
+        }
+        
+        .poll-option:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: translateX(10px);
+        }
+        
+        .option-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #d4af37;
+            margin-right: 1rem;
+            min-width: 30px;
+        }
+        
+        .option-text {
+            font-size: 1.3rem;
+        }
+        
+        .additional-text {
+            font-style: italic;
+            color: #a991c5;
+            margin-top: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.2s;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="background"></div>
+        <div class="content">
+            <h2>Interactive Poll</h2>
+            <div class="subtitle">What defines "sexiness" to you?</div>
+            <div class="poll-container">
+                <div class="poll-question">Which quality do you find most captivating in a person?</div>
+                <div class="poll-options">
+                    <div class="poll-option">
+                        <div class="option-number">A</div>
+                        <div class="option-text">Confidence and self-assurance</div>
+                    </div>
+                    <div class="poll-option">
+                        <div class="option-number">B</div>
+                        <div class="option-text">Intelligence and wit</div>
+                    </div>
+                    <div class="poll-option">
+                        <div class="option-number">C</div>
+                        <div class="option-text">Physical appearance and style</div>
+                    </div>
+                    <div class="poll-option">
+                        <div class="option-number">D</div>
+                        <div class="option-text">Talent and accomplishment</div>
+                    </div>
+                    <div class="poll-option">
+                        <div class="option-number">E</div>
+                        <div class="option-text">Kindness and empathy</div>
+                    </div>
+                </div>
+            </div>
+            <div class="additional-text">
+                Reflect on how your definition of attractiveness might differ from mainstream media portrayals, and how it may have evolved over time.
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+// Slide 14: Reflection
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflection</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1645 100%);
+            color: #e6e6e6;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(45, 22, 69, 0.9) 100%);
+            display: flex;
+        }
+        
+        .left-panel {
+            width: 50%;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .right-panel {
+            width: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .image-collage {
+            width: 90%;
+            height: 80%;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 1.2s forwards 1.5s;
+        }
+        
+        .collage-image {
+            position: absolute;
+            border: 3px solid rgba(212, 175, 55, 0.6);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+        }
+        
+        .collage-image:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        
+        .image-1 {
+            width: 45%;
+            height: 40%;
+            top: 5%;
+            left: 5%;
+            z-index: 3;
+            transform: rotate(-5deg);
+        }
+        
+        .image-2 {
+            width: 40%;
+            height: 35%;
+            top: 15%;
+            right: 5%;
+            z-index: 2;
+            transform: rotate(7deg);
+        }
+        
+        .image-3 {
+            width: 45%;
+            height: 40%;
+            bottom: 5%;
+            left: 10%;
+            z-index: 1;
+            transform: rotate(3deg);
+        }
+        
+        .image-4 {
+            width: 40%;
+            height: 35%;
+            bottom: 10%;
+            right: 10%;
+            z-index: 4;
+            transform: rotate(-8deg);
+        }
+        
+        .collage-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: #d4af37;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.3s;
+        }
+        
+        .subtitle { /* Reflection subtitle */
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #c0c0c0;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.6s;
+        }
+        
+        .gold-accent {
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37, transparent);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: expandWidth 1s forwards 0.9s;
+        }
+        
+        .text-content {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.2s;
+        }
+        
+        .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .quote {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.4rem;
+            color: #a991c5;
+            margin: 1.5rem 0;
+            padding-left: 1.5rem;
+            border-left: 3px solid rgba(212, 175, 55, 0.6);
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes expandWidth {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 100px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="left-panel">
+            <h2>The Subjective Nature of Beauty</h2>
+            <div class="subtitle">Beyond Rankings: A Deeper Reflection</div>
+            <div class="gold-accent"></div>
+            <div class="text-content">
+                <p>As we conclude our exploration of the <span class="highlight">Top 10 Sexiest Women in the World</span>, it's important to acknowledge that beauty and attraction are deeply personal and culturally influenced.</p>
+                
+                <div class="quote">
+                    "Beauty begins the moment you decide to be yourself."
+                </div>
+                
+                <p>What makes each of these women truly captivating extends far beyond physical appearance. Their <span class="highlight">confidence, authenticity, talent, and impact</span> collectively contribute to their allure.</p>
+                
+                <p>As society continues to evolve, so too does our understanding of what makes someone truly attractive. The most compelling quality may ultimately be the courage to define beauty on one's own terms.</p>
+            </div>
+        </div>
+        <div class="right-panel">
+            <div class="image-collage">
+                <div class="collage-image image-1">
+                    <img src="https://kimi-image-search.app.msh.team/?q=diverse%20beauty%20concept%20artistic" alt="Diverse beauty concept" />
+                </div>
+                <div class="collage-image image-2">
+                    <img src="https://kimi-image-search.app.msh.team/?q=confidence%20empowerment%20artistic" alt="Confidence and empowerment" />
+                </div>
+                <div class="collage-image image-3">
+                    <img src="https://kimi-image-search.app.msh.team/?q=inner%20beauty%20concept%20artistic" alt="Inner beauty concept" />
+                </div>
+                <div class="collage-image image-4">
+                    <img src="https://kimi-image-search.app.msh.team/?q=self%20expression%20authentic%20beauty" alt="Self-expression and authenticity" />
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`
+        ];
+
+        const slidesData = [];
+        const allKeyframes = new Set();
+        const allPrefixedCssRules = [];
+        const headStyleSheet = document.getElementById('master-style-sheet');
+
+        // --- Style Processing ---
+        rawSlideHTMLs.forEach((slideFullHtml, index) => {
+            const slideEmbedId = `slide-embed-${index + 1}`;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(slideFullHtml, 'text/html');
+
+            // Extract title
+            const titleTag = doc.querySelector('title');
+            const title = titleTag ? titleTag.textContent : `Slide ${index + 1}`;
+
+            // Extract <div class="slide"> content
+            const slideContentDiv = doc.querySelector('.slide');
+            const htmlContent = slideContentDiv ? slideContentDiv.outerHTML : '<p>Error: Slide content not found.</p>';
+            slidesData.push({ id: slideEmbedId, title: title, html: htmlContent });
+
+            // Process styles
+            const styleTag = doc.querySelector('style');
+            if (styleTag) {
+                let cssText = styleTag.innerHTML;
+                cssText = cssText.replace(/@import url\(.*?\);/gi, ''); 
+                cssText = cssText.replace(/(?:body|html)\s*,?\s*(?:body|html)?\s*\{[^}]*\}/gi, '');
+
+                cssText = cssText.replace(/@(-webkit-)?keyframes\s+([^{]+)\s*\{((?:[^{}]*\{[^{}]*\})*[^{}]*)\}/gi, (match) => {
+                    allKeyframes.add(match);
+                    return ''; 
+                });
+                
+                const prefixedRulesForSlide = [];
+                // Simplified rule splitting and prefixing
+                // This regex broadly splits rules; robust parsing is very complex.
+                cssText.replace(/([^{]+)\{([^}]+)\}/g, (match, selectors, declarations) => {
+                    if (selectors.trim().startsWith('@')) return; // Skip @rules not already handled (like @media, though not present)
+                    
+                    const prefixedSelectors = selectors.split(',')
+                        .map(s => s.trim())
+                        .filter(s => s)
+                        .map(s => `#${slideEmbedId} ${s}`)
+                        .join(', ');
+                    if (prefixedSelectors) {
+                       prefixedRulesForSlide.push(`${prefixedSelectors} { ${declarations.trim()} }`);
+                    }
+                });
+                allPrefixedCssRules.push(...prefixedRulesForSlide);
+            }
+        });
+
+        // Append processed styles to the main stylesheet
+        headStyleSheet.textContent += '\n' + Array.from(allKeyframes).join('\n') + '\n' + allPrefixedCssRules.join('\n');
+        
+        // --- DOM Elements ---
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+        const slideToc = document.getElementById('slide-toc');
+        const totalSlidesCountEl = document.getElementById('total-slides-count');
+        const scrollView = document.getElementById('scroll-view');
+        const toggleSlideshowBtn = document.getElementById('toggle-slideshow-btn');
+        const slideshowModeView = document.getElementById('slideshow-mode');
+        const slideshowContentEl = document.getElementById('slideshow-current-slide-content');
+        const prevSlideBtn = document.getElementById('prev-slide-btn');
+        const nextSlideBtn = document.getElementById('next-slide-btn');
+        const currentSlideIndicator = document.getElementById('current-slide-indicator');
+        const exitSlideshowBtn = document.getElementById('exit-slideshow-btn');
+
+        let currentSlideshowIndex = 0;
+        let isSlideshowActive = false;
+
+        // --- Functions ---
+        function populateSlidesAndTOC() {
+            totalSlidesCountEl.textContent = slidesData.length;
+            slidesData.forEach((slide, index) => {
+                // Populate TOC
+                const tocItem = document.createElement('li');
+                const tocLink = document.createElement('a');
+                tocLink.href = `#${slide.id}`;
+                tocLink.textContent = `${index + 1}. ${slide.title}`;
+                tocLink.dataset.index = index;
+                tocItem.appendChild(tocLink);
+                slideToc.appendChild(tocItem);
+
+                // Populate Scroll View
+                const slideWrapper = document.createElement('section');
+                slideWrapper.className = 'slide-wrapper';
+                slideWrapper.id = slide.id;
+                slideWrapper.innerHTML = slide.html; // This injects the <div class="slide">...</div>
+                scrollView.appendChild(slideWrapper);
+            });
+        }
+
+        function scaleAllSlides() {
+            const wrappers = document.querySelectorAll('.slide-wrapper');
+            wrappers.forEach(wrapper => {
+                const slideDiv = wrapper.querySelector('.slide');
+                if (slideDiv) {
+                    const wrapperWidth = wrapper.offsetWidth;
+                    const scale = wrapperWidth / 1280; // 1280 is original width
+                    slideDiv.style.transform = `scale(${scale})`;
+                    wrapper.style.height = `${720 * scale}px`;
+                }
+            });
+
+            if (isSlideshowActive) {
+                scaleSlideInSlideshow();
+            }
+        }
+
+        function scaleSlideInSlideshow() {
+            const container = slideshowContentEl;
+            const slideDiv = container.querySelector('.slide');
+            if (slideDiv && container.offsetWidth > 0 && container.offsetHeight > 0) {
+                const scaleX = container.offsetWidth / 1280;
+                const scaleY = container.offsetHeight / 720;
+                const scale = Math.min(scaleX, scaleY);
+                slideDiv.style.transform = `scale(${scale})`;
+            }
+        }
+        
+        function updateActiveTOCItem() {
+            let ScollViewScrollTop = scrollView.scrollTop;
+            let currentActiveFound = false;
+            document.querySelectorAll('#slide-toc a').forEach(link => link.classList.remove('active'));
+
+            for (let i = slidesData.length - 1; i >= 0; i--) {
+                const slideWrapper = document.getElementById(slidesData[i].id);
+                if (slideWrapper) {
+                    // Adjusting offset for better accuracy, considering top padding of scroll-view
+                    const wrapperTop = slideWrapper.offsetTop - scrollView.offsetTop - 30; // 30px buffer
+                    if (ScollViewScrollTop >= wrapperTop) {
+                         const activeLink = document.querySelector(`#slide-toc a[href="#${slidesData[i].id}"]`);
+                         if(activeLink) activeLink.classList.add('active');
+                         currentActiveFound = true;
+                         break;
+                    }
+                }
+            }
+            // If no slide is "active" (e.g., scrolled to top before first slide), mark the first one.
+             if (!currentActiveFound && slidesData.length > 0) {
+                const firstLink = document.querySelector(`#slide-toc a[href="#${slidesData[0].id}"]`);
+                if (firstLink) firstLink.classList.add('active');
+            }
+        }
+
+        function showSlideInSlideshow(index) {
+            currentSlideshowIndex = index;
+            slideshowContentEl.innerHTML = slidesData[index].html;
+            currentSlideIndicator.textContent = `${index + 1} / ${slidesData.length}`;
+            prevSlideBtn.disabled = index === 0;
+            nextSlideBtn.disabled = index === slidesData.length - 1;
+            scaleSlideInSlideshow(); // Scale the newly loaded slide
+            // Re-trigger animations if any (simple clone-replace trick)
+            const slideElement = slideshowContentEl.querySelector('.slide');
+            if (slideElement) {
+                const clone = slideElement.cloneNode(true);
+                slideElement.parentNode.replaceChild(clone, slideElement);
+            }
+        }
+        
+        function enterSlideshowMode() {
+            isSlideshowActive = true;
+            // Determine starting slide (currently active in scroll or first)
+            const activeTocLink = document.querySelector('#slide-toc a.active');
+            let startIndex = 0;
+            if (activeTocLink && activeTocLink.dataset.index) {
+                startIndex = parseInt(activeTocLink.dataset.index, 10);
+            }
+            
+            showSlideInSlideshow(startIndex);
+            slideshowModeView.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent body scroll when slideshow active
+            toggleSlideshowBtn.textContent = 'Exit Slideshow';
+            if (window.innerWidth <= 768 && sidebar.classList.contains('open')) { // Close sidebar on mobile
+                sidebar.classList.remove('open');
+            }
+        }
+
+        function exitSlideshowMode() {
+            isSlideshowActive = false;
+            slideshowModeView.classList.remove('active');
+            document.body.style.overflow = ''; // Restore body scroll
+            toggleSlideshowBtn.textContent = 'Enter Slideshow';
+            // Scroll to the slide that was viewed in slideshow
+            const targetSlideId = slidesData[currentSlideshowIndex].id;
+            const targetElement = document.getElementById(targetSlideId);
+            if (targetElement) {
+                 // Use scrollView.scrollTo to ensure it scrolls within the main content area
+                scrollView.scrollTo({
+                    top: targetElement.offsetTop - scrollView.offsetTop, // Adjust for scroll container's own offset
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateSlidesAndTOC();
+            scaleAllSlides();
+            updateActiveTOCItem(); // Initial active TOC item
+        });
+
+        window.addEventListener('resize', scaleAllSlides);
+        scrollView.addEventListener('scroll', updateActiveTOCItem);
+
+        slideToc.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                e.preventDefault();
+                const targetId = e.target.getAttribute('href');
+                const targetElement = document.getElementById(targetId.substring(1));
+                if (targetElement) {
+                    scrollView.scrollTo({
+                        top: targetElement.offsetTop - scrollView.offsetTop, // Adjust for scroll context
+                        behavior: 'smooth'
+                    });
+                }
+                if (window.innerWidth <= 768 && sidebar.classList.contains('open')) { // Close sidebar on mobile
+                     sidebar.classList.remove('open');
+                }
+            }
+        });
+
+        toggleSlideshowBtn.addEventListener('click', () => {
+            if (slideshowModeView.classList.contains('active')) {
+                exitSlideshowMode();
+            } else {
+                enterSlideshowMode();
+            }
+        });
+        
+        exitSlideshowBtn.addEventListener('click', exitSlideshowMode);
+
+        prevSlideBtn.addEventListener('click', () => {
+            if (currentSlideshowIndex > 0) {
+                showSlideInSlideshow(currentSlideshowIndex - 1);
+            }
+        });
+
+        nextSlideBtn.addEventListener('click', () => {
+            if (currentSlideshowIndex < slidesData.length - 1) {
+                showSlideInSlideshow(currentSlideshowIndex + 1);
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (slideshowModeView.classList.contains('active')) {
+                if (e.key === 'ArrowRight' && !nextSlideBtn.disabled) {
+                    nextSlideBtn.click();
+                } else if (e.key === 'ArrowLeft' && !prevSlideBtn.disabled) {
+                    prevSlideBtn.click();
+                } else if (e.key === 'Escape') {
+                    exitSlideshowMode();
+                }
+            }
+        });
+
+        sidebarToggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+    </script>
+</body>
+</html>

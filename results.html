@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<title>答题结果</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body{margin:0;padding:40px 20px;font-family:-apple-system,BlinkMacSystemFont,Helvetica;text-align:center}
+  .correct{color:#00a040;font-size:26px}
+  .wrong  {color:#e60000;font-size:26px}
+  button{margin-top:30px;padding:10px 30px;font-size:18px}
+</style>
+</head>
+<body>
+  <div id="msg"></div>
+  <button onclick="history.back()">再试一次</button>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const ans    = params.get('ans');
+  document.getElementById('msg').textContent =
+    ans === 'correct' ? '🎉 答对了！' : '❌ 答错了，再试一次吧！';
+  document.getElementById('msg').className = ans === 'correct' ? 'correct' : 'wrong';
+</script>
+</body>
+</html>

@@ -62,33 +62,15 @@
     .btn:active{transform:scale(.95);}
 </style>
 <script>
-/* 手机限定检测（修复点击误报） */
+/* 纯触摸判定：必须支持 touch 且未检测到鼠标才能继续 */
 (function(){
-    let isMobile = window.innerWidth <= 768;
-    let mouseMoved = false;
-    let lastX, lastY;
-
-    function check(){
-        if(!isMobile || mouseMoved){
-            alert('请使用手机答题');
-            document.documentElement.style.display='none';
-        }
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if(!isTouch){
+        alert('请使用手机答题');
+        document.documentElement.style.display='none';
     }
-
-    // 只有移动距离>20px才认为是鼠标
-    window.addEventListener('mousemove', e=>{
-        if(lastX!==undefined && (Math.abs(e.clientX-lastX)>20 || Math.abs(e.clientY-lastY)>20)){
-            mouseMoved=true;
-            check();
-        }
-        lastX=e.clientX; lastY=e.clientY;
-    },{once:false});
-
-    window.addEventListener('resize', ()=>{ isMobile = window.innerWidth <= 768; check(); });
-    check();
 })();
 </script>
-
 </head>
 <body class="crt">
 <div class="container">

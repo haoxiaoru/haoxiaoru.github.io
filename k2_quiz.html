@@ -62,26 +62,29 @@
     .btn:active{transform:scale(.95);}
 </style>
 <script>
-/* 手机限定检测 */
+/* 手机限定检测（修复点击误报） */
 (function(){
     let isMobile = window.innerWidth <= 768;
-    let hasMouse  = false;
+    let mouseMoved = false;
+    let lastX, lastY;
 
     function check(){
-        if(!isMobile || hasMouse){
+        if(!isMobile || mouseMoved){
             alert('请使用手机答题');
-            // 冻结页面
             document.documentElement.style.display='none';
-            // 如需刷新可改为 location.reload();
         }
     }
 
-    // 监听鼠标移动
-    window.addEventListener('mousemove', ()=>{ hasMouse=true; check(); }, {once:true});
-    // 监听窗口大小变化
-    window.addEventListener('resize', ()=>{ isMobile = window.innerWidth <= 768; check(); });
+    // 只有移动距离>20px才认为是鼠标
+    window.addEventListener('mousemove', e=>{
+        if(lastX!==undefined && (Math.abs(e.clientX-lastX)>20 || Math.abs(e.clientY-lastY)>20)){
+            mouseMoved=true;
+            check();
+        }
+        lastX=e.clientX; lastY=e.clientY;
+    },{once:false});
 
-    // 首次检测
+    window.addEventListener('resize', ()=>{ isMobile = window.innerWidth <= 768; check(); });
     check();
 })();
 </script>

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>月之暗面 Moonshot AI Kimi K2.5 国内媒体报道汇总</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #0f172a 50%, #1e293b 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #e0e0e0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .header h1 {
+            font-size: 2.3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+        .model-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .tier-section {
+            margin-bottom: 30px;
+        }
+        .tier-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 15px;
+            padding: 12px 20px;
+            background: rgba(59, 130, 246, 0.15);
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+        .tier-badge {
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .news-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        .news-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(5px);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        .news-rank {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        .news-content {
+            flex: 1;
+        }
+        .news-title {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .news-title a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .news-title a:hover {
+            color: #3b82f6;
+        }
+        .news-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        .news-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .source-tag {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .date-tag {
+            color: #aaa;
+        }
+        .summary {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #aaa;
+            line-height: 1.5;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .highlight {
+            color: #3b82f6;
+            font-weight: 500;
+        }
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            .news-item {
+                flex-direction: column;
+            }
+            .news-rank {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📰 月之暗面 Moonshot AI Kimi K2.5 国内媒体报道汇总</h1>
+            <p>国内知名媒体对 Kimi K2.5 AI 模型的报道</p>
+            <div class="model-badge">🌙 1T 参数 · 原生多模态 · Agent Swarm</div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">国内媒体报道</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">央媒/主流媒体</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2026.01</div>
+                    <div class="stat-label">发布时间</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 1: 央媒与高校 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                🏆 Tier 1 - 央媒与高校
+                <span class="tier-badge">Top Tier</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">1</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.ncsti.gov.cn/kjdt/xwjj/202601/t20260129_236776.html" target="_blank">月之暗面发布Kimi K2.5模型，北京人工智能矩阵再添生力军</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">国家科技图书文献中心</span>
+                            <span class="date-tag">📅 2026-01-29</span>
+                        </div>
+                        <div class="summary">国家科技图书文献中心报道：1月27日，北京人工智能创新企业月之暗面正式发布新一代开源模型——Kimi K2.5。该模型基于万亿参数混合专家（MoE）架构，采用 <span class="highlight">15万亿视觉与文本混合Token</span> 训练。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">2</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.ncsti.gov.cn/kjdt/scyq/zgckxc/zgcdt/202601/t20260130_236869.html" target="_blank">新一代开源模型Kimi K2.5来了，更智能，更全能，更高效！</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">国家科技图书文献中心</span>
+                            <span class="date-tag">📅 2026-01-30</span>
+                        </div>
+                        <div class="summary">NSTI报道：作为Kimi目前最智能的模型，K2.5在HLE（人类最后的考试）、BrowseComp、DeepSearchQA等多项Agent评测中均取得 <span class="highlight">全球开源模型的最佳成绩</span>。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">3</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.tsinghua.edu.cn/info/1182/124486.htm" target="_blank">领跑全国，AI企业的深耕与坚守</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">清华大学</span>
+                            <span class="date-tag">📅 2026-03-05</span>
+                        </div>
+                        <div class="summary">清华大学官网报道：2025年7月，Kimi K2模型问世，这是开源万亿参数的基础模型，也是Kimi K2.5的前一代模型。如何用不到3年时间，打造强大的基座模型？月之暗面的经验是，人才和...</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">4</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://peking.bjd.com.cn/content/s6978aa5ae4b0687a28905fe7.html" target="_blank">月之暗面发布并开源Kimi K2.5模型！北京模型持续上新</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">北京日报</span>
+                            <span class="date-tag">📅 2026-01-27</span>
+                        </div>
+                        <div class="summary">北京日报报道：作为一个全能型模型，Kimi K2.5基于原生多模态架构设计，支持视觉与文本输入，将视觉理解与推理、编程、Agent等能力全部集成到一个模型当中。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 2: 主流财经媒体 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                🌟 Tier 2 - 主流财经媒体
+                <span class="tier-badge">Finance</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">5</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.stcn.com/article/detail/3621058.html" target="_blank">月之暗面发布新一代开源模型Kimi K2.5</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">证券时报</span>
+                            <span class="date-tag">📅 2026-01-30</span>
+                        </div>
+                        <div class="summary">证券时报报道：公开数据显示，1月28日，在权威榜单LMarena上，Kimi K2.5紧跟Claude opus 4.5、Gemini 3 Pro等闭源模型，位居 <span class="highlight">开源模型榜首</span>。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">6</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://m.caijing.com.cn/s/202601/5139749" target="_blank">月之暗面发布新一代开源模型Kimi K2.5</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财经网</span>
+                            <span class="date-tag">📅 2026-01-29</span>
+                        </div>
+                        <div class="summary">财经网报道：在著名独立评测机构Artificial Analysis的评测中，Kimi K2.5表现优异，多项指标达到或超过国际顶尖闭源模型水平。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">7</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://cj.sina.cn/articles/view/2868676035/aafc85c302001nar4" target="_blank">中国AI调用量首超美国</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">新浪财经</span>
+                            <span class="date-tag">📅 2026-02-27</span>
+                        </div>
+                        <div class="summary">新浪财经报道：平台调用量排名前五的模型中，有四款来自中国厂商，分别为MiniMax的M2.5、<span class="highlight">月之暗面的Kimi K2.5</span>、智谱的GLM-5以及DeepSeek的V3.2。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">8</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.sina.cn/news/detail/5259779073378173.html" target="_blank">月之暗面发布Kimi K2.5</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">新浪新闻</span>
+                            <span class="date-tag">📅 2026-01-27</span>
+                        </div>
+                        <div class="summary">新浪新闻报道：月之暗面Kimi K2.5发布：开源模型首次逼近GPT-4.5水平。这可能是今年第一个真正值得关注的AI模型。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 3: 主流科技媒体 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                📊 Tier 3 - 主流科技媒体
+                <span class="tier-badge">Tech Media</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">9</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.huxiu.com/article/4831317.html" target="_blank">Kimi K2.5深度实测：变强了，但尚未"封神"</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">虎嗅</span>
+                            <span class="date-tag">📅 2026-01-31</span>
+                        </div>
+                        <div class="summary">虎嗅深度实测：整体产品线来说，Kimi K2.5是针对普通人的，相当于模型性能迭代提高。Kimi Code和Kimi Agent功能都是面向程序员的，开源代码放在GitHub上了。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">10</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.huxiu.com/article/4835875.html" target="_blank">春节AI模型大战，谁是最大赢家？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">虎嗅</span>
+                            <span class="date-tag">📅 2026-02-19</span>
+                        </div>
+                        <div class="summary">虎嗅春节特别报道：1月27日，月之暗面开源Kimi K2.5，以"Agent Swarm"技术实现<span class="highlight">100个子智能体并行协作</span>，将复杂任务执行效率提升数倍。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">11</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.huxiu.com/article/4802189.html" target="_blank">开源新纪录，月之暗面Kimi K2实测超越GPT-5和Claude 4.5，完全免费</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">虎嗅</span>
+                            <span class="date-tag">📅 2025-11-07</span>
+                        </div>
+                        <div class="summary">虎嗅报道Kimi K2：开源发布包含了聊天、推理和多工具工作流的API。用户可以直接通过其类似ChatGPT的网站以及Hugging Face空间试用Kimi K2 Thinking。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">12</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://eu.36kr.com/zh/p/3669647311774594" target="_blank">8点1氪：Kimi K2.5登上OpenRouter调用量榜首</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">36氪</span>
+                            <span class="date-tag">📅 2026-02-04</span>
+                        </div>
+                        <div class="summary">36氪报道：数据显示，AI智能体OpenClaw的模型调用量中，来自中国的Kimi K2.5登上榜首，成为最受欢迎模型。据知名大模型聚合平台OpenRouter数据，Kimi K2.5超过...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 4: 专业媒体与评测 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                🌍 Tier 4 - 专业媒体与评测
+                <span class="tier-badge">Review</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">13</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.pconline.com.cn/focus/2078/20789253.html" target="_blank">Kimi k2.5突然发布！「看」图更卷了，还有个大招能和DeepSeek...</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">太平洋科技</span>
+                            <span class="date-tag">📅 2026-01</span>
+                        </div>
+                        <div class="summary">太平洋科技报道：2026年1月，月之暗面团队发布开源多模态模型Kimi K2.5，具备视觉智能体集群和动态视觉编程能力。该模型支持<span class="highlight">1500次并行工具调用</span>，大幅提升复杂任务效率。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">14</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.pconline.com.cn/focus/2106/21063012.html" target="_blank">实测Kimi K2.5：召唤100个AI同时干活，这就是Agent的「蜂群时刻」</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">太平洋科技</span>
+                            <span class="date-tag">📅 2026-02-28</span>
+                        </div>
+                        <div class="summary">太平洋科技实测：Kimi K2.5的Agent Swarm技术可以实现100个AI同时工作，是Agent技术的"蜂群时刻"。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">15</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://zhuanlan.zhihu.com/p/2001617342354974091" target="_blank">Kimi K2.5开箱评测：性能数据亮眼，但实测体验真的如此吗？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎专栏</span>
+                            <span class="date-tag">📅 2026-02-02</span>
+                        </div>
+                        <div class="summary">知乎深度评测：与一年前Kimi发布K1.5时被DeepSeek流量淹没的情况不同，这次K2.5似乎在国际上获得了更多关注，关键还是开源的。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">16</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://news.qq.com/rain/a/20260131A03PJD00" target="_blank">Kimi K2.5深度实测：变强了，但待"封神"</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">腾讯新闻</span>
+                            <span class="date-tag">📅 2026-01-31</span>
+                        </div>
+                        <div class="summary">腾讯新闻报道：整体产品线来说，Kimi K2.5是针对普通人的，相当于模型性能迭代提高。Kimi Code和Kimi Agent功能都是面向程序员的。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 5: 社区与自媒体 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                💬 Tier 5 - 社区与自媒体
+                <span class="tier-badge">Community</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">17</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://zhuanlan.zhihu.com/p/1999783668135260676" target="_blank">Kimi K2.5 正式发布：全开源的原生多模态AI 进入集群智能时代</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎专栏</span>
+                            <span class="date-tag">📅 2026-01-28</span>
+                        </div>
+                        <div class="summary">知乎深度解读：2026年1月27日，月之暗面正式发布新一代开源模型Kimi K2.5，以静默推送的方式完成了一次重磅升级——用户在官网聊天...</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">18</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://zhuanlan.zhihu.com/p/2001758790966595845" target="_blank">阶跃星辰超50亿元融资创纪录 | 2026年1月人工智能领域投融资回顾</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎专栏</span>
+                            <span class="date-tag">📅 2026-02</span>
+                        </div>
+                        <div class="summary">知乎报道：作为Kimi目前最智能的模型，K2.5在HLE、BrowseComp、DeepSearchQA等多项agent评测中均取得全球开源模型的最佳成绩。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">19</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://user.guancha.cn/main/content?id=1591446" target="_blank">新发布的Kimi K 2.5是AI界的"老实人"？——实测后我的4点思考</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">观察者网</span>
+                            <span class="date-tag">📅 2026-01</span>
+                        </div>
+                        <div class="summary">观察者网用户投稿：按官方的说法，Kimi K2.5是一个全能型的统一模型（Unified Model），实现了视觉与文本的统一，天生具备视觉能力。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">20</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://blog.gopenai.com/kimi-k2-5-review-native-multimodality-and-agent-swarms-at-1-trillion-parameters-df68e61083d2" target="_blank">Kimi k2.5 Review: Native Multimodality and Agent Swarms</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">GoOpenAI Blog</span>
+                            <span class="date-tag">📅 2026-02-16</span>
+                        </div>
+                        <div class="summary">技术博客深度评测：Kimi K2.5在1万亿参数规模下实现原生多模态和Agent Swarms能力的技术突破。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📅 数据更新时间：2026年3月7日 | 共收集 20+ 篇国内媒体报道</p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">注：媒体排序基于权威性、影响力综合评估</p>
+            <p style="margin-top: 5px; font-size: 0.85rem;">🌙 Kimi K2.5 亮点：1T MoE架构、原生多模态、100个子智能体并行、1500次并行工具调用</p>
+        </div>
+    </div>
+</body>
+</html>

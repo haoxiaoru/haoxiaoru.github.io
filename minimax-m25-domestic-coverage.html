@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniMax M2.5 国内媒体报道汇总</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a0a1a 0%, #2d1b2d 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #e0e0e0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+        .model-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ec4899;
+        }
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .tier-section {
+            margin-bottom: 30px;
+        }
+        .tier-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 15px;
+            padding: 12px 20px;
+            background: rgba(236, 72, 153, 0.15);
+            border-radius: 10px;
+            border-left: 4px solid #ec4899;
+        }
+        .tier-badge {
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .news-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        .news-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(5px);
+            border-color: rgba(236, 72, 153, 0.3);
+        }
+        .news-rank {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        .news-content {
+            flex: 1;
+        }
+        .news-title {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .news-title a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .news-title a:hover {
+            color: #ec4899;
+        }
+        .news-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        .news-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .source-tag {
+            background: rgba(236, 72, 153, 0.2);
+            color: #fbcfe8;
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .date-tag {
+            color: #aaa;
+        }
+        .summary {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #aaa;
+            line-height: 1.5;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .highlight {
+            color: #ec4899;
+            font-weight: 500;
+        }
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .news-item {
+                flex-direction: column;
+            }
+            .news-rank {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📰 MiniMax M2.5 国内媒体报道汇总</h1>
+            <p>国内知名媒体对 MiniMax M2.5 AI 模型的报道</p>
+            <div class="model-badge">💗 229B 参数 · 原生智能体 · 极致性价比</div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">国内媒体报道</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">央媒/主流媒体</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2026.02</div>
+                    <div class="stat-label">发布时间</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 1: 央媒与主流财经媒体 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                🏆 Tier 1 - 央媒与主流财经媒体
+                <span class="tier-badge">Top Tier</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">1</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="http://www.news.cn/20260109/263214cdd84d410eaf643f338216f88c/c.html" target="_blank">AI企业密集登陆资本市场 商业化进程按下"加速键"</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">新华网</span>
+                            <span class="date-tag">📅 2026-01-09</span>
+                        </div>
+                        <div class="summary">新华网报道，MiniMax 公布定价结果，最终融资申购额超 <span class="highlight">2831 亿港元</span>，公开发售部分超额认购倍数超过 <span class="highlight">1837 倍</span>，成为AI企业登陆资本市场的标杆案例。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">2</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.stcn.com/article/detail/3640484.html" target="_blank">神秘模型确认！智谱发布新一代旗舰模型GLM-5（提及MiniMax）</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">证券时报</span>
+                            <span class="date-tag">📅 2026-02</span>
+                        </div>
+                        <div class="summary">证券时报报道，OpenRouter 平台调用量排名前五的模型中，MiniMax M2.5 位居前列，与智谱GLM-5、月之暗面Kimi K2.5等国产模型共同占据四席。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">3</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://finance.sina.com.cn/roll/2026-03-06/doc-inhqaham2468704.shtml" target="_blank">事关AI，中国首次超越美国</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">新浪财经</span>
+                            <span class="date-tag">📅 2026-03-06</span>
+                        </div>
+                        <div class="summary">新浪财经报道，中信建投证券研报显示，国产模型 MiniMax M2.5 性能比肩 Claude Opus 4.6，但价格仅其 <span class="highlight">1/6-1/20</span>，以极致性价比推动中国AI调用量首次超越美国。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">4</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.163.com/dy/article/KMOOL4J805118O92.html" target="_blank">中国AI调用量首次超越美国</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">钛媒体/网易</span>
+                            <span class="date-tag">📅 2026-02-27</span>
+                        </div>
+                        <div class="summary">钛媒体报道，全球调用量排名前五的模型中，中国模型占据四席，MiniMax 的 M2.5 名列其中。这是中国AI产业发展的重要里程碑。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 2: 主流科技媒体 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                🌟 Tier 2 - 主流科技媒体
+                <span class="tier-badge">Tech Media</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">5</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.qbitai.com/2026/03/383276.html" target="_blank">全球首份大模型业绩报！MiniMax预判2026三大超级PMF</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">量子位</span>
+                            <span class="date-tag">📅 2026-03-03</span>
+                        </div>
+                        <div class="summary">量子位深度报道，港交所上市仅52天，MiniMax交出IPO后首份年报成绩单。M2.5模型主打代码与智能体能力，变得更轻、更快、更省钱。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">6</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://zhuanlan.zhihu.com/p/2005591305183567895" target="_blank">MiniMax M2.5：为智能体时代而生的高效编程旗舰</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎专栏</span>
+                            <span class="date-tag">📅 2026-02-13</span>
+                        </div>
+                        <div class="summary">深度技术解读：MiniMax M2.5 最核心的突破在于其专为智能体（Agent）场景原生设计的定位。从架构层面优化了复杂任务拆解和长程推理能力。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">7</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.jiemian.com/lists/48_18.html" target="_blank">MiniMax M2.5模型即将正式上线</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">界面新闻/第一财经</span>
+                            <span class="date-tag">📅 2026-02</span>
+                        </div>
+                        <div class="summary">界面新闻转第一财经报道，MiniMax M2.5模型已在海外的MiniMax Agent产品进行内测，即将正式上线。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 3: 专业分析与券商研报 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                📊 Tier 3 - 专业分析与券商研报
+                <span class="tier-badge">Analysis</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">8</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://wallstreetcn.com/articles/3765714" target="_blank">华尔街见闻早餐：MiniMax M2.5即将正式上线</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                            <span class="date-tag">📅 2026-02-14</span>
+                        </div>
+                        <div class="summary">华尔街见闻报道MiniMax M2.5模型发布动态，关注中国AI企业的资本市场表现。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">9</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.hibor.com.cn/data/65960cf9ea8eb9e3dabc9cd168a086d1.html" target="_blank">资源品普涨与Token出海新叙事（提及MiniMax）</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">国泰君安证券</span>
+                            <span class="date-tag">📅 2026-03-02</span>
+                        </div>
+                        <div class="summary">国泰君安研报指出，OpenRouter数据显示，2月16日至22日平台调用量排名前五的模型中有四款来自中国厂商，MiniMax M2.5位列其中。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">10</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://unifuncs.com/s/zoBenNud" target="_blank">智谱AI与MiniMax市值超越传统互联网巨头</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">UniFuncs</span>
+                            <span class="date-tag">📅 2026-02-20</span>
+                        </div>
+                        <div class="summary">深度分析：智谱AI与MiniMax市值双双突破3000亿港元，超越携程、快手、京东等成熟互联网巨头，中国AI估值逻辑正在重构。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 4: 行业媒体与社区 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                💬 Tier 4 - 行业媒体与社区
+                <span class="tier-badge">Community</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">11</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://juejin.cn/post/7612486041334595594" target="_blank">GLM-5成功率追平Claude Sonnet 4.6，Gemini全球最优（提及MiniMax）</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">稀土掘金</span>
+                            <span class="date-tag">📅 2026-03-02</span>
+                        </div>
+                        <div class="summary">稀土掘金技术社区分析：速度之王MiniMax，MiniMax-M2.5平均响应仅94秒，适合对速度敏感的场景。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">12</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://news.futunn.com/post/69087426/sino-us-ai-advancement-in-tandem-30-updates-in-47" target="_blank">中美AI同步加速：47天30次更新</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">富途牛牛</span>
+                            <span class="date-tag">📅 2026-02</span>
+                        </div>
+                        <div class="summary">富途深度报道中国AI阵营关键迭代，MiniMax M2.5作为国产模型代表，在推理能力上取得重要突破。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">13</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.aiopenminds.com/ai/news" target="_blank">摩尔线程完成MiniMax M2.5模型Day-0适配</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">AI Open Minds</span>
+                            <span class="date-tag">📅 2026</span>
+                        </div>
+                        <div class="summary">摩尔线程宣布完成MiniMax M2.5模型Day-0适配，支持MTT S5000 GPU，基于MUSA架构，具备强大的算子覆盖与生态兼容性。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📅 数据更新时间：2026年3月7日 | 共收集 13+ 篇国内媒体报道</p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">注：媒体排序基于权威性、影响力综合评估</p>
+            <p style="margin-top: 5px; font-size: 0.85rem;">💗 MiniMax M2.5 亮点：229B MoE架构、SWE-Bench 80.2%、价格仅为Claude 1/20</p>
+        </div>
+    </div>
+</body>
+</html>

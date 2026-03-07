@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniMax M2.5 海外媒体报道汇总</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a0a1a 0%, #2d1b2d 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #e0e0e0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ec4899;
+        }
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .tier-section {
+            margin-bottom: 30px;
+        }
+        .tier-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 15px;
+            padding: 12px 20px;
+            background: rgba(236, 72, 153, 0.2);
+            border-radius: 10px;
+            border-left: 4px solid #ec4899;
+        }
+        .tier-badge {
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .news-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        .news-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(5px);
+            border-color: rgba(236, 72, 153, 0.3);
+        }
+        .news-rank {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        .news-content {
+            flex: 1;
+        }
+        .news-title {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .news-title a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .news-title a:hover {
+            color: #ec4899;
+        }
+        .news-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        .news-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .source-tag {
+            background: rgba(236, 72, 153, 0.2);
+            color: #fbcfe8;
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .date-tag {
+            color: #aaa;
+        }
+        .summary {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #aaa;
+            line-height: 1.5;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .highlight {
+            color: #ec4899;
+            font-weight: 500;
+        }
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .news-item {
+                flex-direction: column;
+            }
+            .news-rank {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📰 MiniMax M2.5 海外媒体报道汇总</h1>
+            <p>全球知名媒体对 MiniMax M2.5 AI 模型的报道</p>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">13+</div>
+                    <div class="stat-label">海外媒体报道</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">顶级媒体</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2026.02</div>
+                    <div class="stat-label">发布时间</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 1: 全球顶级媒体 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                🏆 Tier 1 - 全球顶级财经/科技媒体
+                <span class="tier-badge">Top Tier</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">1</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.bloomberg.com/news/articles/2026-02-16/minimax-shares-surge-25-as-optimism-over-chinese-ai-firms-grows" target="_blank">MiniMax Shares Surge 25% as Optimism Over Chinese AI Firms Grows</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Bloomberg</span>
+                            <span class="date-tag">📅 2026-02-16</span>
+                        </div>
+                        <div class="summary">Bloomberg 报道 MiniMax 股价飙升 25%，公司发布的 M2.5 模型被直接对标 Anthropic 的 Claude Opus 4.6，引发市场对中国 AI 公司的乐观情绪。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">2</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.bloomberg.com/news/articles/2026-03-02/china-ai-pioneer-minimax-more-than-doubles-sales-in-hot-market" target="_blank">MiniMax Shares Soar After China AI Firm More Than Doubles Sales</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Bloomberg</span>
+                            <span class="date-tag">📅 2026-03-02</span>
+                        </div>
+                        <div class="summary">Bloomberg 报道 MiniMax 2025 年销售额增长超过一倍，股价一度飙升 21%，反映了中国 AI 市场的蓬勃发展。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">3</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.theinformation.com/briefings/chinas-minimax-launches-new-flagship-ai-model-m2-5" target="_blank">China's MiniMax Launches New Flagship AI Model M2.5</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">The Information</span>
+                            <span class="date-tag">📅 2026-02-12</span>
+                        </div>
+                        <div class="summary">The Information 报道中国 AI 开发商 MiniMax 发布最新旗舰开源大语言模型 M2.5，加入了近期新模型发布的浪潮。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 2: 知名科技媒体 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                🌟 Tier 2 - 知名科技媒体
+                <span class="tier-badge">Tech Media</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">4</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://venturebeat.com/technology/minimaxs-new-open-m2-5-and-m2-5-lightning-near-state-of-the-art-while" target="_blank">MiniMax's new open M2.5 and M2.5 Lightning near state-of-the-art while costing 1/20th of Claude Opus 4.6</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">VentureBeat</span>
+                            <span class="date-tag">📅 2026-02-12</span>
+                        </div>
+                        <div class="summary">VentureBeat 深度报道 MiniMax M2.5 以极低成本（仅为 Claude Opus 4.6 的 1/20）实现接近顶尖水平的性能。在 SWE-Bench Verified 达到 <span class="highlight">80.2%</span>，与 Claude Opus 4.6 持平。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">5</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.techmeme.com/260212/p17" target="_blank">MiniMax releases M2.5, claiming the model delivers on the "intelligence too cheap to meter" promise</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">TechMeme</span>
+                            <span class="date-tag">📅 2026-02-12</span>
+                        </div>
+                        <div class="summary">TechMeme 报道 MiniMax 发布 M2.5，定价仅为 $0.30/1M 输入 tokens 和 $1.20/1M 输出 tokens，践行了"廉价智能"的承诺。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">6</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://techcrunch.com/2026/02/12/minimax-m2-5-open-source-ai-model/" target="_blank">Chinese AI startup MiniMax releases M2.5, an open-source model rivaling Claude and GPT-4</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">TechCrunch</span>
+                            <span class="date-tag">📅 2026-02-12</span>
+                        </div>
+                        <div class="summary">TechCrunch 报道 MiniMax M2.5 在多项基准测试中接近或达到行业最先进水平，价格却只有竞争对手的一小部分。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">7</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.datacamp.com/blog/mini-max-m2-5" target="_blank">MiniMax M2.5 Guide: How It Works, Use Cases & More</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">DataCamp</span>
+                            <span class="date-tag">📅 2026-02-23</span>
+                        </div>
+                        <div class="summary">DataCamp 发布详细的 MiniMax M2.5 使用指南，介绍这款来自上海的开放权重大型语言模型的工作原理和应用场景。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 3: 专业分析平台 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                📊 Tier 3 - 专业 AI 分析平台
+                <span class="tier-badge">Analysis</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">8</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://artificialanalysis.ai/models/minimax-m2-5" target="_blank">MiniMax-M2.5 - Intelligence, Performance & Price Analysis</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Artificial Analysis</span>
+                            <span class="date-tag">📅 2026-02-12</span>
+                        </div>
+                        <div class="summary">专业 AI 分析平台 Artificial Analysis 对 MiniMax-M2.5 进行全面评测，认为其在智能水平和性价比方面处于领先地位。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">9</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://betterstack.com/community/guides/ai/minimax-m2-5-claude-opus/" target="_blank">MiniMax M2.5 vs. Claude Opus 4.6: AI Coding Model Comparison</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Better Stack</span>
+                            <span class="date-tag">📅 2026-02-16</span>
+                        </div>
+                        <div class="summary">Better Stack 发布 MiniMax M2.5 与 Claude Opus 4.6 的详细对比分析，展示两款模型在编码任务上的基准测试对比。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">10</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://docsbot.ai/models/compare/claude-opus-4-5/minimax-m2-5" target="_blank">Claude Opus 4.5 vs MiniMax M2.5 Comparison</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">DocsBot AI</span>
+                            <span class="date-tag">📅 2026-02-11</span>
+                        </div>
+                        <div class="summary">DocsBot AI 对 Claude Opus 4.5 和 MiniMax M2.5 进行详细对比，M2.5 被描述为一款为实际生产力设计的先进大语言模型。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 4: 国际媒体和技术社区 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                🌍 Tier 4 - 国际媒体与技术社区
+                <span class="tier-badge">Global</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">11</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.chosun.com/english/industry-en/2026/02/26/BQU7O6GJTBCX3JPRU4QFCXIJJM/" target="_blank">MiniMax's M2.5 Model Tops Global Token Usage</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Chosun Ilbo (朝鲜日报)</span>
+                            <span class="date-tag">📅 2026-02-26</span>
+                        </div>
+                        <div class="summary">韩国主流媒体朝鲜日报英文版报道，MiniMax M2.5 模型在全球 Token 使用量中领先，中国 AI 公司引领开源浪潮，国内 Token 增长 263%。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">12</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.codemotion.com/magazine/ai-ml/minimax-m2-5-low-costs-high-performance/" target="_blank">MiniMax M2.5: Low Costs, High Performance, Relaunches the Chinese AI Race</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Codemotion</span>
+                            <span class="date-tag">📅 2026-03-05</span>
+                        </div>
+                        <div class="summary">Codemotion 报道 MiniMax M2.5 在 AI 行业的关键时刻进入市场，基于 MoE 架构，以超低成本提供高性能。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">13</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://medium.com/@mlabonne/minimax-m2-5-the-1-hour-frontier-model-92168de195b8" target="_blank">MiniMax-M2.5: The $1/hour Frontier Model</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Medium (Maxime Labonne)</span>
+                            <span class="date-tag">📅 2026-02-13</span>
+                        </div>
+                        <div class="summary">知名 AI 专家 Maxime Labonne 在 Medium 发文，称 M2.5 为"每小时仅1美元的前沿模型"，在 SWE-Bench 上达到 80.2%，与 Claude Opus 4.6 持平。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 5: Reddit 和社区讨论 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                💬 Tier 5 - 开发者社区讨论
+                <span class="tier-badge">Community</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">14</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.reddit.com/r/LLMDevs/comments/1rl8m0d/minimax_m25_matches_opus_on_coding_benchmarks_at/" target="_blank">MiniMax M2.5 matches Opus on coding benchmarks at 1/20th the cost</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Reddit r/LLMDevs</span>
+                            <span class="date-tag">📅 2026-03-05</span>
+                        </div>
+                        <div class="summary">Reddit 开发者社区热议：对于每日 1000 万输入 tokens 和 200 万输出的工作负载，M2.5 每天约 $4.70，而 Opus 需要 $100。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">15</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://ollama.com/library/minimax-m2.5" target="_blank">MiniMax-M2.5 on Ollama</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Ollama</span>
+                            <span class="date-tag">📅 2026-02</span>
+                        </div>
+                        <div class="summary">Ollama 官方库收录 MiniMax-M2.5，用户可以直接在本地运行这款最先进的开源大语言模型。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📅 数据更新时间：2026年3月7日 | 共收集 15+ 篇海外媒体报道</p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">注：媒体知名度排序基于全球影响力、读者规模和行业权威性综合评估</p>
+        </div>
+    </div>
+</body>
+</html>

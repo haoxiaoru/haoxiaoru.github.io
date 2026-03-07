@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智谱 Z.ai GLM-5 海外媒体报道汇总</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0c1f1c 0%, #0f2d26 50%, #0d3b2e 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #e0e0e0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .header h1 {
+            font-size: 2.3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+        .model-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #14b8a6;
+        }
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .tier-section {
+            margin-bottom: 30px;
+        }
+        .tier-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 15px;
+            padding: 12px 20px;
+            background: rgba(6, 182, 212, 0.15);
+            border-radius: 10px;
+            border-left: 4px solid #14b8a6;
+        }
+        .tier-badge {
+            background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .news-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        .news-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(5px);
+            border-color: rgba(20, 184, 166, 0.3);
+        }
+        .news-rank {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        .news-content {
+            flex: 1;
+        }
+        .news-title {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .news-title a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .news-title a:hover {
+            color: #14b8a6;
+        }
+        .news-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        .news-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .source-tag {
+            background: rgba(20, 184, 166, 0.2);
+            color: #5eead4;
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .date-tag {
+            color: #aaa;
+        }
+        .summary {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #aaa;
+            line-height: 1.5;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .highlight {
+            color: #14b8a6;
+            font-weight: 500;
+        }
+        .model-highlight {
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(20, 184, 166, 0.2);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .model-spec {
+            text-align: center;
+        }
+        .spec-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #14b8a6;
+        }
+        .spec-label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            .news-item {
+                flex-direction: column;
+            }
+            .news-rank {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+            .model-highlight {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📰 智谱 Z.ai GLM-5 海外媒体报道汇总</h1>
+            <p>全球知名媒体对智谱 GLM-5 AI 模型的报道</p>
+            <div class="model-badge">🤖 744B 参数 · 开源 · MoE 架构</div>
+            
+            <div class="model-highlight">
+                <div class="model-spec">
+                    <div class="spec-value">744B</div>
+                    <div class="spec-label">总参数量</div>
+                </div>
+                <div class="model-spec">
+                    <div class="spec-value">40B</div>
+                    <div class="spec-label">激活参数</div>
+                </div>
+                <div class="model-spec">
+                    <div class="spec-value">28.5T</div>
+                    <div class="spec-label">训练数据</div>
+                </div>
+                <div class="model-spec">
+                    <div class="spec-value">77.8%</div>
+                    <div class="spec-label">SWE-Bench</div>
+                </div>
+                <div class="model-spec">
+                    <div class="spec-value">MIT</div>
+                    <div class="spec-label">开源协议</div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">16+</div>
+                    <div class="stat-label">海外媒体报道</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">顶级媒体</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2026.02</div>
+                    <div class="stat-label">发布时间</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 1: 全球顶级媒体 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                🏆 Tier 1 - 全球顶级媒体
+                <span class="tier-badge">Top Tier</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">1</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.reuters.com/technology/chinas-ai-startup-zhipu-releases-new-flagship-model-glm-5-2026-02-11/" target="_blank">Chinese AI startup Zhipu releases new flagship model GLM-5</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Reuters</span>
+                            <span class="date-tag">📅 2026-02-11</span>
+                        </div>
+                        <div class="summary">路透社报道中国 AI 初创公司智谱发布新旗舰模型 GLM-5，开源模型具备增强的编码能力和长程 Agent 任务执行能力，性能接近 Anthropic 的 Claude Opus 4.5。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">2</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.scmp.com/tech/article/3343239/chinas-zhipu-ai-launches-new-major-model-glm-5-challenge-its-rivals" target="_blank">China's Zhipu AI launches new major model GLM-5 in challenge to its rivals</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">South China Morning Post</span>
+                            <span class="date-tag">📅 2026-02-12</span>
+                        </div>
+                        <div class="summary">《南华早报》报道智谱 AI 发布 GLM-5，参数量从 GLM-4.7 的 355B 翻倍至 <span class="highlight">744B</span>，训练数据增至 28.5T tokens，采用 DeepSeek 稀疏注意力机制。发布后股价上涨 <span class="highlight">28.7%</span>。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">3</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.caixinglobal.com/2026-02-12/zhipu-ai-launches-new-model-better-at-coding-learning-102413996.html" target="_blank">Zhipu AI Launches New Model Better at Coding, Learning</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Caixin Global</span>
+                            <span class="date-tag">📅 2026-02-12</span>
+                        </div>
+                        <div class="summary">财新英文版报道智谱 AI 发布 GLM-5，具有 7440 亿参数，全球综合能力排名第四。模型已完成与华为、摩尔线程等国产芯片的深度适配。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">4</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.afp.com/en/infos/glm-5-launch-signals-new-era-ai-when-models-become-engineers" target="_blank">GLM-5 Launch Signals a New Era in AI: When Models Become Engineers</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Agence France-Presse (AFP)</span>
+                            <span class="date-tag">📅 2026-02-16</span>
+                        </div>
+                        <div class="summary">法新社报道 GLM-5 的开源发布标志着 AI 领域的新变革，大语言模型正从生成代码片段转向构建完整系统和执行长程工程任务。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 2: 知名科技媒体 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                🌟 Tier 2 - 知名科技媒体
+                <span class="tier-badge">Tech Media</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">5</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://venturebeat.com/technology/z-ais-open-source-glm-5-achieves-record-low-hallucination-rate-and-leverages" target="_blank">z.ai's open source GLM-5 achieves record low hallucination rate and leverages new RL 'slime' technique</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">VentureBeat</span>
+                            <span class="date-tag">📅 2026-02-12</span>
+                        </div>
+                        <div class="summary">VentureBeat 深度报道 GLM-5 创下行业最低幻觉率纪录，在 AA-Omniscience Index 上达到 <span class="highlight">-1 分</span>（比前代提升 35 分）。确认此前引发热议的神秘模型 "Pony Alpha" 正是 GLM-5。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">6</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.deeplearning.ai/the-batch/z-ais-glm-5-model-boasts-top-open-weights-intelligence-index-score/" target="_blank">Z.ai's GLM-5 Model Boasts Top Open-Weights Intelligence Index Score</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">DeepLearning.AI</span>
+                            <span class="date-tag">📅 2026-02-20</span>
+                        </div>
+                        <div class="summary">吴恩达创办的 DeepLearning.AI 报道，Z.ai 将旗舰大语言模型规模翻倍，在开放权重竞争对手中提供出色性能，AI 智能指数得分领先。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">7</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.digitimes.com/news/a20260212PD225/china-zhipuai-ai-startup-performance-2025.html" target="_blank">Z.ai unveils GLM-5, advances AI agents and China chip compatibility</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">DigiTimes</span>
+                            <span class="date-tag">📅 2026-02-12</span>
+                        </div>
+                        <div class="summary">台湾科技媒体 DigiTimes 报道 Z.ai 发布 GLM-5，突出 AI Agent 能力和对中国国产芯片的兼容性，标志着中国 AI 芯片生态的重要进展。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">8</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://finance.yahoo.com/news/glm-5-launch-signals-era-080000899.html" target="_blank">GLM-5 Launch Signals a New Era in AI: When Models Become Engineers</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Yahoo Finance</span>
+                            <span class="date-tag">📅 2026-02-16</span>
+                        </div>
+                        <div class="summary">雅虎财经报道 GLM-5 的开源发布标志着 AI 新时代的到来——当模型成为工程师。大语言模型正从生成界面原型转向构建完整系统。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 3: 专业分析平台 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                📊 Tier 3 - 专业 AI 分析平台
+                <span class="tier-badge">Analysis</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">9</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://artificialanalysis.ai/models/comparisons/glm-5-vs-claude-4-5-sonnet-thinking" target="_blank">GLM-5 (Reasoning) vs Claude 4.5 Sonnet (Reasoning) Comparison</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Artificial Analysis</span>
+                            <span class="date-tag">📅 2026-02</span>
+                        </div>
+                        <div class="summary">专业 AI 分析平台 Artificial Analysis 对 GLM-5 和 Claude 4.5 Sonnet 进行详细对比，涵盖智能水平、价格、速度、上下文窗口等多个维度。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">10</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.nxcode.io/resources/news/glm-5-open-source-744b-model-complete-guide-2026" target="_blank">China's 744B Open-Source Model That Rivals GPT-5.2 (2026)</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">NXCode</span>
+                            <span class="date-tag">📅 2026-02-13</span>
+                        </div>
+                        <div class="summary">NXCode 发布 GLM-5 完整指南，介绍这款完全使用 <span class="highlight">华为 Ascend 芯片</span> 训练的 744B 开源模型，涵盖基准测试、API 设置、定价等。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">11</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://collinwilkins.com/articles/ai-coding-model-wars-2026" target="_blank">AI Coding Model Wars 2026: Opus 4.6 vs Codex 5.3 vs GLM-5 vs Kimi K2.5</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Collin Wilkins</span>
+                            <span class="date-tag">📅 2026-02-15</span>
+                        </div>
+                        <div class="summary">深度对比分析 2026 年主要 AI 编码模型：Opus 4.6、Codex 5.3、GLM-5 和 Kimi K2.5 的基准测试、定价和使用场景。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 4: 国际媒体与技术评论 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                🌍 Tier 4 - 国际媒体与技术评论
+                <span class="tier-badge">Global</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">12</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.standard.com.hk/innovation/article/324248/Chinese-AI-startup-Zhipu-releases-new-flagship-model-GLM-5" target="_blank">Chinese AI startup Zhipu releases new flagship model GLM-5</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">The Standard (Hong Kong)</span>
+                            <span class="date-tag">📅 2026-02-11</span>
+                        </div>
+                        <div class="summary">香港《英文虎报》报道智谱发布 GLM-5，开源模型在编码基准测试中可与 Claude Opus 4.5 相媲美，支持长程 Agent 任务。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">13</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://noqta.tn/en/news/zhipu-glm-5-open-source-model-rivals-western-ai-2026" target="_blank">Zhipu AI Releases GLM-5: A 744B Open-Source Model That Rivals Western AI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Noqta News (Tunisia)</span>
+                            <span class="date-tag">📅 2026-02-13</span>
+                        </div>
+                        <div class="summary">突尼斯科技媒体 Noqta 报道智谱 AI 发布 GLM-5，7440 亿参数开源模型，完全使用华为 Ascend 芯片训练，声称可与西方领先模型媲美。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">14</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://evrimagaci.org/gpt/zhipu-ai-unveils-glm5-model-redefining-global-ai-race-528618" target="_blank">Zhipu AI Unveils GLM-5 Model, Redefining Global AI Race</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Evrim Ağacı (Turkey)</span>
+                            <span class="date-tag">📅 2026-02-12</span>
+                        </div>
+                        <div class="summary">土耳其科技媒体 Evrim Ağacı 报道智谱 AI 于 2026 年 2 月 11 日发布 GLM-5，拥有 7440 亿参数和先进的 Agent 智能能力。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier 5: 技术社区和专家评论 -->
+        <div class="tier-section">
+            <div class="tier-title">
+                💬 Tier 5 - 技术社区与专家评论
+                <span class="tier-badge">Community</span>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-rank">15</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://medium.com/@mlabonne/glm-5-chinas-first-public-ai-company-ships-a-frontier-model-a068cecb74e3" target="_blank">GLM-5: China's First Public AI Company Ships a Frontier Model</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Medium (Maxime Labonne)</span>
+                            <span class="date-tag">📅 2026-02-12</span>
+                        </div>
+                        <div class="summary">知名 AI 专家 Maxime Labonne 发文：Z.ai 于 2026 年 2 月 11 日发布前沿大语言模型 GLM-5，这是中国首家上市 AI 公司发布的前沿模型。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">16</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://blog.kilo.ai/p/the-secret-is-out-pony-alpha-is-glm" target="_blank">The Secret is Out: Pony Alpha is GLM-5 (And It's Free in Kilo)</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Kilo AI Blog</span>
+                            <span class="date-tag">📅 2026-02-11</span>
+                        </div>
+                        <div class="summary">Kilo AI 博客揭秘：此前在 OpenRouter 上引发轰动的神秘模型 "Pony Alpha" 正是 GLM-5 的测试版本，其结构化推理能力令人印象深刻。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">17</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://www.simplifyingcomplexity.tech/p/z-ai-releases-glm-5" target="_blank">Z.ai releases GLM-5</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">Simplifying Complexity</span>
+                            <span class="date-tag">📅 2026-02-12</span>
+                        </div>
+                        <div class="summary">技术分析博客报道 Z.ai 发布 GLM-5，这款开源前沿模型创下幻觉率新低纪录，价格极具竞争力。</div>
+                    </div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-rank">18</div>
+                    <div class="news-content">
+                        <div class="news-title">
+                            <a href="https://arxiv.org/html/2602.15763v1" target="_blank">GLM-5: from Vibe Coding to Agentic Engineering (Technical Paper)</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">arXiv</span>
+                            <span class="date-tag">📅 2026-02-17</span>
+                        </div>
+                        <div class="summary">智谱在 arXiv 发布 GLM-5 技术论文，详细介绍模型架构、DSA 稀疏注意力、异步 RL 框架 "Slime" 等技术细节。相比 GLM-4.7 平均提升约 <span class="highlight">20%</span>。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📅 数据更新时间：2026年3月7日 | 共收集 18+ 篇海外媒体报道</p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">注：媒体知名度排序基于全球影响力、读者规模和行业权威性综合评估</p>
+            <p style="margin-top: 5px; font-size: 0.85rem;">🔬 GLM-5 技术亮点：744B MoE 架构、华为 Ascend 芯片训练、DeepSeek 稀疏注意力、Slime 异步 RL 框架</p>
+        </div>
+    </div>
+</body>
+</html>

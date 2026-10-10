@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="将模型 Benchmark 成绩表生成 K3 风格的高清 PNG 和可编辑 SVG。">
+  <title>K3 Benchmark Chart</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div>
+      <p class="eyebrow">K3 VISUAL SYSTEM</p>
+      <h1>Benchmark 成绩图生成器</h1>
+      <p class="lede">上传 Excel 或粘贴成绩表，生成发布级 PNG 与可编辑 SVG。</p>
+    </div>
+    <span class="format-badge">2x PNG + SVG</span>
+  </header>
+
+  <main class="layout">
+    <section class="panel input-panel" aria-labelledby="input-title">
+      <div class="section-heading">
+        <div>
+          <p class="step">01</p>
+          <h2 id="input-title">输入成绩</h2>
+        </div>
+        <button class="text-button" id="example-button" type="button">填入示例</button>
+      </div>
+
+      <div class="drop-zone" id="drop-zone" role="button" tabindex="0" aria-label="选择或拖入成绩表文件">
+        <input id="file-input" type="file" accept=".csv,.tsv,.md,.markdown,.json,.xlsx" hidden>
+        <div class="drop-icon" aria-hidden="true">↑</div>
+        <strong>选择或拖入成绩表</strong>
+        <span>CSV / TSV / Markdown / JSON / XLSX</span>
+        <span class="file-name" id="file-name"></span>
+      </div>
+      <button class="text-button clear-file" id="clear-file" type="button" hidden>清除文件，改用粘贴内容</button>
+
+      <div class="divider"><span>或直接粘贴表格</span></div>
+      <label class="sr-only" for="table-input">粘贴成绩表</label>
+      <textarea id="table-input" rows="10" spellcheck="false" placeholder="section,benchmark,model,score&#10;Coding,DeepSWE,Kimi K3.1,65.3&#10;Coding,DeepSWE,GPT-6.1 Sol,67"></textarea>
+      <p class="hint">必填：<code>benchmark, model, score</code>；多版块加 <code>section</code>，Elo 加 <code>scale_max</code>。</p>
+
+      <div class="section-heading options-heading">
+        <div>
+          <p class="step">02</p>
+          <h2>图表设置</h2>
+        </div>
+      </div>
+      <div class="form-grid">
+        <label>
+          <span>标题</span>
+          <input id="title-input" type="text" placeholder="没有 section 列时使用，如 Coding">
+        </label>
+        <label>
+          <span>高亮模型</span>
+          <input id="highlight-input" type="text" placeholder="留空自动高亮 Kimi">
+        </label>
+        <label class="full-width">
+          <span>副标题</span>
+          <input id="subtitle-input" type="text" placeholder="All maxed out on thinking effort: max or xhigh.">
+        </label>
+        <label class="full-width">
+          <span>底部注释</span>
+          <textarea id="note-input" rows="3" placeholder="可选；留空则不显示"></textarea>
+        </label>
+      </div>
+      <button class="primary-button" id="generate-button" type="button">
+        <span class="button-label">生成成绩图</span>
+        <span class="button-spinner" hidden></span>
+      </button>
+      <div id="status" class="status" role="alert" aria-live="polite"></div>
+    </section>
+
+    <section class="panel preview-panel" aria-labelledby="preview-title">
+      <div class="section-heading">
+        <div>
+          <p class="step">03</p>
+          <h2 id="preview-title">预览与下载</h2>
+        </div>
+        <span id="dimensions" class="dimensions"></span>
+      </div>
+      <div class="preview-empty" id="preview-empty">
+        <div class="preview-mark" aria-hidden="true">
+          <i></i><i></i><i></i><i></i>
+        </div>
+        <strong>生成后在这里预览</strong>
+        <span>排版、图标、配色与 CLI 输出一致</span>
+      </div>
+      <div class="preview-result" id="preview-result" hidden>
+        <div class="image-wrap">
+          <img id="preview-image" alt="生成的 Benchmark 成绩图预览">
+        </div>
+        <div class="download-row">
+          <a class="primary-button download" id="download-png" href="#" download>下载 PNG</a>
+          <a class="secondary-button download" id="download-svg" href="#" download>下载 SVG</a>
+        </div>
+        <div id="warnings" class="warnings"></div>
+      </div>
+      <p class="privacy">成绩数据仅在当前服务内存中处理，不会保存到服务器磁盘。</p>
+    </section>
+  </main>
+
+  <footer>OpenAI、Claude、Kimi、GLM/Z.ai 图标及字体均随应用内置。</footer>
+  <script src="/app.js" type="module"></script>
+</body>
+</html>

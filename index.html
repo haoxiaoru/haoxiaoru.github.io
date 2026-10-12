@@ -27,6 +27,7 @@
             position: fixed;
             inset: 0;
             background:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='-apple-system, BlinkMacSystemFont, %26quot%3BSegoe UI%26quot%3B, %26quot%3BPingFang SC%26quot%3B, %26quot%3BMicrosoft YaHei%26quot%3B, sans-serif' font-size='58' font-weight='300' letter-spacing='0.12em' fill='%23777777'%3E%E9%83%9D%E6%99%93%E8%8C%B9%E7%9A%84%E5%BF%AB%E4%B9%90%E6%BA%90%E6%B3%89%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%E4%B8%AD%EF%BC%89%3C/text%3E%3C/svg%3E") center / min(90vw, 900px) auto no-repeat,
                 radial-gradient(ellipse at 20% 20%, rgba(120, 80, 200, 0.12) 0%, transparent 55%),
                 radial-gradient(ellipse at 85% 80%, rgba(255, 100, 120, 0.1) 0%, transparent 55%),
                 radial-gradient(ellipse at 50% 50%, rgba(30, 30, 35, 1) 0%, rgba(10, 10, 10, 1) 100%);
@@ -38,26 +39,6 @@
             opacity: 0.035;
             pointer-events: none;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-        }
-
-        .title {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 0;
-            text-align: center;
-            pointer-events: none;
-            user-select: none;
-            width: 92vw;
-        }
-
-        .title h1 {
-            font-size: clamp(1rem, 3vw, 1.6rem);
-            font-weight: 300;
-            letter-spacing: 0.15em;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.16);
         }
 
         .logo {
@@ -119,10 +100,6 @@
             left: 9px;
         }
 
-        .cursor-dot {
-            display: none;
-        }
-
         @media (pointer: coarse) {
             body { cursor: auto; }
             .cursor { display: none; }
@@ -132,9 +109,6 @@
 <body>
     <div class="canvas"></div>
     <div class="noise"></div>
-    <div class="title">
-        <h1>郝晓茹的快乐源泉（持续更新中）</h1>
-    </div>
     <div class="cursor"><span class="mouth"></span></div>
 
     <script>
@@ -172,19 +146,6 @@
         function createLogos() {
             const w = window.innerWidth;
             const h = window.innerHeight;
-            const titleEl = document.querySelector('.title h1');
-            const rect = titleEl.getBoundingClientRect();
-            const pad = 100;
-            const coverW = Math.min(w - 40, rect.width + pad * 2);
-            const coverH = Math.min(h - 40, rect.height + pad * 2);
-            const coverLeft = (w - coverW) / 2;
-            const coverTop = (h - coverH) / 2;
-
-            const cols = 3;
-            const rows = 2;
-            const cellW = coverW / cols;
-            const cellH = coverH / rows;
-            const coverIndices = new Set([0, 1, 2, 3, 4, 5]);
 
             logoConfigs.forEach((cfg, i) => {
                 const el = document.createElement('div');
@@ -193,22 +154,8 @@
                 const angle = random(-16, 16);
                 const halfW = cfg.w / 2;
                 const halfH = cfg.h / 2;
-
-                let x, y;
-                if (coverIndices.has(i)) {
-                    const col = i % cols;
-                    const row = Math.floor(i / cols);
-                    const cellLeft = coverLeft + col * cellW;
-                    const cellTop = coverTop + row * cellH;
-                    x = cellLeft + cellW / 2 + random(-cellW / 3, cellW / 3);
-                    y = cellTop + cellH / 2 + random(-cellH / 3, cellH / 3);
-                } else {
-                    x = random(halfW + 20, w - halfW - 20);
-                    y = random(halfH + 20, h - halfH - 20);
-                }
-
-                x = Math.max(halfW + 10, Math.min(w - halfW - 10, x));
-                y = Math.max(halfH + 10, Math.min(h - halfH - 10, y));
+                const x = random(halfW + 20, w - halfW - 20);
+                const y = random(halfH + 20, h - halfH - 20);
 
                 el.style.setProperty('--w', `${cfg.w}px`);
                 el.style.setProperty('--h', `${cfg.h}px`);

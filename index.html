@@ -45,7 +45,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 1;
+            z-index: 0;
             text-align: center;
             pointer-events: none;
             user-select: none;
@@ -66,7 +66,7 @@
             height: var(--h);
             transform: translate(-50%, -50%) rotate(var(--rotate));
             will-change: transform;
-            z-index: 5;
+            z-index: 10;
             border-radius: 24px;
             overflow: hidden;
             box-shadow:
@@ -85,16 +85,38 @@
 
         .cursor {
             position: fixed;
-            width: 12px;
-            height: 12px;
-            background: rgba(255, 255, 255, 0.95);
+            width: 36px;
+            height: 36px;
+            background: #ffcc00;
             border-radius: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
             z-index: 100;
-            box-shadow:
-                0 0 0 4px rgba(255, 255, 255, 0.15),
-                0 0 20px rgba(255, 255, 255, 0.35);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+        }
+
+        .cursor::before,
+        .cursor::after {
+            content: '';
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            top: 11px;
+        }
+
+        .cursor::before { left: 9px; }
+        .cursor::after { right: 9px; }
+
+        .cursor .mouth {
+            position: absolute;
+            width: 18px;
+            height: 9px;
+            border-bottom: 3px solid #1a1a1a;
+            border-radius: 0 0 18px 18px;
+            bottom: 9px;
+            left: 9px;
         }
 
         .cursor-dot {
@@ -113,7 +135,7 @@
     <div class="title">
         <h1>郝晓茹的快乐源泉（持续更新中）</h1>
     </div>
-    <div class="cursor"></div>
+    <div class="cursor"><span class="mouth"></span></div>
 
     <script>
         const logoConfigs = [

@@ -172,7 +172,19 @@
         function createLogos() {
             const w = window.innerWidth;
             const h = window.innerHeight;
-            const textCoverIndices = new Set([1, 4, 7, 10]);
+            const titleEl = document.querySelector('.title h1');
+            const rect = titleEl.getBoundingClientRect();
+            const pad = 100;
+            const coverW = Math.min(w - 40, rect.width + pad * 2);
+            const coverH = Math.min(h - 40, rect.height + pad * 2);
+            const coverLeft = (w - coverW) / 2;
+            const coverTop = (h - coverH) / 2;
+
+            const cols = 3;
+            const rows = 2;
+            const cellW = coverW / cols;
+            const cellH = coverH / rows;
+            const coverIndices = new Set([0, 1, 2, 3, 4, 5]);
 
             logoConfigs.forEach((cfg, i) => {
                 const el = document.createElement('div');
@@ -183,17 +195,20 @@
                 const halfH = cfg.h / 2;
 
                 let x, y;
-                if (textCoverIndices.has(i)) {
-                    const zoneW = Math.min(w * 0.55, 500);
-                    const zoneH = Math.min(h * 0.25, 160);
-                    const zoneLeft = (w - zoneW) / 2;
-                    const zoneTop = (h - zoneH) / 2;
-                    x = random(zoneLeft + halfW, zoneLeft + zoneW - halfW);
-                    y = random(zoneTop + halfH, zoneTop + zoneH - halfH);
+                if (coverIndices.has(i)) {
+                    const col = i % cols;
+                    const row = Math.floor(i / cols);
+                    const cellLeft = coverLeft + col * cellW;
+                    const cellTop = coverTop + row * cellH;
+                    x = cellLeft + cellW / 2 + random(-cellW / 3, cellW / 3);
+                    y = cellTop + cellH / 2 + random(-cellH / 3, cellH / 3);
                 } else {
                     x = random(halfW + 20, w - halfW - 20);
                     y = random(halfH + 20, h - halfH - 20);
                 }
+
+                x = Math.max(halfW + 10, Math.min(w - halfW - 10, x));
+                y = Math.max(halfH + 10, Math.min(h - halfH - 10, y));
 
                 el.style.setProperty('--w', `${cfg.w}px`);
                 el.style.setProperty('--h', `${cfg.h}px`);

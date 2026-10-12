@@ -62,14 +62,14 @@
 
         .logo {
             position: absolute;
-            width: 120px;
-            height: 120px;
+            width: 240px;
+            height: 240px;
             transform: translate(-50%, -50%) rotate(var(--rotate));
             will-change: transform;
             z-index: 5;
-            border-radius: 18px;
+            border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
         }
 
         .logo img {
@@ -144,13 +144,13 @@
         let cursorPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
         const logos = [];
-        const logoSize = 120;
-        const repelRadius = 170;
+        const logoSize = 240;
+        const repelRadius = 260;
         const repelStrength = 0.9;
         const returnStrength = 0.05;
         const friction = 0.86;
         const floatSpeed = 0.00035;
-        const floatAmp = 8;
+        const floatAmp = 12;
 
         function random(min, max) {
             return Math.random() * (max - min) + min;

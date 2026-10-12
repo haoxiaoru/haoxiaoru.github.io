@@ -3,149 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>郝晓茹 - 个人介绍</title>
+    <title>郝晓茹的快乐源泉，持续更新中</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #0a0a0a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f7;
-            color: #1d1d1f;
+            cursor: none;
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+
+        .canvas {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(120, 80, 200, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(255, 100, 120, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(40, 40, 45, 1) 0%, rgba(10, 10, 10, 1) 100%);
         }
-        header {
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 20px 0;
+
+        .noise {
+            position: fixed;
+            inset: 0;
+            opacity: 0.04;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
         }
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        nav ul {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        nav ul li {
-            margin-left: 20px;
-        }
-        nav ul li a {
-            text-decoration: none;
-            color: #1d1d1f;
-            font-size: 16px;
-        }
-        .profile {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-top: 30px;
-        }
-        .profile-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        .profile-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background-color: #e6e6e6;
-            margin-right: 20px;
-        }
-        .profile-info h1 {
-            margin: 0;
-            font-size: 28px;
-        }
-        .profile-info p {
-            margin: 10px 0 0;
-            color: #86868b;
-        }
-        .profile-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .profile-section {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-        }
-        .profile-section h2 {
-            margin-top: 0;
-            font-size: 20px;
-            color: #1d1d1f;
-        }
-        .profile-section p {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-        footer {
-            background-color: #ffffff;
+
+        .title {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
             text-align: center;
-            padding: 20px 0;
-            margin-top: 50px;
-            color: #86868b;
-            font-size: 14px;
+            pointer-events: none;
+            user-select: none;
+            mix-blend-mode: difference;
+        }
+
+        .title h1 {
+            font-size: clamp(2.5rem, 8vw, 7rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff 0%, #e0e0e0 50%, #ff6b9d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 80px rgba(255, 255, 255, 0.15);
+            animation: breathe 6s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.95; }
+            50% { transform: scale(1.02); opacity: 1; }
+        }
+
+        .logo {
+            position: absolute;
+            width: var(--size);
+            height: var(--size);
+            transform: translate(-50%, -50%) rotate(var(--rotate));
+            will-change: transform;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.5));
+            transition: filter 0.3s ease;
+            z-index: 5;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .cursor {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 100;
+            transition: width 0.2s, height 0.2s, border-color 0.2s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-dot {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 100;
+            mix-blend-mode: difference;
+        }
+
+        @media (pointer: coarse) {
+            body { cursor: auto; }
+            .cursor, .cursor-dot { display: none; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="header-content">
-                <div class="logo">个人介绍</div>
-                <nav>
-                    <ul>
-                        <li><a href="#">首页</a></li>
-                        <li><a href="#">关于</a></li>
-                        <li><a href="#">联系</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
-        <main>
-            <div class="profile">
-                <div class="profile-header">
-                    <div class="profile-image"></div>
-                    <div class="profile-info">
-                        <h1>郝晓茹</h1>
-                        <p>一位科技爱好者</p>
-                        <p>邮箱：haoxiaoru1223#gmail.com</p>
-                    </div>
-                </div>
-                <div class="profile-content">
-                    <div class="profile-section">
-                        <h2>职业背景</h2>
-                        <p>保密</p>
-                    </div>
-                    <div class="profile-section">
-                        <h2>联系方式</h2>
-                        <p>邮箱：保密</p>
-                        <p>微信：保密</p>
-                        <p>微博：保密</p>
-                    </div>
-                    <div class="profile-section">
-                        <h2>个人简介</h2>
-                        <p>保密</p>
-                    </div>
-                </div>
-            </div>
-        </main>
-        <footer>
-            <p>&copy; 2024 郝晓茹个人介绍. 保留所有权利.</p>
-        </footer>
+    <div class="canvas"></div>
+    <div class="noise"></div>
+    <div class="title">
+        <h1>郝晓茹的快乐源泉，持续更新中</h1>
     </div>
+    <div class="cursor"></div>
+    <div class="cursor-dot"></div>
+
+    <script>
+        const images = [
+            'images/logos/01_SNL.jpg',
+            'images/logos/02_Friends_logo.svg',
+            'images/logos/03_TBBT_logo.svg',
+            'images/logos/04_喜人奇妙夜_logo.png',
+            'images/logos/05_一年一度喜剧大赛_logo.png',
+            'images/logos/06_脱口秀和Ta的朋友们_logo.jpg',
+            'images/logos/07_喜剧之王单口季_logo.png',
+            'images/logos/08_Conan_OBrien_Needs_a_Friend_podcast.jpg',
+            'images/logos/09_基本无害_podcast.jpg',
+            'images/logos/10_不开玩笑_podcast.jpg',
+            'images/logos/11_谐星聊天会_podcast.jpg'
+        ];
+
+        const canvas = document.querySelector('.canvas');
+        const cursor = document.querySelector('.cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+
+        let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        let cursorPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+        const logos = [];
+        const centerSafeZone = 0.32;
+        const repelRadius = 220;
+        const repelStrength = 0.85;
+        const returnStrength = 0.04;
+        const friction = 0.88;
+        const floatSpeed = 0.0004;
+        const floatAmp = 15;
+
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function createLogos() {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+
+            images.forEach((src, i) => {
+                const el = document.createElement('div');
+                el.className = 'logo';
+
+                const size = random(80, 160);
+                const angle = random(-30, 30);
+
+                let x, y, dist;
+                do {
+                    x = random(size, w - size);
+                    y = random(size, h - size);
+                    dist = Math.hypot(x - w / 2, y - h / 2);
+                } while (dist < Math.min(w, h) * centerSafeZone);
+
+                el.style.setProperty('--size', `${size}px`);
+                el.style.setProperty('--rotate', `${angle}deg`);
+                el.style.left = '0px';
+                el.style.top = '0px';
+
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = '';
+                el.appendChild(img);
+                canvas.appendChild(el);
+
+                logos.push({
+                    el,
+                    originX: x,
+                    originY: y,
+                    x: x,
+                    y: y,
+                    vx: 0,
+                    vy: 0,
+                    size,
+                    angle,
+                    phase: random(0, Math.PI * 2),
+                    phase2: random(0, Math.PI * 2)
+                });
+            });
+        }
+
+        function updateMouse(e) {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        }
+
+        function animate() {
+            cursorPos.x += (mouse.x - cursorPos.x) * 0.15;
+            cursorPos.y += (mouse.y - cursorPos.y) * 0.15;
+            cursor.style.left = `${cursorPos.x}px`;
+            cursor.style.top = `${cursorPos.y}px`;
+            cursorDot.style.left = `${mouse.x}px`;
+            cursorDot.style.top = `${mouse.y}px`;
+
+            const time = Date.now();
+
+            logos.forEach(logo => {
+                const floatX = Math.sin(time * floatSpeed + logo.phase) * floatAmp;
+                const floatY = Math.cos(time * floatSpeed + logo.phase2) * floatAmp;
+
+                const targetX = logo.originX + floatX;
+                const targetY = logo.originY + floatY;
+
+                const dx = targetX - mouse.x;
+                const dy = targetY - mouse.y;
+                const dist = Math.hypot(dx, dy);
+
+                if (dist < repelRadius && dist > 0) {
+                    const force = (1 - dist / repelRadius) * repelStrength;
+                    const nx = dx / dist;
+                    const ny = dy / dist;
+                    logo.vx += nx * force * 30;
+                    logo.vy += ny * force * 30;
+                }
+
+                logo.vx += (targetX - logo.x) * returnStrength;
+                logo.vy += (targetY - logo.y) * returnStrength;
+                logo.vx *= friction;
+                logo.vy *= friction;
+
+                logo.x += logo.vx;
+                logo.y += logo.vy;
+
+                const margin = logo.size / 2;
+                logo.x = Math.max(margin, Math.min(window.innerWidth - margin, logo.x));
+                logo.y = Math.max(margin, Math.min(window.innerHeight - margin, logo.y));
+
+                const rotate = logo.angle + Math.sin(time * 0.001 + logo.phase) * 3;
+                logo.el.style.transform = `translate(${logo.x}px, ${logo.y}px) translate(-50%, -50%) rotate(${rotate}deg)`;
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        function handleResize() {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            logos.forEach(logo => {
+                logo.originX = Math.max(logo.size, Math.min(w - logo.size, logo.originX));
+                logo.originY = Math.max(logo.size, Math.min(h - logo.size, logo.originY));
+                logo.x = logo.originX;
+                logo.y = logo.originY;
+            });
+        }
+
+        window.addEventListener('mousemove', updateMouse);
+        window.addEventListener('touchmove', e => {
+            updateMouse(e.touches[0]);
+        }, { passive: true });
+        window.addEventListener('resize', handleResize);
+
+        createLogos();
+        animate();
+    </script>
 </body>
 </html>

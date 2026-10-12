@@ -85,32 +85,25 @@
 
         .cursor {
             position: fixed;
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
             z-index: 100;
-            transition: width 0.2s, height 0.2s, border-color 0.2s;
-            mix-blend-mode: difference;
+            box-shadow:
+                0 0 0 4px rgba(255, 255, 255, 0.15),
+                0 0 20px rgba(255, 255, 255, 0.35);
         }
 
         .cursor-dot {
-            position: fixed;
-            width: 5px;
-            height: 5px;
-            background: #fff;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 100;
-            mix-blend-mode: difference;
+            display: none;
         }
 
         @media (pointer: coarse) {
             body { cursor: auto; }
-            .cursor, .cursor-dot { display: none; }
+            .cursor { display: none; }
         }
     </style>
 </head>
@@ -121,7 +114,6 @@
         <h1>郝晓茹的快乐源泉（持续更新中）</h1>
     </div>
     <div class="cursor"></div>
-    <div class="cursor-dot"></div>
 
     <script>
         const logoConfigs = [
@@ -140,7 +132,6 @@
 
         const canvas = document.querySelector('.canvas');
         const cursor = document.querySelector('.cursor');
-        const cursorDot = document.querySelector('.cursor-dot');
 
         let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
         let cursorPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
@@ -209,8 +200,6 @@
             cursorPos.y += (mouse.y - cursorPos.y) * 0.15;
             cursor.style.left = `${cursorPos.x}px`;
             cursor.style.top = `${cursorPos.y}px`;
-            cursorDot.style.left = `${mouse.x}px`;
-            cursorDot.style.top = `${mouse.y}px`;
 
             const time = Date.now();
 

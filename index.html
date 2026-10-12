@@ -3,324 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI模型媒体报道汇总 | AI Media Coverage</title>
+    <title>郝晓茹 - 个人介绍</title>
     <style>
-        * {
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
-            color: #e0e0e0;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 20px;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 50px;
-            padding: 40px 30px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+        header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
         }
-        .header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .header p {
-            color: #a0a0a0;
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-        .stats {
+        .header-content {
             display: flex;
-            justify-content: center;
-            gap: 50px;
-            margin-top: 30px;
-            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
         }
-        .stat-item {
-            text-align: center;
-        }
-        .stat-number {
-            font-size: 2.5rem;
+        .logo {
+            font-size: 24px;
             font-weight: bold;
-            color: #667eea;
         }
-        .stat-label {
-            color: #888;
-            font-size: 0.95rem;
-            margin-top: 5px;
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
         }
-        .section {
-            margin-bottom: 40px;
+        nav ul li {
+            margin-left: 20px;
         }
-        .section-title {
-            font-size: 1.5rem;
-            color: #fff;
-            margin-bottom: 20px;
-            padding: 15px 20px;
-            background: rgba(102, 126, 234, 0.15);
-            border-radius: 12px;
-            border-left: 4px solid #667eea;
+        nav ul li a {
+            text-decoration: none;
+            color: #1d1d1f;
+            font-size: 16px;
+        }
+        .profile {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 30px;
+        }
+        .profile-header {
             display: flex;
             align-items: center;
-            gap: 10px;
+            margin-bottom: 30px;
         }
-        .models-grid {
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #e6e6e6;
+            margin-right: 20px;
+        }
+        .profile-info h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .profile-info p {
+            margin: 10px 0 0;
+            color: #86868b;
+        }
+        .profile-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
         }
-        .model-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 25px;
-            border: 1px solid rgba(255,255,255,0.08);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: block;
+        .profile-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
         }
-        .model-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255,255,255,0.08);
+        .profile-section h2 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #1d1d1f;
         }
-        .model-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        .model-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-        .minimax-icon { background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); }
-        .zai-icon { background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%); }
-        .kimi-icon { background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); }
-        
-        .model-name {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #fff;
-        }
-        .model-company {
-            font-size: 0.85rem;
-            color: #888;
-        }
-        .model-desc {
-            color: #aaa;
-            font-size: 0.95rem;
+        .profile-section p {
+            margin-bottom: 10px;
             line-height: 1.5;
-            margin-bottom: 15px;
         }
-        .model-links {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .link-btn {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .link-btn:hover {
-            transform: scale(1.05);
-        }
-        .btn-intl {
-            background: rgba(102, 126, 234, 0.2);
-            color: #a0b0ff;
-            border: 1px solid rgba(102, 126, 234, 0.3);
-        }
-        .btn-intl:hover {
-            background: rgba(102, 126, 234, 0.3);
-        }
-        .btn-domestic {
-            background: rgba(16, 185, 129, 0.2);
-            color: #6ee7b7;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-        .btn-domestic:hover {
-            background: rgba(16, 185, 129, 0.3);
-        }
-        .footer {
+        footer {
+            background-color: #ffffff;
             text-align: center;
+            padding: 20px 0;
             margin-top: 50px;
-            padding: 30px;
-            color: #666;
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-        }
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-            .stats {
-                gap: 30px;
-            }
-            .models-grid {
-                grid-template-columns: 1fr;
-            }
+            color: #86868b;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🤖 AI 模型媒体报道汇总</h1>
-            <p>汇集 MiniMax、智谱、月之暗面等国产顶尖 AI 模型的海内外媒体报道，提供权威、全面的信息参考</p>
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-number">3</div>
-                    <div class="stat-label">AI 模型</div>
+        <header>
+            <div class="header-content">
+                <div class="logo">个人介绍</div>
+                <nav>
+                    <ul>
+                        <li><a href="#">首页</a></li>
+                        <li><a href="#">关于</a></li>
+                        <li><a href="#">联系</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        <main>
+            <div class="profile">
+                <div class="profile-header">
+                    <div class="profile-image"></div>
+                    <div class="profile-info">
+                        <h1>郝晓茹</h1>
+                        <p>一位科技爱好者</p>
+                        <p>邮箱：haoxiaoru1223#gmail.com</p>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">6</div>
-                    <div class="stat-label">报道集合</div>
+                <div class="profile-content">
+                    <div class="profile-section">
+                        <h2>职业背景</h2>
+                        <p>保密</p>
+                    </div>
+                    <div class="profile-section">
+                        <h2>联系方式</h2>
+                        <p>邮箱：保密</p>
+                        <p>微信：保密</p>
+                        <p>微博：保密</p>
+                    </div>
+                    <div class="profile-section">
+                        <h2>个人简介</h2>
+                        <p>保密</p>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">100+</div>
-                    <div class="stat-label">媒体报道</div>
-                </div>
             </div>
-        </div>
-
-        <!-- 海外媒体报道 -->
-        <div class="section">
-            <div class="section-title">
-                🌍 海外媒体报道
-                <span style="font-size: 0.85rem; color: #888; font-weight: normal;">International Media Coverage</span>
-            </div>
-            <div class="models-grid">
-                <a href="minimax-m25-media-coverage.html" class="model-card">
-                    <div class="model-header">
-                        <div class="model-icon minimax-icon">💗</div>
-                        <div>
-                            <div class="model-name">MiniMax M2.5</div>
-                            <div class="model-company">MiniMax</div>
-                        </div>
-                    </div>
-                    <div class="model-desc">229B 参数 MoE 架构，原生智能体设计，极致性价比，SWE-Bench 80.2%</div>
-                    <div class="model-links">
-                        <span class="link-btn btn-intl">查看报道 →</span>
-                    </div>
-                </a>
-
-                <a href="zai-glm5-media-coverage.html" class="model-card">
-                    <div class="model-header">
-                        <div class="model-icon zai-icon">🌊</div>
-                        <div>
-                            <div class="model-name">GLM-5</div>
-                            <div class="model-company">智谱 Z.ai</div>
-                        </div>
-                    </div>
-                    <div class="model-desc">744B 参数，国产芯片适配，开源 SOTA，华为昇腾深度适配</div>
-                    <div class="model-links">
-                        <span class="link-btn btn-intl">查看报道 →</span>
-                    </div>
-                </a>
-
-                <a href="moonshot-kimi-k25-media-coverage.html" class="model-card">
-                    <div class="model-header">
-                        <div class="model-icon kimi-icon">🌙</div>
-                        <div>
-                            <div class="model-name">Kimi K2.5</div>
-                            <div class="model-company">月之暗面</div>
-                        </div>
-                    </div>
-                    <div class="model-desc">1T 参数原生多模态，100 Agent Swarm 并行，1500次工具调用</div>
-                    <div class="model-links">
-                        <span class="link-btn btn-intl">查看报道 →</span>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <!-- 国内媒体报道 -->
-        <div class="section">
-            <div class="section-title">
-                🇨🇳 国内媒体报道
-                <span style="font-size: 0.85rem; color: #888; font-weight: normal;">Domestic Media Coverage</span>
-            </div>
-            <div class="models-grid">
-                <a href="minimax-m25-domestic-coverage.html" class="model-card">
-                    <div class="model-header">
-                        <div class="model-icon minimax-icon">💗</div>
-                        <div>
-                            <div class="model-name">MiniMax M2.5</div>
-                            <div class="model-company">MiniMax</div>
-                        </div>
-                    </div>
-                    <div class="model-desc">新华网、证券时报、量子位等国内权威媒体报道汇总</div>
-                    <div class="model-links">
-                        <span class="link-btn btn-domestic">查看报道 →</span>
-                    </div>
-                </a>
-
-                <a href="zai-glm5-domestic-coverage.html" class="model-card">
-                    <div class="model-header">
-                        <div class="model-icon zai-icon">🌊</div>
-                        <div>
-                            <div class="model-name">GLM-5</div>
-                            <div class="model-company">智谱 Z.ai</div>
-                        </div>
-                    </div>
-                    <div class="model-desc">证券时报、虎嗅、36氪等国内科技媒体报道汇总</div>
-                    <div class="model-links">
-                        <span class="link-btn btn-domestic">查看报道 →</span>
-                    </div>
-                </a>
-
-                <a href="moonshot-kimi-k25-domestic-coverage.html' class="model-card">
-                    <div class="model-header">
-                        <div class="model-icon kimi-icon">🌙</div>
-                        <div>
-                            <div class="model-name">Kimi K2.5</div>
-                            <div class="model-company">月之暗面</div>
-                        </div>
-                    </div>
-                    <div class="model-desc">清华、证券时报、虎嗅、36氪等国内媒体报道汇总</div>
-                    <div class="model-links">
-                        <span class="link-btn btn-domestic">查看报道 →</span>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p>📅 数据更新时间：2026年3月7日</p>
-            <p style="margin-top: 10px;">
-                <a href="https://github.com" target="_blank">GitHub</a> · 
-                Generated with ❤️
-            </p>
-        </div>
+        </main>
+        <footer>
+            <p>&copy; 2024 郝晓茹个人介绍. 保留所有权利.</p>
+        </footer>
     </div>
 </body>
 </html>

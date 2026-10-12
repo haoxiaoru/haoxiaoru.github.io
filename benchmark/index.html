@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="将模型 Benchmark 成绩表生成 K3 风格的高清 PNG 和可编辑 SVG。">
   <title>K3 Benchmark Chart</title>
-  <link rel="stylesheet" href="styles.css?v=20261019">
+  <link rel="stylesheet" href="styles.css?v=20261020">
 </head>
 <body>
   <header class="site-header">
@@ -31,7 +31,7 @@
         <input id="file-input" type="file" accept=".csv,.tsv,.md,.markdown,.json,.xlsx" hidden>
         <div class="drop-icon" aria-hidden="true">↑</div>
         <strong>选择或拖入成绩表</strong>
-        <span>CSV / TSV / Markdown / JSON / XLSX</span>
+        <span>CSV / TSV / Markdown / JSON / XLSX / 宽表格</span>
         <span class="file-name" id="file-name"></span>
       </div>
       <button class="text-button clear-file" id="clear-file" type="button" hidden>清除文件，改用粘贴内容</button>
@@ -39,7 +39,7 @@
       <div class="divider"><span>或直接粘贴表格</span></div>
       <label class="sr-only" for="table-input">粘贴成绩表</label>
       <textarea id="table-input" rows="10" spellcheck="false" placeholder="section,benchmark,model,score,scale_max&#10;Coding,DeepSWE,Kimi K3,67.5,&#10;General Agents,GDPval-AA v2 Elo,Kimi K3,1668,2000"></textarea>
-      <p class="hint">必填：<code>benchmark, model, score</code>；多版块加 <code>section</code>，Elo 加 <code>scale_max</code>。支持从表格直接复制的 Tab 分隔数据。</p>
+      <p class="hint">必填：<code>benchmark, model, score</code>；多版块加 <code>section</code>，Elo 加 <code>scale_max</code>。支持从表格直接复制的 Tab 分隔数据，也支持「宽表格」格式（第一行 section，第二行模型名，下面每行是 benchmark + 各模型成绩）。</p>
 
       <div class="section-heading options-heading">
         <div>
@@ -103,6 +103,6 @@
   </main>
 
   <footer>OpenAI、Claude、Kimi、GLM/Z.ai 图标及字体均随应用内置。</footer>
-  <script src="app.js?v=20261019" type="module"></script>
+  <script src="app.js?v=20261020" type="module"></script>
 </body>
 </html>

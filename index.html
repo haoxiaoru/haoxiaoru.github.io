@@ -62,8 +62,8 @@
 
         .logo {
             position: absolute;
-            width: 240px;
-            height: 240px;
+            width: var(--w);
+            height: var(--h);
             transform: translate(-50%, -50%) rotate(var(--rotate));
             will-change: transform;
             z-index: 5;
@@ -77,7 +77,7 @@
         .logo img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             pointer-events: none;
             user-select: none;
             -webkit-user-drag: none;
@@ -124,18 +124,18 @@
     <div class="cursor-dot"></div>
 
     <script>
-        const images = [
-            'images/logos/01_SNL.jpg',
-            'images/logos/02_Friends_logo.png',
-            'images/logos/03_TBBT_logo.png',
-            'images/logos/04_喜人奇妙夜_logo.png',
-            'images/logos/05_一年一度喜剧大赛_logo.png',
-            'images/logos/06_脱口秀和Ta的朋友们_logo.jpg',
-            'images/logos/07_喜剧之王单口季_logo.png',
-            'images/logos/08_Conan_OBrien_Needs_a_Friend_podcast.jpg',
-            'images/logos/09_基本无害_podcast.jpg',
-            'images/logos/10_不开玩笑_podcast.jpg',
-            'images/logos/11_谐星聊天会_podcast.jpg'
+        const logoConfigs = [
+            { src: 'images/logos/01_SNL.jpg', w: 240, h: 240 },
+            { src: 'images/logos/02_Friends_logo.png', w: 420, h: 140 },
+            { src: 'images/logos/03_TBBT_logo.png', w: 240, h: 240 },
+            { src: 'images/logos/04_喜人奇妙夜_logo.png', w: 240, h: 240 },
+            { src: 'images/logos/05_一年一度喜剧大赛_logo.png', w: 240, h: 240 },
+            { src: 'images/logos/06_脱口秀和Ta的朋友们_logo.jpg', w: 240, h: 240 },
+            { src: 'images/logos/07_喜剧之王单口季_logo.png', w: 240, h: 240 },
+            { src: 'images/logos/08_Conan_OBrien_Needs_a_Friend_podcast.jpg', w: 240, h: 240 },
+            { src: 'images/logos/09_基本无害_podcast.jpg', w: 240, h: 240 },
+            { src: 'images/logos/10_不开玩笑_podcast.jpg', w: 240, h: 240 },
+            { src: 'images/logos/11_谐星聊天会_podcast.jpg', w: 240, h: 240 }
         ];
 
         const canvas = document.querySelector('.canvas');
@@ -146,8 +146,6 @@
         let cursorPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
         const logos = [];
-        const logoSize = 240;
-        const repelRadius = 260;
         const repelStrength = 0.9;
         const returnStrength = 0.05;
         const friction = 0.86;
@@ -162,26 +160,32 @@
             const w = window.innerWidth;
             const h = window.innerHeight;
 
-            images.forEach((src, i) => {
+            logoConfigs.forEach((cfg, i) => {
                 const el = document.createElement('div');
                 el.className = 'logo';
 
                 const angle = random(-16, 16);
-                const x = random(logoSize, w - logoSize);
-                const y = random(logoSize, h - logoSize);
+                const halfW = cfg.w / 2;
+                const halfH = cfg.h / 2;
+                const x = random(halfW + 20, w - halfW - 20);
+                const y = random(halfH + 20, h - halfH - 20);
 
+                el.style.setProperty('--w', `${cfg.w}px`);
+                el.style.setProperty('--h', `${cfg.h}px`);
                 el.style.setProperty('--rotate', `${angle}deg`);
                 el.style.left = '0px';
                 el.style.top = '0px';
 
                 const img = document.createElement('img');
-                img.src = src;
+                img.src = cfg.src;
                 img.alt = '';
                 el.appendChild(img);
                 canvas.appendChild(el);
 
                 logos.push({
                     el,
+                    w: cfg.w,
+                    h: cfg.h,
                     originX: x,
                     originY: y,
                     x: x,
@@ -220,6 +224,7 @@
                 const dx = targetX - mouse.x;
                 const dy = targetY - mouse.y;
                 const dist = Math.hypot(dx, dy);
+                const repelRadius = Math.max(logo.w, logo.h) * 1.1;
 
                 if (dist < repelRadius && dist > 0) {
                     const force = (1 - dist / repelRadius) * repelStrength;
@@ -237,9 +242,10 @@
                 logo.x += logo.vx;
                 logo.y += logo.vy;
 
-                const margin = logoSize / 2 + 10;
-                logo.x = Math.max(margin, Math.min(window.innerWidth - margin, logo.x));
-                logo.y = Math.max(margin, Math.min(window.innerHeight - margin, logo.y));
+                const marginX = logo.w / 2 + 10;
+                const marginY = logo.h / 2 + 10;
+                logo.x = Math.max(marginX, Math.min(window.innerWidth - marginX, logo.x));
+                logo.y = Math.max(marginY, Math.min(window.innerHeight - marginY, logo.y));
 
                 const rotate = logo.angle + Math.sin(time * 0.001 + logo.phase) * 2;
                 logo.el.style.transform = `translate(${logo.x}px, ${logo.y}px) translate(-50%, -50%) rotate(${rotate}deg)`;
@@ -252,8 +258,10 @@
             const w = window.innerWidth;
             const h = window.innerHeight;
             logos.forEach(logo => {
-                logo.originX = Math.max(logoSize, Math.min(w - logoSize, logo.originX));
-                logo.originY = Math.max(logoSize, Math.min(h - logoSize, logo.originY));
+                const marginX = logo.w / 2 + 10;
+                const marginY = logo.h / 2 + 10;
+                logo.originX = Math.max(marginX, Math.min(w - marginX, logo.originX));
+                logo.originY = Math.max(marginY, Math.min(h - marginY, logo.originY));
                 logo.x = logo.originX;
                 logo.y = logo.originY;
             });

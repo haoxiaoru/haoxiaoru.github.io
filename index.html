@@ -143,6 +143,21 @@
             return Math.random() * (max - min) + min;
         }
 
+        function gaussian() {
+            let u = 0, v = 0;
+            while (u === 0) u = Math.random();
+            while (v === 0) v = Math.random();
+            return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+        }
+
+        function randomCentered(margin, max) {
+            const center = 0.5;
+            const spread = 0.32;
+            let t = center + gaussian() * spread;
+            t = Math.max(0, Math.min(1, t));
+            return margin + t * (max - 2 * margin);
+        }
+
         function createLogos() {
             const w = window.innerWidth;
             const h = window.innerHeight;
@@ -154,8 +169,8 @@
                 const angle = random(-16, 16);
                 const halfW = cfg.w / 2;
                 const halfH = cfg.h / 2;
-                const x = random(halfW + 20, w - halfW - 20);
-                const y = random(halfH + 20, h - halfH - 20);
+                const x = randomCentered(halfW + 20, w);
+                const y = randomCentered(halfH + 20, h);
 
                 el.style.setProperty('--w', `${cfg.w}px`);
                 el.style.setProperty('--h', `${cfg.h}px`);

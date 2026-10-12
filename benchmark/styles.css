@@ -138,7 +138,7 @@ h2 { margin: 0; font-size: 19px; letter-spacing: -.015em; }
 }
 .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 
-textarea, input {
+textarea, input, select {
   width: 100%;
   border: 1px solid #d8dce2;
   border-radius: 9px;
@@ -148,7 +148,7 @@ textarea, input {
   outline: none;
   transition: border-color .15s, box-shadow .15s;
 }
-textarea:focus, input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgb(0 124 255 / 10%); }
+textarea:focus, input:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgb(0 124 255 / 10%); }
 #table-input {
   min-height: 190px;
   resize: vertical;
@@ -161,7 +161,8 @@ code { padding: 1px 4px; border-radius: 4px; background: #f0f1f3; }
 
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .form-grid label { display: flex; flex-direction: column; gap: 7px; font-size: 12px; font-weight: 600; }
-.form-grid input, .form-grid textarea { font-size: 13px; font-weight: 400; }
+.form-grid input, .form-grid textarea, .form-grid select { font-size: 13px; font-weight: 400; }
+.form-grid select { appearance: auto; }
 .full-width { grid-column: 1 / -1; }
 
 .primary-button, .secondary-button {

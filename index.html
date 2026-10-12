@@ -15,7 +15,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background: #0a0a0a;
+            background: #0d0d0d;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
         }
 
@@ -27,15 +27,15 @@
             position: fixed;
             inset: 0;
             background:
-                radial-gradient(ellipse at 20% 30%, rgba(120, 80, 200, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 70%, rgba(255, 100, 120, 0.12) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(40, 40, 45, 1) 0%, rgba(10, 10, 10, 1) 100%);
+                radial-gradient(ellipse at 20% 20%, rgba(120, 80, 200, 0.12) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 80%, rgba(255, 100, 120, 0.1) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 50%, rgba(30, 30, 35, 1) 0%, rgba(10, 10, 10, 1) 100%);
         }
 
         .noise {
             position: fixed;
             inset: 0;
-            opacity: 0.04;
+            opacity: 0.035;
             pointer-events: none;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
         }
@@ -45,39 +45,36 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 10;
+            z-index: 1;
             text-align: center;
             pointer-events: none;
             user-select: none;
-            mix-blend-mode: difference;
+            width: 90vw;
+            max-width: 900px;
         }
 
         .title h1 {
-            font-size: clamp(2.5rem, 8vw, 7rem);
-            font-weight: 900;
-            letter-spacing: -0.03em;
-            line-height: 1.1;
-            background: linear-gradient(135deg, #fff 0%, #e0e0e0 50%, #ff6b9d 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 80px rgba(255, 255, 255, 0.15);
-            animation: breathe 6s ease-in-out infinite;
-        }
-
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); opacity: 0.95; }
-            50% { transform: scale(1.02); opacity: 1; }
+            font-size: clamp(1.4rem, 4.5vw, 3.2rem);
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.22);
+            text-transform: uppercase;
+            white-space: nowrap;
         }
 
         .logo {
             position: absolute;
-            width: var(--size);
-            height: var(--size);
+            width: 130px;
+            height: 130px;
+            padding: 14px;
+            background: #f4f4f2;
+            border-radius: 18px;
             transform: translate(-50%, -50%) rotate(var(--rotate));
             will-change: transform;
-            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.5));
-            transition: filter 0.3s ease;
+            box-shadow:
+                0 8px 24px rgba(0, 0, 0, 0.45),
+                0 2px 4px rgba(0, 0, 0, 0.2);
             z-index: 5;
         }
 
@@ -94,7 +91,7 @@
             position: fixed;
             width: 40px;
             height: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
@@ -105,8 +102,8 @@
 
         .cursor-dot {
             position: fixed;
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             background: #fff;
             border-radius: 50%;
             transform: translate(-50%, -50%);
@@ -153,13 +150,13 @@
         let cursorPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
         const logos = [];
-        const centerSafeZone = 0.32;
-        const repelRadius = 220;
-        const repelStrength = 0.85;
-        const returnStrength = 0.04;
-        const friction = 0.88;
-        const floatSpeed = 0.0004;
-        const floatAmp = 15;
+        const logoSize = 130;
+        const repelRadius = 180;
+        const repelStrength = 0.9;
+        const returnStrength = 0.05;
+        const friction = 0.86;
+        const floatSpeed = 0.00035;
+        const floatAmp = 10;
 
         function random(min, max) {
             return Math.random() * (max - min) + min;
@@ -173,17 +170,10 @@
                 const el = document.createElement('div');
                 el.className = 'logo';
 
-                const size = random(80, 160);
-                const angle = random(-30, 30);
+                const angle = random(-18, 18);
+                const x = random(logoSize, w - logoSize);
+                const y = random(logoSize, h - logoSize);
 
-                let x, y, dist;
-                do {
-                    x = random(size, w - size);
-                    y = random(size, h - size);
-                    dist = Math.hypot(x - w / 2, y - h / 2);
-                } while (dist < Math.min(w, h) * centerSafeZone);
-
-                el.style.setProperty('--size', `${size}px`);
                 el.style.setProperty('--rotate', `${angle}deg`);
                 el.style.left = '0px';
                 el.style.top = '0px';
@@ -202,7 +192,6 @@
                     y: y,
                     vx: 0,
                     vy: 0,
-                    size,
                     angle,
                     phase: random(0, Math.PI * 2),
                     phase2: random(0, Math.PI * 2)
@@ -252,11 +241,11 @@
                 logo.x += logo.vx;
                 logo.y += logo.vy;
 
-                const margin = logo.size / 2;
+                const margin = logoSize / 2 + 10;
                 logo.x = Math.max(margin, Math.min(window.innerWidth - margin, logo.x));
                 logo.y = Math.max(margin, Math.min(window.innerHeight - margin, logo.y));
 
-                const rotate = logo.angle + Math.sin(time * 0.001 + logo.phase) * 3;
+                const rotate = logo.angle + Math.sin(time * 0.001 + logo.phase) * 2;
                 logo.el.style.transform = `translate(${logo.x}px, ${logo.y}px) translate(-50%, -50%) rotate(${rotate}deg)`;
             });
 
@@ -267,8 +256,8 @@
             const w = window.innerWidth;
             const h = window.innerHeight;
             logos.forEach(logo => {
-                logo.originX = Math.max(logo.size, Math.min(w - logo.size, logo.originX));
-                logo.originY = Math.max(logo.size, Math.min(h - logo.size, logo.originY));
+                logo.originX = Math.max(logoSize, Math.min(w - logoSize, logo.originX));
+                logo.originY = Math.max(logoSize, Math.min(h - logoSize, logo.originY));
                 logo.x = logo.originX;
                 logo.y = logo.originY;
             });

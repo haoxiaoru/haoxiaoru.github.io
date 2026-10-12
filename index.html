@@ -150,6 +150,7 @@
         function createLogos() {
             const w = window.innerWidth;
             const h = window.innerHeight;
+            const textCoverIndices = new Set([1, 4, 7, 10]);
 
             logoConfigs.forEach((cfg, i) => {
                 const el = document.createElement('div');
@@ -158,8 +159,19 @@
                 const angle = random(-16, 16);
                 const halfW = cfg.w / 2;
                 const halfH = cfg.h / 2;
-                const x = random(halfW + 20, w - halfW - 20);
-                const y = random(halfH + 20, h - halfH - 20);
+
+                let x, y;
+                if (textCoverIndices.has(i)) {
+                    const zoneW = Math.min(w * 0.55, 500);
+                    const zoneH = Math.min(h * 0.25, 160);
+                    const zoneLeft = (w - zoneW) / 2;
+                    const zoneTop = (h - zoneH) / 2;
+                    x = random(zoneLeft + halfW, zoneLeft + zoneW - halfW);
+                    y = random(zoneTop + halfH, zoneTop + zoneH - halfH);
+                } else {
+                    x = random(halfW + 20, w - halfW - 20);
+                    y = random(halfH + 20, h - halfH - 20);
+                }
 
                 el.style.setProperty('--w', `${cfg.w}px`);
                 el.style.setProperty('--h', `${cfg.h}px`);

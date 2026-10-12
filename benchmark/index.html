@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="将模型 Benchmark 成绩表生成 K3 风格的高清 PNG 和可编辑 SVG。">
   <title>K3 Benchmark Chart</title>
-  <link rel="stylesheet" href="styles.css?v=20261015">
+  <link rel="stylesheet" href="styles.css?v=20261016">
 </head>
 <body>
   <header class="site-header">
@@ -57,10 +57,11 @@
           <input id="highlight-input" type="text" placeholder="留空自动高亮 Kimi">
         </label>
         <label>
-          <span>布局</span>
-          <select id="layout-input">
-            <option value="grid" selected>合集：多 Benchmark 并排</option>
-            <option value="single">单 Benchmark：全宽大图</option>
+          <span>列数</span>
+          <select id="columns-input">
+            <option value="2" selected>双列（默认合集）</option>
+            <option value="1">单列（全宽大图）</option>
+            <option value="3">三列</option>
           </select>
         </label>
         <label class="full-width">
@@ -102,6 +103,6 @@
   </main>
 
   <footer>OpenAI、Claude、Kimi、GLM/Z.ai 图标及字体均随应用内置。</footer>
-  <script src="app.js?v=20261015" type="module"></script>
+  <script src="app.js?v=20261016" type="module"></script>
 </body>
 </html>

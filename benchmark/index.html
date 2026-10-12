@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="将模型 Benchmark 成绩表生成 K3 风格的高清 PNG 和可编辑 SVG。">
   <title>K3 Benchmark Chart</title>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="styles.css?v=20261017">
 </head>
 <body>
   <header class="site-header">
@@ -38,8 +38,8 @@
 
       <div class="divider"><span>或直接粘贴表格</span></div>
       <label class="sr-only" for="table-input">粘贴成绩表</label>
-      <textarea id="table-input" rows="10" spellcheck="false" placeholder="section,benchmark,model,score&#10;Coding,DeepSWE,Kimi K3.1,65.3&#10;Coding,DeepSWE,GPT-6.1 Sol,67"></textarea>
-      <p class="hint">必填：<code>benchmark, model, score</code>；多版块加 <code>section</code>，Elo 加 <code>scale_max</code>。</p>
+      <textarea id="table-input" rows="10" spellcheck="false" placeholder="section,benchmark,model,score,scale_max&#10;Coding,DeepSWE,Kimi K3,67.5,&#10;General Agents,GDPval-AA v2 Elo,Kimi K3,1668,2000"></textarea>
+      <p class="hint">必填：<code>benchmark, model, score</code>；多版块加 <code>section</code>，Elo 加 <code>scale_max</code>。支持从表格直接复制的 Tab 分隔数据。</p>
 
       <div class="section-heading options-heading">
         <div>
@@ -55,6 +55,14 @@
         <label>
           <span>高亮模型</span>
           <input id="highlight-input" type="text" placeholder="留空自动高亮 Kimi">
+        </label>
+        <label>
+          <span>列数</span>
+          <select id="columns-input">
+            <option value="2" selected>双列（默认合集）</option>
+            <option value="1">单列（全宽大图）</option>
+            <option value="3">三列</option>
+          </select>
         </label>
         <label class="full-width">
           <span>副标题</span>
@@ -72,20 +80,13 @@
       <div id="status" class="status" role="alert" aria-live="polite"></div>
     </section>
 
-    <section class="panel preview-panel" aria-labelledby="preview-title">
+    <section class="panel preview-panel" aria-labelledby="preview-title" hidden>
       <div class="section-heading">
         <div>
           <p class="step">03</p>
           <h2 id="preview-title">预览与下载</h2>
         </div>
         <span id="dimensions" class="dimensions"></span>
-      </div>
-      <div class="preview-empty" id="preview-empty">
-        <div class="preview-mark" aria-hidden="true">
-          <i></i><i></i><i></i><i></i>
-        </div>
-        <strong>生成后在这里预览</strong>
-        <span>排版、图标、配色与 CLI 输出一致</span>
       </div>
       <div class="preview-result" id="preview-result" hidden>
         <div class="image-wrap">
@@ -102,6 +103,6 @@
   </main>
 
   <footer>OpenAI、Claude、Kimi、GLM/Z.ai 图标及字体均随应用内置。</footer>
-  <script src="/app.js" type="module"></script>
+  <script src="app.js?v=20261017" type="module"></script>
 </body>
 </html>

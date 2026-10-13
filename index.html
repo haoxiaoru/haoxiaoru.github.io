@@ -152,7 +152,7 @@
 
         function randomCentered(margin, max) {
             const center = 0.5;
-            const spread = 0.32;
+            const spread = 0.15;
             let t = center + gaussian() * spread;
             t = Math.max(0, Math.min(1, t));
             return margin + t * (max - 2 * margin);
@@ -161,6 +161,16 @@
         function createLogos() {
             const w = window.innerWidth;
             const h = window.innerHeight;
+            const textW = Math.min(w * 0.7, 650);
+            const textH = textW / 6;
+            const textLeft = (w - textW) / 2;
+            const textTop = (h - textH) / 2;
+
+            const coverCount = 2;
+            const coverIndices = new Set();
+            while (coverIndices.size < coverCount) {
+                coverIndices.add(Math.floor(Math.random() * logoConfigs.length));
+            }
 
             logoConfigs.forEach((cfg, i) => {
                 const el = document.createElement('div');
@@ -169,8 +179,15 @@
                 const angle = random(-16, 16);
                 const halfW = cfg.w / 2;
                 const halfH = cfg.h / 2;
-                const x = randomCentered(halfW + 20, w);
-                const y = randomCentered(halfH + 20, h);
+
+                let x, y;
+                if (coverIndices.has(i)) {
+                    x = random(Math.max(halfW, textLeft + halfW), Math.min(w - halfW, textLeft + textW - halfW));
+                    y = random(Math.max(halfH, textTop + halfH), Math.min(h - halfH, textTop + textH - halfH));
+                } else {
+                    x = randomCentered(halfW + 20, w);
+                    y = randomCentered(halfH + 20, h);
+                }
 
                 el.style.setProperty('--w', `${cfg.w}px`);
                 el.style.setProperty('--h', `${cfg.h}px`);

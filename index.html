@@ -161,33 +161,46 @@
         function createLogos() {
             const w = window.innerWidth;
             const h = window.innerHeight;
-            const textW = Math.min(w * 0.7, 650);
-            const textH = textW / 6;
-            const textLeft = (w - textW) / 2;
-            const textTop = (h - textH) / 2;
 
-            const coverCount = 2;
-            const coverIndices = new Set();
-            while (coverIndices.size < coverCount) {
-                coverIndices.add(Math.floor(Math.random() * logoConfigs.length));
-            }
+            // Text area matches the background SVG sizing
+            const textW = Math.min(w * 0.85, 750);
+            const textH = textW / 6;
+            const pad = 60;
+            const coverW = textW + pad * 2;
+            const coverH = textH + pad * 2;
+            const coverLeft = (w - coverW) / 2;
+            const coverTop = (h - coverH) / 2;
+
+            // 6 logos tile the text area in a 3x2 grid with heavy jitter
+            const cols = 3;
+            const rows = 2;
+            const cellW = coverW / cols;
+            const cellH = coverH / rows;
+            const coverIndices = new Set([0, 1, 2, 3, 4, 5]);
 
             logoConfigs.forEach((cfg, i) => {
                 const el = document.createElement('div');
                 el.className = 'logo';
 
-                const angle = random(-16, 16);
+                const angle = random(-20, 20);
                 const halfW = cfg.w / 2;
                 const halfH = cfg.h / 2;
 
                 let x, y;
                 if (coverIndices.has(i)) {
-                    x = random(Math.max(halfW, textLeft + halfW), Math.min(w - halfW, textLeft + textW - halfW));
-                    y = random(Math.max(halfH, textTop + halfH), Math.min(h - halfH, textTop + textH - halfH));
+                    const col = i % cols;
+                    const row = Math.floor(i / cols);
+                    const cellLeft = coverLeft + col * cellW;
+                    const cellTop = coverTop + row * cellH;
+                    x = cellLeft + cellW / 2 + random(-cellW * 0.55, cellW * 0.55);
+                    y = cellTop + cellH / 2 + random(-cellH * 0.55, cellH * 0.55);
                 } else {
                     x = randomCentered(halfW + 20, w);
                     y = randomCentered(halfH + 20, h);
                 }
+
+                x = Math.max(halfW + 10, Math.min(w - halfW - 10, x));
+                y = Math.max(halfH + 10, Math.min(h - halfH - 10, y));
 
                 el.style.setProperty('--w', `${cfg.w}px`);
                 el.style.setProperty('--h', `${cfg.h}px`);

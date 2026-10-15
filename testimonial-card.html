@@ -12,7 +12,7 @@
       --fg: #171717;
       --muted: #737373;
       --border: #e5e5e5;
-      --card-gray: #f5f5f5;
+      --card-gray: #f7f6f3;
     }
     * { box-sizing: border-box; }
     body {
@@ -60,12 +60,23 @@
       gap: 32px;
       overflow: hidden;
     }
+    .card-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
     .quote-col {
       flex: 1.618;
       display: flex;
       flex-direction: column;
       justify-content: center;
       min-width: 0;
+      position: relative;
+      z-index: 1;
     }
     .info-col {
       flex: 1;
@@ -75,6 +86,8 @@
       align-items: flex-end;
       min-width: 0;
       text-align: right;
+      position: relative;
+      z-index: 1;
     }
     .quote-mark {
       font-family: Georgia, serif;
@@ -96,6 +109,7 @@
       -webkit-line-clamp: 8;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      padding-bottom: 4px;
     }
     .meta-text {
       font-size: 16px;
@@ -308,6 +322,79 @@
       return str.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
     }
 
+    function generateBackgroundSVG() {
+      const W = 1040, H = 500;
+      const parts = [];
+      let seed = Math.random() * 100000;
+      const rnd = () => {
+        seed = (seed * 9301 + 49297) % 233280;
+        return seed / 233280;
+      };
+
+      // 点阵：右侧/上方更密集，模拟数据网格
+      for (let i = 0; i < 350; i++) {
+        const x = rnd() * W;
+        const y = rnd() * H;
+        const rightBias = Math.pow(x / W, 0.8) * 0.75 + 0.08;
+        const topBias = Math.pow(1 - y / H, 0.6) * 0.35;
+        if (rnd() < rightBias + topBias) {
+          const r = 1.2 + rnd() * 2.2;
+          const opacity = 0.035 + rnd() * 0.055;
+          parts.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="#171717" opacity="${opacity.toFixed(3)}"/>`);
+        }
+      }
+
+      // 小三角形网格
+      const triSize = 12;
+      for (let x = W * 0.5; x < W - 20; x += triSize * 1.6) {
+        for (let y = 20; y < H * 0.65; y += triSize * 1.4) {
+          if (rnd() > 0.55) continue;
+          const opacity = 0.04 + rnd() * 0.05;
+          const tx = x + rnd() * 8;
+          const ty = y + rnd() * 8;
+          const s = triSize * (0.7 + rnd() * 0.4);
+          const dir = rnd() > 0.5 ? 1 : -1;
+          parts.push(`<path d="M${tx.toFixed(1)},${ty.toFixed(1)} L${(tx + s * dir).toFixed(1)},${ty.toFixed(1)} L${(tx + s * 0.5 * dir).toFixed(1)},${(ty + s).toFixed(1)} Z" fill="#171717" opacity="${opacity.toFixed(3)}"/>`);
+        }
+      }
+
+      // 弧线：模拟地球经纬线的一部分
+      const arcCount = 3 + Math.floor(rnd() * 2);
+      for (let i = 0; i < arcCount; i++) {
+        const cx = rnd() * W;
+        const cy = rnd() * H;
+        const rx = 140 + rnd() * 320;
+        const ry = 120 + rnd() * 260;
+        const start = rnd() * 360;
+        const sweep = 40 + rnd() * 100;
+        const end = start + sweep;
+        const opacity = 0.05 + rnd() * 0.05;
+        const sw = 0.6 + rnd() * 0.8;
+        const rad = a => a * Math.PI / 180;
+        const x1 = cx + rx * Math.cos(rad(start));
+        const y1 = cy + ry * Math.sin(rad(start));
+        const x2 = cx + rx * Math.cos(rad(end));
+        const y2 = cy + ry * Math.sin(rad(end));
+        const large = sweep > 180 ? 1 : 0;
+        parts.push(`<path d="M${x1.toFixed(1)},${y1.toFixed(1)} A${rx.toFixed(1)},${ry.toFixed(1)} 0 ${large} 1 ${x2.toFixed(1)},${y2.toFixed(1)}" fill="none" stroke="#171717" stroke-width="${sw.toFixed(1)}" opacity="${opacity.toFixed(3)}"/>`);
+      }
+
+      // 虚线装饰
+      for (let i = 0; i < 5; i++) {
+        const x1 = rnd() * W;
+        const y1 = rnd() * H;
+        const len = 80 + rnd() * 180;
+        const angle = (rnd() - 0.5) * 60;
+        const rad = angle * Math.PI / 180;
+        const x2 = x1 + len * Math.cos(rad);
+        const y2 = y1 + len * Math.sin(rad);
+        const opacity = 0.04 + rnd() * 0.05;
+        parts.push(`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#171717" stroke-width="0.7" stroke-dasharray="3,5" opacity="${opacity.toFixed(3)}"/>`);
+      }
+
+      return `<svg class="card-bg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">${parts.join('')}</svg>`;
+    }
+
     function getLogoBlock() {
       if (!state.logo && !state.site) return '<div></div>';
       return `
@@ -318,10 +405,11 @@
       `;
     }
 
-    function renderCard(container) {
+    function renderCard(container, bgSvg) {
       container.style.background = 'transparent';
       container.innerHTML = `
         <div class="card-inner">
+          ${bgSvg}
           <div class="quote-col">
             <div class="testimonial-text">
               <span class="quote-mark">"</span>${escapeHtml(state.quote || '')}
@@ -340,8 +428,9 @@
     }
 
     function render() {
-      renderCard(els.previewCard);
-      renderCard(els.captureB);
+      const bgSvg = generateBackgroundSVG();
+      renderCard(els.previewCard, bgSvg);
+      renderCard(els.captureB, bgSvg);
       scalePreview();
     }
 

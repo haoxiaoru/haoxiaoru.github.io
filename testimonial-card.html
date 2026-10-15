@@ -344,17 +344,25 @@
         }
       }
 
-      // 小三角形网格
-      const triSize = 12;
-      for (let x = W * 0.5; x < W - 20; x += triSize * 1.6) {
-        for (let y = 20; y < H * 0.65; y += triSize * 1.4) {
-          if (rnd() > 0.55) continue;
+      // 六边形网格（蜂窝状）
+      const hexSize = 11;
+      const hexH = hexSize * Math.sin(Math.PI / 3);
+      const hexCols = 18;
+      const hexRows = 10;
+      for (let row = 0; row < hexRows; row++) {
+        for (let col = 0; col < hexCols; col++) {
+          const cx = W * 0.52 + col * hexSize * 1.65 + (row % 2) * hexSize * 0.825;
+          const cy = 18 + row * hexH * 1.9;
+          if (cx > W - 18 || cy > H * 0.72) continue;
+          if (rnd() > 0.58) continue;
           const opacity = 0.04 + rnd() * 0.05;
-          const tx = x + rnd() * 8;
-          const ty = y + rnd() * 8;
-          const s = triSize * (0.7 + rnd() * 0.4);
-          const dir = rnd() > 0.5 ? 1 : -1;
-          parts.push(`<path d="M${tx.toFixed(1)},${ty.toFixed(1)} L${(tx + s * dir).toFixed(1)},${ty.toFixed(1)} L${(tx + s * 0.5 * dir).toFixed(1)},${(ty + s).toFixed(1)} Z" fill="#171717" opacity="${opacity.toFixed(3)}"/>`);
+          const r = hexSize * (0.75 + rnd() * 0.3);
+          const points = [];
+          for (let i = 0; i < 6; i++) {
+            const a = i * Math.PI / 3;
+            points.push(`${(cx + r * Math.cos(a)).toFixed(1)},${(cy + r * Math.sin(a)).toFixed(1)}`);
+          }
+          parts.push(`<polygon points="${points.join(' ')}" fill="#171717" opacity="${opacity.toFixed(3)}"/>`);
         }
       }
 

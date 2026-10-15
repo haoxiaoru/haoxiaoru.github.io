@@ -60,23 +60,12 @@
       gap: 32px;
       overflow: hidden;
     }
-    .card-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
     .quote-col {
       flex: 1.618;
       display: flex;
       flex-direction: column;
       justify-content: center;
       min-width: 0;
-      position: relative;
-      z-index: 1;
     }
     .info-col {
       flex: 1;
@@ -86,8 +75,6 @@
       align-items: flex-end;
       min-width: 0;
       text-align: right;
-      position: relative;
-      z-index: 1;
     }
     .quote-mark {
       font-family: Georgia, serif;
@@ -322,79 +309,6 @@
       return str.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
     }
 
-    function generateBackgroundSVG() {
-      const W = 1040, H = 500;
-      const parts = [];
-      let seed = Math.random() * 100000;
-      const rnd = () => {
-        seed = (seed * 9301 + 49297) % 233280;
-        return seed / 233280;
-      };
-
-      // 辅助：判断是否在四角重叠区
-      const inCorner = (x, y, margin = 100) =>
-        (x < margin && y < margin) ||
-        (x > W - margin && y < margin) ||
-        (x < margin && y > H - margin) ||
-        (x > W - margin && y > H - margin);
-
-      // 点阵：不规则散落在四边附近
-      for (let i = 0; i < 160; i++) {
-        const edge = Math.floor(rnd() * 4); // 0上 1右 2下 3左
-        const band = 50 + rnd() * 50; // 距离边线 50-100px
-        let x, y;
-        if (edge === 0) { x = rnd() * W; y = rnd() * band; }
-        else if (edge === 1) { x = W - rnd() * band; y = rnd() * H; }
-        else if (edge === 2) { x = rnd() * W; y = H - rnd() * band; }
-        else { x = rnd() * band; y = rnd() * H; }
-        if (inCorner(x, y, 90) && rnd() > 0.25) continue;
-        const r = 1.2 + rnd() * 2.2;
-        const opacity = 0.03 + rnd() * 0.05;
-        parts.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="#171717" opacity="${opacity.toFixed(3)}"/>`);
-      }
-
-      // 六边形：不规则散落在四边附近
-      const hexSize = 10;
-      for (let i = 0; i < 55; i++) {
-        const edge = Math.floor(rnd() * 4);
-        const band = 45 + rnd() * 45;
-        let cx, cy;
-        if (edge === 0) { cx = rnd() * W; cy = rnd() * band; }
-        else if (edge === 1) { cx = W - rnd() * band; cy = rnd() * H; }
-        else if (edge === 2) { cx = rnd() * W; cy = H - rnd() * band; }
-        else { cx = rnd() * band; cy = rnd() * H; }
-        if (inCorner(cx, cy, 80) && rnd() > 0.2) continue;
-        const r = hexSize * (0.75 + rnd() * 0.35);
-        const opacity = 0.035 + rnd() * 0.045;
-        const points = [];
-        for (let k = 0; k < 6; k++) {
-          const a = k * Math.PI / 3;
-          points.push(`${(cx + r * Math.cos(a)).toFixed(1)},${(cy + r * Math.sin(a)).toFixed(1)}`);
-        }
-        parts.push(`<polygon points="${points.join(' ')}" fill="#171717" opacity="${opacity.toFixed(3)}"/>`);
-      }
-
-      // 短虚线：点缀在四边
-      for (let i = 0; i < 4; i++) {
-        const edge = Math.floor(rnd() * 4);
-        const band = 40 + rnd() * 40;
-        let x1, y1;
-        if (edge === 0) { x1 = rnd() * W; y1 = rnd() * band; }
-        else if (edge === 1) { x1 = W - rnd() * band; y1 = rnd() * H; }
-        else if (edge === 2) { x1 = rnd() * W; y1 = H - rnd() * band; }
-        else { x1 = rnd() * band; y1 = rnd() * H; }
-        const len = 50 + rnd() * 100;
-        const angle = (rnd() - 0.5) * 90 + (edge === 0 || edge === 2 ? 0 : 90);
-        const rad = angle * Math.PI / 180;
-        const x2 = x1 + len * Math.cos(rad);
-        const y2 = y1 + len * Math.sin(rad);
-        const opacity = 0.03 + rnd() * 0.04;
-        parts.push(`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#171717" stroke-width="0.7" stroke-dasharray="3,5" opacity="${opacity.toFixed(3)}"/>`);
-      }
-
-      return `<svg class="card-bg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">${parts.join('')}</svg>`;
-    }
-
     function getLogoBlock() {
       if (!state.logo && !state.site) return '<div></div>';
       return `
@@ -405,11 +319,10 @@
       `;
     }
 
-    function renderCard(container, bgSvg) {
+    function renderCard(container) {
       container.style.background = 'transparent';
       container.innerHTML = `
         <div class="card-inner">
-          ${bgSvg}
           <div class="quote-col">
             <div class="testimonial-text">
               <span class="quote-mark">"</span>${escapeHtml(state.quote || '')}
@@ -428,9 +341,8 @@
     }
 
     function render() {
-      const bgSvg = generateBackgroundSVG();
-      renderCard(els.previewCard, bgSvg);
-      renderCard(els.captureB, bgSvg);
+      renderCard(els.previewCard);
+      renderCard(els.captureB);
       scalePreview();
     }
 

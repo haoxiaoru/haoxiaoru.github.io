@@ -331,72 +331,64 @@
         return seed / 233280;
       };
 
-      // 点阵：右侧/上方更密集，模拟数据网格
-      for (let i = 0; i < 350; i++) {
-        const x = rnd() * W;
-        const y = rnd() * H;
-        const rightBias = Math.pow(x / W, 0.8) * 0.75 + 0.08;
-        const topBias = Math.pow(1 - y / H, 0.6) * 0.35;
-        if (rnd() < rightBias + topBias) {
-          const r = 1.2 + rnd() * 2.2;
-          const opacity = 0.035 + rnd() * 0.055;
-          parts.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="#171717" opacity="${opacity.toFixed(3)}"/>`);
+      // 辅助：判断是否在四角重叠区
+      const inCorner = (x, y, margin = 100) =>
+        (x < margin && y < margin) ||
+        (x > W - margin && y < margin) ||
+        (x < margin && y > H - margin) ||
+        (x > W - margin && y > H - margin);
+
+      // 点阵：不规则散落在四边附近
+      for (let i = 0; i < 160; i++) {
+        const edge = Math.floor(rnd() * 4); // 0上 1右 2下 3左
+        const band = 50 + rnd() * 50; // 距离边线 50-100px
+        let x, y;
+        if (edge === 0) { x = rnd() * W; y = rnd() * band; }
+        else if (edge === 1) { x = W - rnd() * band; y = rnd() * H; }
+        else if (edge === 2) { x = rnd() * W; y = H - rnd() * band; }
+        else { x = rnd() * band; y = rnd() * H; }
+        if (inCorner(x, y, 90) && rnd() > 0.25) continue;
+        const r = 1.2 + rnd() * 2.2;
+        const opacity = 0.03 + rnd() * 0.05;
+        parts.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="#171717" opacity="${opacity.toFixed(3)}"/>`);
+      }
+
+      // 六边形：不规则散落在四边附近
+      const hexSize = 10;
+      for (let i = 0; i < 55; i++) {
+        const edge = Math.floor(rnd() * 4);
+        const band = 45 + rnd() * 45;
+        let cx, cy;
+        if (edge === 0) { cx = rnd() * W; cy = rnd() * band; }
+        else if (edge === 1) { cx = W - rnd() * band; cy = rnd() * H; }
+        else if (edge === 2) { cx = rnd() * W; cy = H - rnd() * band; }
+        else { cx = rnd() * band; cy = rnd() * H; }
+        if (inCorner(cx, cy, 80) && rnd() > 0.2) continue;
+        const r = hexSize * (0.75 + rnd() * 0.35);
+        const opacity = 0.035 + rnd() * 0.045;
+        const points = [];
+        for (let k = 0; k < 6; k++) {
+          const a = k * Math.PI / 3;
+          points.push(`${(cx + r * Math.cos(a)).toFixed(1)},${(cy + r * Math.sin(a)).toFixed(1)}`);
         }
+        parts.push(`<polygon points="${points.join(' ')}" fill="#171717" opacity="${opacity.toFixed(3)}"/>`);
       }
 
-      // 六边形网格（蜂窝状）
-      const hexSize = 11;
-      const hexH = hexSize * Math.sin(Math.PI / 3);
-      const hexCols = 18;
-      const hexRows = 10;
-      for (let row = 0; row < hexRows; row++) {
-        for (let col = 0; col < hexCols; col++) {
-          const cx = W * 0.52 + col * hexSize * 1.65 + (row % 2) * hexSize * 0.825;
-          const cy = 18 + row * hexH * 1.9;
-          if (cx > W - 18 || cy > H * 0.72) continue;
-          if (rnd() > 0.58) continue;
-          const opacity = 0.04 + rnd() * 0.05;
-          const r = hexSize * (0.75 + rnd() * 0.3);
-          const points = [];
-          for (let i = 0; i < 6; i++) {
-            const a = i * Math.PI / 3;
-            points.push(`${(cx + r * Math.cos(a)).toFixed(1)},${(cy + r * Math.sin(a)).toFixed(1)}`);
-          }
-          parts.push(`<polygon points="${points.join(' ')}" fill="#171717" opacity="${opacity.toFixed(3)}"/>`);
-        }
-      }
-
-      // 弧线：模拟地球经纬线的一部分
-      const arcCount = 3 + Math.floor(rnd() * 2);
-      for (let i = 0; i < arcCount; i++) {
-        const cx = rnd() * W;
-        const cy = rnd() * H;
-        const rx = 140 + rnd() * 320;
-        const ry = 120 + rnd() * 260;
-        const start = rnd() * 360;
-        const sweep = 40 + rnd() * 100;
-        const end = start + sweep;
-        const opacity = 0.05 + rnd() * 0.05;
-        const sw = 0.6 + rnd() * 0.8;
-        const rad = a => a * Math.PI / 180;
-        const x1 = cx + rx * Math.cos(rad(start));
-        const y1 = cy + ry * Math.sin(rad(start));
-        const x2 = cx + rx * Math.cos(rad(end));
-        const y2 = cy + ry * Math.sin(rad(end));
-        const large = sweep > 180 ? 1 : 0;
-        parts.push(`<path d="M${x1.toFixed(1)},${y1.toFixed(1)} A${rx.toFixed(1)},${ry.toFixed(1)} 0 ${large} 1 ${x2.toFixed(1)},${y2.toFixed(1)}" fill="none" stroke="#171717" stroke-width="${sw.toFixed(1)}" opacity="${opacity.toFixed(3)}"/>`);
-      }
-
-      // 虚线装饰
-      for (let i = 0; i < 5; i++) {
-        const x1 = rnd() * W;
-        const y1 = rnd() * H;
-        const len = 80 + rnd() * 180;
-        const angle = (rnd() - 0.5) * 60;
+      // 短虚线：点缀在四边
+      for (let i = 0; i < 4; i++) {
+        const edge = Math.floor(rnd() * 4);
+        const band = 40 + rnd() * 40;
+        let x1, y1;
+        if (edge === 0) { x1 = rnd() * W; y1 = rnd() * band; }
+        else if (edge === 1) { x1 = W - rnd() * band; y1 = rnd() * H; }
+        else if (edge === 2) { x1 = rnd() * W; y1 = H - rnd() * band; }
+        else { x1 = rnd() * band; y1 = rnd() * H; }
+        const len = 50 + rnd() * 100;
+        const angle = (rnd() - 0.5) * 90 + (edge === 0 || edge === 2 ? 0 : 90);
         const rad = angle * Math.PI / 180;
         const x2 = x1 + len * Math.cos(rad);
         const y2 = y1 + len * Math.sin(rad);
-        const opacity = 0.04 + rnd() * 0.05;
+        const opacity = 0.03 + rnd() * 0.04;
         parts.push(`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#171717" stroke-width="0.7" stroke-dasharray="3,5" opacity="${opacity.toFixed(3)}"/>`);
       }
 

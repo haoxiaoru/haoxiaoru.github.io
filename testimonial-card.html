@@ -191,7 +191,7 @@
     .btn-primary:hover { background: #404040; }
   </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen flex flex-col">
   <header class="border-b border-[#e5e5e5] bg-white sticky top-0 z-10">
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -202,7 +202,7 @@
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-6 py-8">
+  <main class="max-w-7xl mx-auto px-6 py-8 flex-1 w-full">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
       <section class="space-y-6">
         <div>
@@ -268,6 +268,12 @@
       </section>
     </div>
   </main>
+
+  <footer class="border-t border-[#e5e5e5] bg-white py-4">
+    <div class="max-w-7xl mx-auto px-6 flex justify-end">
+      <span class="text-xs text-[#a3a3a3]">v1.0.0</span>
+    </div>
+  </footer>
 
   <div id="captureB" class="capture-stage"></div>
 

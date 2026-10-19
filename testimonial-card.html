@@ -249,7 +249,7 @@
         <div class="pt-2">
           <button id="downloadBtn" class="btn btn-primary w-full sm:w-auto">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-            下载 1080px 高清卡片
+            下载 2160px 高清卡片
           </button>
         </div>
       </section>
@@ -257,7 +257,7 @@
       <section>
         <div class="flex items-center justify-between mb-4">
           <div class="field-label !mb-0">实时预览</div>
-          <div class="text-xs text-[#a3a3a3]">实际导出尺寸 1080 × 540</div>
+          <div class="text-xs text-[#a3a3a3]">实际导出尺寸 2160 × 1080</div>
         </div>
         <div class="preview-wrap" id="previewWrap">
           <div class="card-render" id="previewCard"></div>
@@ -271,7 +271,7 @@
 
   <footer class="border-t border-[#e5e5e5] bg-white py-4">
     <div class="max-w-7xl mx-auto px-6 flex justify-end">
-      <span class="text-xs text-[#a3a3a3]">v1.0.0</span>
+      <span class="text-xs text-[#a3a3a3]">v1.0.1</span>
     </div>
   </footer>
 
@@ -430,7 +430,7 @@
         const canvas = await html2canvas(els.captureB, {
           width: 1080,
           height: 540,
-          scale: 1,
+          scale: 2,
           backgroundColor: null,
           useCORS: true,
           logging: false
@@ -443,7 +443,7 @@
         alert('导出失败：' + err.message);
       } finally {
         els.downloadBtn.disabled = false;
-        els.downloadBtn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> 下载 1080px 高清卡片`;
+        els.downloadBtn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> 下载 2160px 高清卡片`;
       }
     });
 

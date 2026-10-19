@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>登月舱着陆游戏 v1.4 (带调试日志)</title> {/* Version updated */}
+    <style>
+        /* Styles remain the same */
+        html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000020; color: #ffffff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; }
+        #gameCanvas { display: block; background-color: #000000; }
+        #message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2.5vw; font-weight: bold; padding: 20px 30px; background-color: rgba(0, 0, 0, 0.75); border-radius: 10px; text-align: center; display: none; z-index: 10; }
+        #message.success { color: #0f0; }
+        #message.failure { color: #f00; }
+        #instructions { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-size: 14px; color: #aaa; background-color: rgba(0, 0, 0, 0.5); padding: 5px 10px; border-radius: 5px; text-align: center; z-index: 5; }
+        #introScreen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 32, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 20; }
+        #introContent { background-color: rgba(0, 0, 0, 0.7); border-radius: 10px; padding: 30px; max-width: 600px; text-align: center; }
+        #introContent h1 { color: #0f0; margin-bottom: 20px; }
+        #introContent p { margin-bottom: 15px; line-height: 1.5; }
+        #startButton { background-color: #0f0; color: #000; border: none; padding: 12px 24px; font-size: 18px; border-radius: 5px; cursor: pointer; margin-top: 20px; transition: background-color 0.2s; }
+        #startButton:hover { background-color: #00ff00; }
+        #successPopup { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 32, 0.9); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 20; }
+        #successContent { background-color: rgba(0, 100, 0, 0.7); border-radius: 10px; padding: 30px; max-width: 500px; text-align: center; color: #fff; }
+        #successContent h2 { color: #0f0; margin-bottom: 20px; }
+        .popup-buttons { display: flex; gap: 20px; margin-top: 20px; }
+        .popup-button { padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; transition: all 0.2s; }
+        #continueButton { background-color: #aaa; color: #000; }
+        #hackButton { background-color: #0f0; color: #000; font-weight: bold; }
+        .popup-button:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <!-- HTML structure remains the same -->
+    <div id="instructions">
+        使用方向键控制: [↑] 推进 | [←] 左旋 | [→] 右旋 | [空格/点击] 重新开始 <br>
+        目标: 安全降落在绿色平台上
+    </div>
+    <canvas id="gameCanvas"></canvas>
+    <div id="message"></div>
+    <div id="introScreen">
+        <div id="introContent">
+            <h1>登月舱着陆游戏</h1>
+            <p>目标: 安全降落在绿色平台上。</p>
+            <p>使用方向键控制登月舱：</p>
+            <p>- [↑] 推进器：减速下降 (点火音)</p>
+            <p>- [←] 左旋：调整方向</p>
+            <p>- [→] 右旋：调整方向</p>
+            <p>注意：燃料有限，合理使用推进器！</p>
+            <button id="startButton">开始游戏</button>
+        </div>
+    </div>
+    <div id="successPopup">
+        <div id="successContent">
+            <h2>着陆成功！</h2>
+            <p>恭喜你成功降落在月球表面！</p>
+            <div class="popup-buttons">
+                <button id="continueButton" class="popup-button">继续玩</button>
+                <button id="hackButton" class="popup-button">魔改一下</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DEBUG FLAG ---
+        const DEBUG_AUDIO = true; // Set to true to see audio logs
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const messageDiv = document.getElementById('message');
+        const introScreen = document.getElementById('introScreen');
+        const startButton = document.getElementById('startButton');
+        const successPopup = document.getElementById('successPopup');
+        const continueButton = document.getElementById('continueButton');
+        const hackButton = document.getElementById('hackButton');
+
+        // --- Game Constants --- (Remain the same)
+        const GRAVITY = 0.0025;
+        const THRUST_POWER = 0.008;
+        const ROTATION_SPEED = 0.05;
+        const FUEL_CONSUMPTION = 0.15;
+        const INITIAL_FUEL = 100;
+        const SAFE_LANDING_VSPEED = 0.4;
+        const SAFE_LANDING_HSPEED = 0.2;
+        const SAFE_LANDING_ANGLE = 0.1;
+        const LANDER_SCALE = 1.2;
+        const LANDING_PAD_Y_TOLERANCE = 1.0;
+
+        // --- Game State --- (Remain the same)
+        let lander;
+        let surface = [];
+        let landingPad = { x1: 0, y: 0, x2: 0, width: 0, found: false };
+        let keys = { ArrowUp: false, ArrowLeft: false, ArrowRight: false };
+        let gameState = 'intro';
+        let lastTime = 0;
+        let thrustParticles = [];
+        let statusInfo = { altitude: 0, hSpeed: 0, vSpeed: 0, angle: 0, fuel: 0, vSpeedOk: true, hSpeedOk: true, angleOk: true, fuelLow: false, fuelCritical: false };
+        let wasThrustingLastFrame = false;
+
+        // --- Audio State --- (Remain the same)
+        let audioContext;
+        let ignitionBuffer = null;
+        let cheerBuffer = null;
+        let explosionBuffer = null;
+        let fadingBeepsBuffer = null;
+        let soundsLoaded = false;
+
+        // --- Sound Data URIs --- (Remain the same)
+        const IGNITION_SOUND_URI = "data:audio/wav;base64,UklGRlAEAABXQVZFZm10IBAAAAABAAEARKwAAESsAAABAAgAZGF0YUwEAABQUFBPT09NTU1LS0tHR0dDQ0M/Pz87Ozs1NTUrKyssLCwrKysoKCclJSQiIiAeHhwbGxsaGhobGxwdHR4eHyAgISIiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5P";
+        const CHEER_SOUND_URI = "data:audio/wav;base64,UklGRlwFAABXQVZFZm10IBAAAAABAAEARKwAAESsAAABAAgAZGF0YVgFAAAAQEBAQEBAPz8/Pz8/PT09PT09Ozs7Ozs7NTU1NTU1MzMzMzMzERERERERAQEBgYGBgYGBgYGBwcHBwcHBwcHBoaGhoaGhoaGhoqKioqKioqKipKSkpKSkpKSkqqqqqqqqqqqqsrKysrKysrKyu7u7u7u7u7u7v////////////////8=";
+        const EXPLOSION_SOUND_URI = "data:audio/wav;base64,UklGRkYEAABXQVZFZm10IBAAAAABAAEARKwAAESsAAABAAgAZGF0YUIEAABoaGhZWVlPT08/Pz8hISEBAQEAAAD///////7+/v39/fX19enp6dXV1cHBwZmZmYWFhWlpaVFRUU1NTUVFRT09PTk5OTU1NS0tLSUlJR0dHRUVFQ0NDQUFBQDAwMCgoKCwsLCUlJSQkJCMjIyIiIiEhISAgIB8fHx4eHh0dHRwcHBsbGxoaGhYWFg==";
+        const FADING_BEEPS_SOUND_URI = "data:audio/wav;base64,UklGRrQGAABXQVZFZm10IBAAAAABAAEARKwAAESsAAABAAgAZGF0YaIGAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQAAACTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5MAAACUk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5MAAACUk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5MAAACUk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5OTk5MAAABaWlpZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVkAAABaWlpZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZAAABaWlpZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZAAABZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZA AAAOTk5OTg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4AAAAOTk5OTg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4AAAAOTk5OTg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4AAAAODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4AAAAKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgAAAAoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgAAAAoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgAAAAoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==";
+
+        // --- Audio Functions --- ADDED LOGS ---
+        function initAudio() {
+             if (DEBUG_AUDIO) console.log("Attempting to initialize AudioContext...");
+             if (!audioContext) {
+                try {
+                    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                    audioContext = new AudioContext();
+                    if (DEBUG_AUDIO) console.log("AudioContext created. State:", audioContext.state);
+                    // Check state right after creation, might be suspended
+                    if (audioContext.state === 'suspended') {
+                        if (DEBUG_AUDIO) console.log("AudioContext is suspended, needs resume().");
+                        // Resume might need user interaction later, but we try anyway
+                         audioContext.resume().then(() => {
+                              if (DEBUG_AUDIO) console.log("AudioContext resumed after creation.");
+                              loadSounds(); // Load sounds after resume attempt
+                         }).catch(e => console.error("Error resuming AudioContext after creation:", e));
+                    } else {
+                        loadSounds(); // Load sounds if context starts running
+                    }
+                } catch(e) {
+                    console.error("Web Audio API is not supported or context creation failed.", e);
+                    soundsLoaded = false;
+                    alert("浏览器不支持Web Audio API，无法播放音效。");
+                }
+            } else if (audioContext.state === 'suspended') {
+                if (DEBUG_AUDIO) console.log("AudioContext exists but is suspended. Attempting resume...");
+                audioContext.resume().then(() => {
+                    if (DEBUG_AUDIO) console.log("AudioContext resumed successfully.");
+                    if (!soundsLoaded) loadSounds(); // Load if not loaded before resume
+                }).catch(e => console.error("Error resuming existing AudioContext:", e));
+            } else if (audioContext.state === 'running') {
+                 if (DEBUG_AUDIO) console.log("AudioContext is already running.");
+                 if (!soundsLoaded) loadSounds(); // Load if context running but sounds missing
+            } else {
+                 if (DEBUG_AUDIO) console.log("AudioContext in unexpected state:", audioContext.state);
+            }
+        }
+
+        async function loadSound(url, soundName) { // Added name for logging
+             if (!audioContext) {
+                 if (DEBUG_AUDIO) console.error(`Cannot load sound [${soundName}], AudioContext is null.`);
+                 return null;
+             }
+             if (DEBUG_AUDIO) console.log(`Loading sound [${soundName}]...`);
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const arrayBuffer = await response.arrayBuffer();
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                if (DEBUG_AUDIO) console.log(`Sound [${soundName}] decoded successfully.`);
+                return audioBuffer;
+            } catch(e) {
+                console.error(`Error loading or decoding sound [${soundName}]:`, e);
+                return null; // Return null on failure
+            }
+        }
+
+        async function loadSounds() {
+             // Prevent re-loading if already loaded or no context
+             if (soundsLoaded || !audioContext) {
+                 if (DEBUG_AUDIO) console.log("Skipping sound loading. Already loaded or no AudioContext.");
+                 return;
+             }
+             if (DEBUG_AUDIO) console.log("Starting parallel sound loading...");
+             soundsLoaded = false; // Mark as loading
+
+             try {
+                // Load all sounds in parallel, pass names for logging
+                [ignitionBuffer, cheerBuffer, explosionBuffer, fadingBeepsBuffer] = await Promise.all([
+                    loadSound(IGNITION_SOUND_URI, "Ignition"),
+                    loadSound(CHEER_SOUND_URI, "Cheer"),
+                    loadSound(EXPLOSION_SOUND_URI, "Explosion"),
+                    loadSound(FADING_BEEPS_SOUND_URI, "FadingBeeps")
+                ]);
+
+                // Check if ALL required sounds loaded successfully (are not null)
+                if (ignitionBuffer && cheerBuffer && explosionBuffer && fadingBeepsBuffer) {
+                    soundsLoaded = true;
+                    if (DEBUG_AUDIO) console.log("All sounds loaded successfully!");
+                } else {
+                    console.error("One or more sounds failed to load or decode (buffer is null). Check logs above.");
+                    soundsLoaded = false; // Ensure flag is false if any sound failed
+                }
+             } catch (error) {
+                  console.error("Error during Promise.all for sound loading:", error);
+                  soundsLoaded = false; // Ensure flag is false on Promise.all error
+             }
+        }
+
+        // Added more logs here
+        function playSound(buffer, bufferName, volume = 1.0) {
+            if (DEBUG_AUDIO) console.log(`Attempting to play sound [${bufferName}]...`);
+
+            if (!audioContext) {
+                if (DEBUG_AUDIO) console.error(`Cannot play sound [${bufferName}], AudioContext is null.`);
+                return;
+            }
+            if (audioContext.state !== 'running') {
+                 if (DEBUG_AUDIO) console.warn(`Cannot play sound [${bufferName}], AudioContext is not running (state: ${audioContext.state}). Needs user interaction?`);
+                 // Attempt to resume, might work if called from user interaction handler
+                 audioContext.resume().catch(e => console.error("Silent resume attempt failed:", e));
+                 return; // Don't proceed if not running
+            }
+            if (!buffer) {
+                if (DEBUG_AUDIO) console.error(`Cannot play sound [${bufferName}], the buffer is null. Loading might have failed.`);
+                return;
+            }
+            if (!soundsLoaded) {
+                if (DEBUG_AUDIO) console.warn(`Cannot play sound [${bufferName}], soundsLoaded flag is false.`);
+                // This check might be redundant if buffer check passed, but good for sanity
+                // return; // Allow attempt even if flag is somehow false but buffer exists
+            }
+
+            try {
+                if (DEBUG_AUDIO) console.log(`Executing playSound for [${bufferName}] with volume ${volume}.`);
+                const source = audioContext.createBufferSource();
+                source.buffer = buffer;
+                const gainNode = audioContext.createGain();
+                // Clamp volume just in case
+                const clampedVolume = Math.max(0, Math.min(1, volume));
+                gainNode.gain.setValueAtTime(clampedVolume, audioContext.currentTime);
+                source.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                source.start(0);
+                if (DEBUG_AUDIO) console.log(`Sound [${bufferName}] started.`);
+            } catch (e) {
+                console.error(`Error executing playSound for [${bufferName}]:`, e);
+            }
+        }
+
+
+        // --- Lander Object --- (Remains the same)
+        function createLander() { /* ... */ return { x: canvas.width / 3 + Math.random() * (canvas.width / 3), y: canvas.height * 0.1, vx: (Math.random() - 0.5) * 0.5, vy: 0, angle: (Math.random() - 0.5) * 0.5, width: 15 * LANDER_SCALE, height: 20 * LANDER_SCALE, thrusting: false, fuel: INITIAL_FUEL, crashed: false, landed: false }; }
+
+        // --- Surface Generation --- (Remains the same)
+        function generateSurface() { /* ... */ surface = []; landingPad.found = false; let currentX = 0; let currentY = canvas.height - (Math.random() * canvas.height * 0.15 + canvas.height * 0.1); surface.push({ x: currentX, y: currentY }); const minSegmentWidth = canvas.width * 0.05, maxSegmentWidth = canvas.width * 0.15, maxSteepness = canvas.height * 0.08, requiredPadWidth = canvas.width * 0.1; while (currentX < canvas.width) { let segmentWidth = Math.random() * (maxSegmentWidth - minSegmentWidth) + minSegmentWidth; let nextX = currentX + segmentWidth; if (nextX >= canvas.width) { nextX = canvas.width; segmentWidth = canvas.width - currentX; } let nextY = currentY + (Math.random() * 2 - 1) * maxSteepness; nextY = Math.max(canvas.height * 0.4, Math.min(canvas.height - 20, nextY)); if (nextX > currentX) { surface.push({ x: nextX, y: nextY }); currentX = nextX; currentY = nextY; } else { if (currentX < canvas.width) { currentX += 10; if (currentX > canvas.width) currentX = canvas.width; surface.push({ x: currentX, y: currentY }); } else { break; } } } let bestPadIndex = -1; for (let i = 1; i < surface.length - 2; i++) { const p1 = surface[i], p2 = surface[i+1]; const segmentWidth = p2.x - p1.x; const heightDiff = Math.abs(p2.y - p1.y); if (segmentWidth >= requiredPadWidth && heightDiff < maxSteepness * 0.3) { bestPadIndex = i; break; } } if (bestPadIndex === -1) { bestPadIndex = Math.floor(surface.length / 2); if (bestPadIndex >= surface.length - 1) { bestPadIndex = Math.max(0, surface.length - 2); } console.warn("No suitable flat segment found, forcing pad creation."); } if (bestPadIndex >= 0 && bestPadIndex < surface.length -1) { const p1 = surface[bestPadIndex], p2 = surface[bestPadIndex + 1]; p2.y = p1.y; landingPad.x1 = p1.x; landingPad.y = p1.y; landingPad.x2 = p2.x; landingPad.width = p2.x - p1.x; landingPad.found = true; } else { console.error("Failed to create landing pad - invalid index."); landingPad.found = false; } }
+
+        // --- Input Handling --- ADDED LOGS ---
+        function handleKeyDown(e) {
+             if (keys.hasOwnProperty(e.key)) {
+                 // Log only when key state changes to true
+                 if (!keys[e.key] && DEBUG_AUDIO && e.key === 'ArrowUp') console.log("ArrowUp key down.");
+                 keys[e.key] = true;
+                 e.preventDefault();
+             }
+             if (gameState !== 'playing' && e.code === 'Space') {
+                  if (DEBUG_AUDIO) console.log("Space pressed, resetting game...");
+                  // Ensure audio is attempted before reset
+                  initAudio();
+                  resetGame();
+                  e.preventDefault();
+             }
+         }
+        function handleKeyUp(e) {
+            if (keys.hasOwnProperty(e.key)) {
+                // Log only when key state changes to false
+                 if (keys[e.key] && DEBUG_AUDIO && e.key === 'ArrowUp') console.log("ArrowUp key up.");
+                keys[e.key] = false;
+                e.preventDefault();
+            }
+        }
+         function handleClick() {
+             if (DEBUG_AUDIO) console.log("Canvas clicked.");
+             // Try to initialize audio on click if needed (for user gesture)
+             if (!audioContext || audioContext.state === 'suspended') {
+                 if (DEBUG_AUDIO) console.log("Audio context needs init/resume, calling initAudio().");
+                 initAudio();
+             }
+              if (gameState !== 'playing') {
+                  if (DEBUG_AUDIO) console.log("Game not playing, resetting...");
+                  resetGame();
+              }
+         }
+
+        // --- Update Game Logic --- ADDED LOGS ---
+        function update(dtFactor) {
+            if (gameState !== 'playing') {
+                 lander.thrusting = false;
+                 // Reset thrust tracking if game stops mid-thrust
+                 if (wasThrustingLastFrame) wasThrustingLastFrame = false;
+                 return;
+            }
+
+            lander.thrusting = false;
+
+            // Rotation (same)
+            if (keys.ArrowLeft) lander.angle -= ROTATION_SPEED * dtFactor;
+            if (keys.ArrowRight) lander.angle += ROTATION_SPEED * dtFactor;
+            lander.angle = (lander.angle + Math.PI * 3) % (Math.PI * 2) - Math.PI;
+
+            // Thrust - UPDATED LOGIC AND LOGS ---
+            const isTryingToThrust = keys.ArrowUp && lander.fuel > 0;
+
+            if (isTryingToThrust) {
+                lander.thrusting = true; // Visual flag
+
+                // Play ignition sound ONLY when thrust starts
+                if (!wasThrustingLastFrame) {
+                    if (DEBUG_AUDIO) console.log("Thrust started (first frame).");
+                    playSound(ignitionBuffer, "Ignition", 0.7); // Pass name
+                }
+                wasThrustingLastFrame = true; // Mark as thrusting this frame
+
+                // Physics (same)
+                const thrustX = Math.sin(lander.angle) * THRUST_POWER;
+                const thrustY = -Math.cos(lander.angle) * THRUST_POWER;
+                lander.vx += thrustX * dtFactor;
+                lander.vy += thrustY * dtFactor;
+                lander.fuel -= FUEL_CONSUMPTION * dtFactor;
+                if (lander.fuel < 0) lander.fuel = 0;
+                if (Math.random() < 0.8) addThrustParticle(dtFactor);
+
+            } else {
+                 // If thrust stopped this frame
+                 if (wasThrustingLastFrame) {
+                     if (DEBUG_AUDIO) console.log("Thrust stopped (key up or no fuel).");
+                     wasThrustingLastFrame = false;
+                 }
+            }
+
+            // Gravity & Position (same)
+            lander.vy += GRAVITY * dtFactor;
+            lander.x += lander.vx * dtFactor;
+            lander.y += lander.vy * dtFactor;
+
+            // Particles (same)
+            updateParticles(dtFactor);
+
+            // Collision (same logic, sound handled in handleLanding)
+            checkCollisions();
+
+            // Out of bounds check - UPDATED LOGS ---
+            if (lander.y > canvas.height + lander.height * 2 || lander.y < -lander.height * 2 || lander.x < -lander.width || lander.x > canvas.width + lander.width) {
+                 if (gameState === 'playing') { // Prevent multiple calls
+                     if (DEBUG_AUDIO) console.log("Lander out of bounds.");
+                     setMessage("漂浮在太空中迷失了...", "failure");
+                     gameState = 'crashed';
+                     lander.crashed = true;
+                     playSound(fadingBeepsBuffer, "FadingBeeps", 0.6); // Pass name
+                 }
+            }
+
+            // Status (same)
+            updateStatusInfo();
+        }
+
+        // --- Particle System --- (Remain the same)
+        function addThrustParticle(dtFactor) { /* ... */ const angleOffset = (Math.random() - 0.5) * 0.5; const speed = 1 + Math.random() * 1; const life = 15 + Math.random() * 15; const nozzleOffsetX = -Math.sin(lander.angle) * (lander.height / 2); const nozzleOffsetY = Math.cos(lander.angle) * (lander.height / 2); const startX = lander.x + nozzleOffsetX; const startY = lander.y + nozzleOffsetY; const exhaustVx = -Math.sin(lander.angle + angleOffset) * speed; const exhaustVy = Math.cos(lander.angle + angleOffset) * speed; const particleVx = lander.vx + exhaustVx; const particleVy = lander.vy + exhaustVy; thrustParticles.push({ x: startX, y: startY, vx: particleVx, vy: particleVy, life: life, maxLife: life, size: Math.random() * 2 + 1 }); }
+        function updateParticles(dtFactor) { /* ... */ for (let i = thrustParticles.length - 1; i >= 0; i--) { let p = thrustParticles[i]; p.x += p.vx * dtFactor; p.y += p.vy * dtFactor; p.life -= 1 * dtFactor; if (p.life <= 0) { thrustParticles.splice(i, 1); } } }
+        function drawParticles() { /* ... */ ctx.fillStyle = '#FFA500'; for (const p of thrustParticles) { const alpha = Math.max(0, p.life / p.maxLife); ctx.globalAlpha = alpha * 0.8; ctx.beginPath(); ctx.arc(p.x, p.y, p.size * (1 - alpha / 2), 0, Math.PI * 2); ctx.fill(); } ctx.globalAlpha = 1.0; }
+
+        // --- Collision Detection --- (Remain the same)
+        function checkCollisions() { /* ... */ if (gameState !== 'playing') return; const cosA = Math.cos(lander.angle), sinA = Math.sin(lander.angle); const halfW = lander.width / 2, halfH = lander.height / 2; const legOffset = 4; const corner1X = lander.x + (-(halfW + legOffset) * cosA - halfH * sinA); const corner1Y = lander.y + (-(halfW + legOffset) * sinA + halfH * cosA); const corner2X = lander.x + ((halfW + legOffset) * cosA - halfH * sinA); const corner2Y = lander.y + ((halfW + legOffset) * sinA + halfH * cosA); for (let i = 0; i < surface.length - 1; i++) { const p1 = surface[i], p2 = surface[i + 1]; if (lander.x + lander.width/2 > p1.x && lander.x - lander.width/2 < p2.x) { if (checkCollisionPoint(corner1X, corner1Y, p1, p2)) { handleLanding(p1.y); return; } if (checkCollisionPoint(corner2X, corner2Y, p1, p2)) { handleLanding(p1.y); return; } } } }
+         function checkCollisionPoint(px, py, p1, p2) { /* ... */ if (px >= p1.x && px <= p2.x) { const segmentWidth = p2.x - p1.x; let surfaceY; if (segmentWidth < 0.01) { surfaceY = Math.max(p1.y, p2.y); } else { const slope = (p2.y - p1.y) / segmentWidth; surfaceY = p1.y + slope * (px - p1.x); } return py >= surfaceY - 1.0; } return false; }
+
+        // --- Landing Handler --- UPDATED LOGS ---
+        function handleLanding(collisionSurfaceY) {
+             if (gameState !== 'playing') return; // Prevent multiple calls
+
+             if (DEBUG_AUDIO) console.log("Collision detected, handling landing...");
+
+             // Physics & state setup (same)
+             const verticalSpeedOK = Math.abs(lander.vy) <= SAFE_LANDING_VSPEED;
+             const horizontalSpeedOK = Math.abs(lander.vx) <= SAFE_LANDING_HSPEED;
+             const angleOK = Math.abs(lander.angle) <= SAFE_LANDING_ANGLE;
+             const bottomOffsetY = (lander.height / 2 * Math.cos(lander.angle)) + (Math.abs(lander.width / 2 * Math.sin(lander.angle)));
+             lander.y = collisionSurfaceY - bottomOffsetY;
+             const finalVX = lander.vx; const finalVY = lander.vy;
+             lander.vy = 0; lander.vx = 0; lander.thrusting = false;
+             wasThrustingLastFrame = false; // Ensure thrust tracking stops on landing
+             let onPad = false; if (landingPad.found) { onPad = (lander.x >= landingPad.x1 && lander.x <= landingPad.x2 && Math.abs(collisionSurfaceY - landingPad.y) < LANDING_PAD_Y_TOLERANCE); }
+
+             // Final landing decision with logs
+             if (onPad && verticalSpeedOK && horizontalSpeedOK && angleOK) {
+                 if (DEBUG_AUDIO) console.log("Landing successful!");
+                 playSound(cheerBuffer, "Cheer", 0.8); // Pass name
+
+                 // Game state changes (same)
+                 successPopup.style.display = 'flex';
+                 gameState = 'landed';
+                 lander.landed = true;
+                 lander.angle = 0;
+
+             } else {
+                 if (DEBUG_AUDIO) console.log("Landing failed (Crash)!");
+                 playSound(explosionBuffer, "Explosion", 0.9); // Pass name
+
+                 // Determine reason (same)
+                 let reason = ""; if (!landingPad.found) reason = "未找到着陆平台?!"; else if (!onPad) { if (lander.x < landingPad.x1 || lander.x > landingPad.x2) reason = "错过着陆平台 (左右位置)"; else if (Math.abs(collisionSurfaceY - landingPad.y) >= LANDING_PAD_Y_TOLERANCE) reason = "错过着陆平台 (高度)"; else reason = "错过着陆平台"; } else if (!verticalSpeedOK) reason = `垂直速度过快 (${Math.abs(finalVY).toFixed(2)} > ${SAFE_LANDING_VSPEED})`; else if (!horizontalSpeedOK) reason = `水平速度过快 (${Math.abs(finalVX).toFixed(2)} > ${SAFE_LANDING_HSPEED})`; else if (!angleOK) reason = `着陆角度过大 (${Math.abs(statusInfo.angle).toFixed(1)}°)`; else reason = "未知坠毁原因";
+
+                 // Game state changes (same)
+                 setMessage(`坠毁! ${reason}`, "failure");
+                 gameState = 'crashed';
+                 lander.crashed = true;
+             }
+         }
+
+        // --- Drawing --- (Remains the same)
+        function draw() { /* ... */ ctx.fillStyle = '#000015'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = 'white'; ctx.save(); for(let i=0; i<150; i++) { ctx.beginPath(); let x = (Math.sin(i * 0.3) * 0.5 + 0.5) * canvas.width; let y = (Math.cos(i * 0.7) * 0.5 + 0.5) * canvas.height; let size = (Math.sin(i * 0.5) * 0.5 + 0.5) * 1.5 + 0.5; ctx.globalAlpha = Math.sin(i * 1.2) * 0.3 + 0.7; ctx.rect(x, y, size, size); ctx.fill(); } ctx.restore(); ctx.strokeStyle = '#cccccc'; ctx.lineWidth = 2; ctx.beginPath(); if (surface.length > 0) { ctx.moveTo(surface[0].x, surface[0].y); for (let i = 1; i < surface.length; i++) { ctx.lineTo(surface[i].x, surface[i].y); } } ctx.stroke(); if (landingPad.found) { ctx.strokeStyle = '#00ff00'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(landingPad.x1, landingPad.y); ctx.lineTo(landingPad.x2, landingPad.y); ctx.stroke(); } drawParticles(); ctx.save(); ctx.translate(lander.x, lander.y); ctx.rotate(lander.angle); if (lander.crashed && gameState === 'crashed') { ctx.fillStyle = '#FFA500'; ctx.strokeStyle = '#FF0000'; ctx.lineWidth = 1; for (let i = 0; i < 5; i++) { ctx.save(); ctx.rotate((Math.random() - 0.5) * Math.PI * 2); ctx.translate((Math.random() - 0.5) * 15, (Math.random() - 0.5) * 15); ctx.beginPath(); ctx.moveTo(0, -5); ctx.lineTo(-3, 3); ctx.lineTo(3, 3); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore(); } } else { ctx.fillStyle = lander.landed ? '#00cc00' : '#dddddd'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, -lander.height / 2); ctx.lineTo(-lander.width / 2, lander.height / 3); ctx.lineTo(-lander.width / 2, lander.height / 2); ctx.lineTo( lander.width / 2, lander.height / 2); ctx.lineTo( lander.width / 2, lander.height / 3); ctx.closePath(); ctx.fill(); ctx.stroke(); const legBaseX = lander.width / 2, legBaseY = lander.height / 2, legOutX = legBaseX + 4, legOutY = legBaseY + 6; ctx.strokeStyle = '#aaaaaa'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-legBaseX, legBaseY); ctx.lineTo(-legOutX, legOutY); ctx.moveTo( legBaseX, legBaseY); ctx.lineTo( legOutX, legOutY); ctx.stroke(); if (lander.thrusting && lander.fuel > 0) { ctx.fillStyle = `rgba(255, ${Math.random()*100 + 155}, 0, ${Math.random() * 0.5 + 0.5})`; ctx.beginPath(); const flameLength = lander.height * 0.7 + Math.random() * 5; ctx.moveTo(0, lander.height / 2); ctx.lineTo(-lander.width / 3.5, lander.height / 2 + flameLength); ctx.lineTo( lander.width / 3.5, lander.height / 2 + flameLength); ctx.closePath(); ctx.fill(); } } ctx.restore(); drawStatus(); }
+
+        // --- Update Status Info Object --- (Remains the same)
+        function updateStatusInfo() { /* ... */ let groundY = canvas.height; if (landingPad.found) { groundY = landingPad.y; } else if (surface.length > 0) { let minY = canvas.height; for(const p of surface) { if(p.x > lander.x - 50 && p.x < lander.x + 50) minY = Math.min(minY, p.y); } groundY = minY; } const cosA = Math.cos(lander.angle), sinA = Math.sin(lander.angle); const legPointY = lander.y + ((lander.width / 2 + 4) * Math.abs(sinA)) + (lander.height / 2 * cosA) + 6; statusInfo.altitude = Math.max(0, groundY - legPointY).toFixed(1); statusInfo.hSpeed = lander.vx.toFixed(2); statusInfo.vSpeed = lander.vy.toFixed(2); statusInfo.angle = (lander.angle * 180 / Math.PI).toFixed(1); statusInfo.fuel = Math.max(0, lander.fuel).toFixed(0); statusInfo.vSpeedOk = Math.abs(lander.vy) <= SAFE_LANDING_VSPEED; statusInfo.hSpeedOk = Math.abs(lander.vx) <= SAFE_LANDING_HSPEED; statusInfo.angleOk = Math.abs(lander.angle) <= SAFE_LANDING_ANGLE; statusInfo.fuelCritical = lander.fuel < 20; statusInfo.fuelLow = lander.fuel < 50 && !statusInfo.fuelCritical; }
+
+        // --- Draw Status on Canvas --- (Remains the same)
+         function drawStatus() { /* ... */ const statusX = 15, statusYStart = 25, lineHeight = 22, labelWidth = 110, valueOffsetX = labelWidth + 10; let statusY = statusYStart; ctx.font = '16px Arial'; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.shadowColor = "black"; ctx.shadowBlur = 3; ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 1; ctx.fillStyle = '#aaa'; ctx.fillText(`高度 (m):`, statusX, statusY); ctx.fillStyle = '#0f0'; ctx.fillText(statusInfo.altitude, statusX + valueOffsetX, statusY); statusY += lineHeight; ctx.fillStyle = '#aaa'; ctx.fillText(`水平速度 (m/s):`, statusX, statusY); ctx.fillStyle = statusInfo.hSpeedOk ? '#0f0' : (Math.abs(statusInfo.hSpeed) < SAFE_LANDING_HSPEED * 1.8 ? '#ff0' : '#f00'); ctx.fillText(statusInfo.hSpeed, statusX + valueOffsetX, statusY); statusY += lineHeight; ctx.fillStyle = '#aaa'; ctx.fillText(`垂直速度 (m/s):`, statusX, statusY); ctx.fillStyle = statusInfo.vSpeedOk ? '#0f0' : (Math.abs(statusInfo.vSpeed) < SAFE_LANDING_VSPEED * 1.8 ? '#ff0' : '#f00'); ctx.fillText(statusInfo.vSpeed, statusX + valueOffsetX, statusY); statusY += lineHeight; ctx.fillStyle = '#aaa'; ctx.fillText(`角度 (°):`, statusX, statusY); ctx.fillStyle = statusInfo.angleOk ? '#0f0' : (Math.abs(lander.angle) < SAFE_LANDING_ANGLE * 1.8 ? '#ff0' : '#f00'); ctx.fillText(statusInfo.angle, statusX + valueOffsetX, statusY); statusY += lineHeight; ctx.fillStyle = '#aaa'; ctx.fillText(`燃料 (%):`, statusX, statusY); ctx.fillStyle = statusInfo.fuelCritical ? '#f00' : (statusInfo.fuelLow ? '#ff0' : '#0f0'); ctx.fillText(statusInfo.fuel, statusX + valueOffsetX, statusY); ctx.shadowColor = "transparent"; ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0; }
+
+         // --- Show/Hide Messages --- (Remain the same)
+         function setMessage(text, type = 'info') { /* ... */ messageDiv.textContent = text + ((type === 'success' || type === 'failure') ? "\n(点击或按空格键重新开始)" : ""); messageDiv.className = type; messageDiv.style.display = 'block'; }
+         function hideMessage() { messageDiv.style.display = 'none'; }
+
+        // --- Game Loop --- (Remains the same)
+        function gameLoop(timestamp) { /* ... */ if (!lastTime) lastTime = timestamp; const dtSeconds = Math.min(0.1, (timestamp - lastTime) / 1000); lastTime = timestamp; const dtFactor = dtSeconds * 60; if (gameState === 'playing' || gameState === 'landed' || gameState === 'crashed') { update(dtFactor); draw(); } requestAnimationFrame(gameLoop); }
+
+        // --- Resize Handling --- (Remains the same)
+        let resizeTimeout; function handleResize() { /* ... */ clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => { if (DEBUG_AUDIO) console.log("Window resized."); if (gameState !== 'intro') { resetGame(); } else { canvas.width = window.innerWidth; canvas.height = window.innerHeight; } }, 300); }
+
+        // --- Reset and Start Game --- ADDED LOGS ---
+        function resetGame() {
+             if (DEBUG_AUDIO) console.log("--- Resetting Game ---");
+             gameState = 'playing';
+             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+             generateSurface();
+             if (!landingPad.found) { console.error("CRITICAL: Landing pad generation failed during reset."); setMessage("错误: 无法生成着陆平台!", "failure"); gameState = 'crashed'; return; }
+             lander = createLander();
+             keys = { ArrowUp: false, ArrowLeft: false, ArrowRight: false };
+             thrustParticles = [];
+             hideMessage(); successPopup.style.display = 'none';
+             lastTime = performance.now();
+             statusInfo = { altitude: 0, hSpeed: 0, vSpeed: 0, angle: 0, fuel: INITIAL_FUEL, vSpeedOk: true, hSpeedOk: true, angleOk: true, fuelLow: false, fuelCritical: false };
+             wasThrustingLastFrame = false; // Reset thrust tracking
+             updateStatusInfo();
+             // Check audio context state before potentially trying to re-init
+             if (audioContext && audioContext.state === 'suspended') {
+                  if (DEBUG_AUDIO) console.log("AudioContext suspended during reset, attempting resume...");
+                  audioContext.resume().catch(e => console.error("Error resuming context during reset:", e));
+             } else if (!audioContext || !soundsLoaded) {
+                 if (DEBUG_AUDIO) console.log("AudioContext missing or sounds not loaded during reset, calling initAudio().");
+                 initAudio(); // Attempt init/load again if needed
+             }
+             if (DEBUG_AUDIO) console.log("--- Game Ready ---");
+        }
+
+        // --- Event Listeners for Buttons --- ADDED LOGS ---
+        startButton.addEventListener('click', () => {
+            if (DEBUG_AUDIO) console.log("Start button clicked.");
+            introScreen.style.display = 'none';
+            initAudio(); // Ensure audio is attempted on this interaction
+            resetGame();
+        });
+        continueButton.addEventListener('click', () => {
+            if (DEBUG_AUDIO) console.log("Continue button clicked.");
+            successPopup.style.display = 'none';
+            resetGame();
+        });
+        hackButton.addEventListener('click', () => { /* ... */ const hackUrl = "https://kimi.moonshot.cn/share/cvndk5inae70dm7311ag"; if (isValidUrl(hackUrl)) { window.open(hackUrl, '_blank'); } else { alert("链接无效，请检查链接的合法性并适当重试。"); } });
+        function isValidUrl(string) { /* ... */ try { new URL(string); return true; } catch (e) { return false; } }
+
+        // --- Initialization --- (Remains the same)
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
+        canvas.addEventListener('click', handleClick);
+        window.addEventListener('resize', handleResize);
+        if (DEBUG_AUDIO) console.log("Initial script load complete, starting game loop.");
+        requestAnimationFrame(gameLoop); // Start loop
+    </script>
+</body>
+</html>

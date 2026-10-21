@@ -6,13 +6,24 @@
   <title>横版客户证言卡片生成器</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://api.fontshare.com">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=sentient@300,700&amp;display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&amp;display=swap" rel="stylesheet">
   <style>
+    @font-face {
+      font-family: "Testimonial Han";
+      src: url("https://haoxiaoru.github.io/fonts/testimonial/SourceHanSerifTC-Regular.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 300;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Testimonial Han";
+      src: url("https://haoxiaoru.github.io/fonts/testimonial/SourceHanSerifTC-Bold.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+    }
     :root {
       --bg: #fafafa;
       --fg: #171717;
@@ -145,7 +156,8 @@
     .card-render.template-v2 {
       background: transparent;
       color: #000;
-      font-family: "Sentient", "Noto Serif TC", "Songti SC", "STSong", serif;
+      font-family: "Sentient", "Testimonial Han", "Songti SC", "STSong", serif;
+      font-synthesis: none;
     }
     .v2-card-bg {
       position: absolute;
@@ -175,7 +187,7 @@
       top: 599px;
       width: 1690px;
       font-size: 48px;
-      line-height: 58px;
+      line-height: 1.2;
       font-weight: 300;
       letter-spacing: -0.007em;
       display: -webkit-box;
@@ -379,7 +391,7 @@
 
   <footer class="border-t border-[#e5e5e5] bg-white py-4">
     <div class="max-w-7xl mx-auto px-6 flex justify-end">
-      <span class="text-xs text-[#a3a3a3]">v2.1.0</span>
+      <span class="text-xs text-[#a3a3a3]">v2.1.1</span>
     </div>
   </footer>
 
@@ -591,12 +603,30 @@
       return `${base}-横版-${Date.now()}.png`;
     }
 
+    async function ensureTestimonialFonts() {
+      if (!document.fonts) return;
+      const text = `${state.quote} ${state.name} ${state.title}`;
+      const requests = [
+        document.fonts.load('300 48px "Sentient"', text),
+        document.fonts.load('700 48px "Sentient"', text)
+      ];
+      if (/[\u3400-\u9fff\uf900-\ufaff]/.test(text)) {
+        requests.push(
+          document.fonts.load('300 48px "Testimonial Han"', text),
+          document.fonts.load('700 48px "Testimonial Han"', text)
+        );
+      }
+      await Promise.all(requests);
+      await document.fonts.ready;
+    }
+
     els.downloadBtn.addEventListener('click', async () => {
       els.downloadBtn.disabled = true;
       els.downloadBtn.innerHTML = `<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 生成中…`;
       try {
         const config = templates[state.template];
-        if (document.fonts) await document.fonts.ready;
+        if (state.template === 'v2') await ensureTestimonialFonts();
+        else if (document.fonts) await document.fonts.ready;
         await Promise.all(Array.from(els.captureB.querySelectorAll('img')).map(img => {
           if (img.complete) return Promise.resolve();
           return new Promise((resolve, reject) => {

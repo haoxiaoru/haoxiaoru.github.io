@@ -8,7 +8,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=sentient@300,700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&amp;display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #fafafa;
@@ -135,23 +138,29 @@
       background: transparent;
     }
     .preview-wrap.template-v2 {
-      border-radius: 0;
+      border-radius: 16px;
       box-shadow: none;
-      background: #f8f8f8;
+      background: transparent;
     }
     .card-render.template-v2 {
-      background: #f8f8f8;
+      background: transparent;
       color: #000;
-      font-family: "Noto Serif", "Songti SC", "STSong", serif;
+      font-family: "Sentient", "Noto Serif TC", "Songti SC", "STSong", serif;
+    }
+    .v2-card-bg {
+      position: absolute;
+      inset: 0;
+      background: #f8f8f8;
+      border-radius: 48px;
     }
     .v2-logo {
       position: absolute;
       left: 139px;
       top: 150px;
-      width: 370px;
-      height: 115px;
-      object-fit: contain;
-      object-position: left top;
+      width: auto;
+      height: auto;
+      max-width: 370px;
+      max-height: 115px;
     }
     .v2-quote-mark {
       position: absolute;
@@ -167,7 +176,7 @@
       width: 1690px;
       font-size: 48px;
       line-height: 58px;
-      font-weight: 400;
+      font-weight: 300;
       letter-spacing: -0.007em;
       display: -webkit-box;
       -webkit-line-clamp: 8;
@@ -370,7 +379,7 @@
 
   <footer class="border-t border-[#e5e5e5] bg-white py-4">
     <div class="max-w-7xl mx-auto px-6 flex justify-end">
-      <span class="text-xs text-[#a3a3a3]">v2.0.0</span>
+      <span class="text-xs text-[#a3a3a3]">v2.1.0</span>
     </div>
   </footer>
 
@@ -455,6 +464,7 @@
 
     function getV2Markup() {
       return `
+        <div class="v2-card-bg"></div>
         ${state.logo ? `<img src="${state.logo}" class="v2-logo" alt="logo">` : ''}
         <img src="${v2QuoteMark}" class="v2-quote-mark" alt="">
         <div class="v2-quote">${escapeHtml(state.quote || '')}</div>
@@ -465,6 +475,19 @@
       `;
     }
 
+    function fitV2Logos(container) {
+      container.querySelectorAll('.v2-logo').forEach(img => {
+        const fit = () => {
+          if (!img.naturalWidth || !img.naturalHeight) return;
+          const scale = Math.min(370 / img.naturalWidth, 115 / img.naturalHeight);
+          img.style.width = `${img.naturalWidth * scale}px`;
+          img.style.height = `${img.naturalHeight * scale}px`;
+        };
+        if (img.complete) fit();
+        else img.addEventListener('load', fit, { once: true });
+      });
+    }
+
     function renderCard(container) {
       const config = templates[state.template];
       container.classList.add('card-render');
@@ -472,8 +495,9 @@
       container.classList.add(`template-${state.template}`);
       container.style.width = `${config.width}px`;
       container.style.height = `${config.height}px`;
-      container.style.background = state.template === 'v2' ? '#f8f8f8' : 'transparent';
+      container.style.background = 'transparent';
       container.innerHTML = state.template === 'v2' ? getV2Markup() : getV1Markup();
+      if (state.template === 'v2') fitV2Logos(container);
     }
 
     function updateTemplateUI() {
@@ -584,7 +608,7 @@
           width: config.width,
           height: config.height,
           scale: config.scale,
-          backgroundColor: state.template === 'v2' ? '#f8f8f8' : null,
+          backgroundColor: null,
           useCORS: true,
           logging: false
         });

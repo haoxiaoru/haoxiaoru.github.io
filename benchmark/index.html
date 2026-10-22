@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="将模型 Benchmark 成绩表生成 K3 风格的高清 PNG 和可编辑 SVG。">
   <title>K3 Benchmark Chart</title>
-  <link rel="stylesheet" href="styles.css?v=20261053">
+  <link rel="stylesheet" href="styles.css?v=20261054">
 </head>
 <body>
   <header class="site-header">
@@ -55,6 +55,10 @@
         <label>
           <span>高亮模型</span>
           <input id="highlight-input" type="text" placeholder="模型名或品牌，如 Kimi、DeepSeek、DS、MiniMax；留空自动高亮 Kimi">
+        </label>
+        <label>
+          <span>次高亮模型</span>
+          <input id="secondary-highlight-input" type="text" placeholder="同厂商次高亮，如 Kimi；同一 icon 组里非最高分的模型显示淡蓝色">
         </label>
         <label>
           <span>列数</span>
@@ -111,6 +115,6 @@
   </main>
 
   <footer>OpenAI、Claude、Kimi、GLM/Z.ai 图标及字体均随应用内置。</footer>
-  <script src="app.js?v=20261053" type="module"></script>
+  <script src="app.js?v=20261054" type="module"></script>
 </body>
 </html>

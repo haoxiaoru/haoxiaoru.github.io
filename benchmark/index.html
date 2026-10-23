@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="将模型 Benchmark 成绩表生成 K3 风格的高清 PNG 和可编辑 SVG。">
   <title>K3 Benchmark Chart</title>
-  <link rel="stylesheet" href="styles.css?v=20261064">
+  <link rel="stylesheet" href="styles.css?v=20261065">
 </head>
 <body>
   <header class="site-header">
@@ -82,7 +82,7 @@
         </label>
         <label class="full-width">
           <span>底部注释</span>
-          <textarea id="note-input" rows="3" placeholder="可选；留空则不显示"></textarea>
+          <textarea id="note-input" rows="3">Note: All models were maxed out on thinking effort; Claude Models may include fallbacks and GPT Models may include cyberguards.</textarea>
         </label>
       </div>
       <button class="primary-button" id="generate-button" type="button">
@@ -115,6 +115,6 @@
   </main>
 
   <footer>OpenAI、Claude、Kimi、GLM/Z.ai 图标及字体均随应用内置。</footer>
-  <script src="app.js?v=20261064" type="module"></script>
+  <script src="app.js?v=20261065" type="module"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="将模型 Benchmark 成绩表生成 K3 风格的高清 PNG 和可编辑 SVG。">
   <title>K3 Benchmark Chart</title>
-  <link rel="stylesheet" href="styles.css?v=20261028">
+  <link rel="stylesheet" href="styles.css?v=20261070">
 </head>
 <body>
   <header class="site-header">
@@ -27,6 +27,11 @@
         <button class="text-button" id="example-button" type="button">填入示例</button>
       </div>
 
+      <label class="sr-only" for="table-input">粘贴成绩表</label>
+      <textarea id="table-input" rows="10" spellcheck="false" placeholder="benchmark,model,score,scale_max,harness&#10;DeepSWE,Kimi K3,67.5,,Kimi Code&#10;GDPval-AA v2 Elo,Kimi K3,1668,2000,"></textarea>
+      <p class="hint">必填：<code>benchmark, model, score</code>；多版块加 <code>section</code>，Elo 加 <code>scale_max</code>，评测 Harness 加 <code>harness</code>，单个 Benchmark 备注加 <code>note</code>（显示在标题下方），越低越好加 <code>order=asc</code>（排序和默认高亮都会反转）。支持从表格直接复制的 Tab 分隔数据，也支持「宽表格」格式（第一行 section，第二行模型名，下面每行是 benchmark + 各模型成绩）。</p>
+
+      <div class="divider"><span>或上传成绩表文件</span></div>
       <div class="drop-zone" id="drop-zone" role="button" tabindex="0" aria-label="选择或拖入成绩表文件">
         <input id="file-input" type="file" accept=".csv,.tsv,.md,.markdown,.json,.xlsx" hidden>
         <div class="drop-icon" aria-hidden="true">↑</div>
@@ -35,11 +40,6 @@
         <span class="file-name" id="file-name"></span>
       </div>
       <button class="text-button clear-file" id="clear-file" type="button" hidden>清除文件，改用粘贴内容</button>
-
-      <div class="divider"><span>或直接粘贴表格</span></div>
-      <label class="sr-only" for="table-input">粘贴成绩表</label>
-      <textarea id="table-input" rows="10" spellcheck="false" placeholder="section,benchmark,model,score,scale_max&#10;Coding,DeepSWE,Kimi K3,67.5,&#10;General Agents,GDPval-AA v2 Elo,Kimi K3,1668,2000"></textarea>
-      <p class="hint">必填：<code>benchmark, model, score</code>；多版块加 <code>section</code>，Elo 加 <code>scale_max</code>。支持从表格直接复制的 Tab 分隔数据，也支持「宽表格」格式（第一行 section，第二行模型名，下面每行是 benchmark + 各模型成绩）。</p>
 
       <div class="section-heading options-heading">
         <div>
@@ -54,7 +54,11 @@
         </label>
         <label>
           <span>高亮模型</span>
-          <input id="highlight-input" type="text" placeholder="留空自动高亮 Kimi">
+          <input id="highlight-input" type="text" placeholder="模型名或品牌，如 Kimi、DeepSeek、DS、MiniMax；留空自动高亮 Kimi">
+        </label>
+        <label>
+          <span>次高亮模型</span>
+          <input id="secondary-highlight-input" type="text" placeholder="同厂商次高亮，如 Kimi；同一 icon 组里非最高分的模型显示淡蓝色">
         </label>
         <label>
           <span>列数</span>
@@ -62,6 +66,14 @@
             <option value="2" selected>双列（默认合集）</option>
             <option value="1">单列（全宽大图）</option>
             <option value="3">三列</option>
+            <option value="4">四列</option>
+          </select>
+        </label>
+        <label>
+          <span>坐标模式</span>
+          <select id="scale-mode-input">
+            <option value="auto" selected>自适应（最高分占 90%，默认）</option>
+            <option value="fixed">绝对值（按 100 或自定义 scale_max）</option>
           </select>
         </label>
         <label class="full-width">
@@ -69,8 +81,8 @@
           <input id="subtitle-input" type="text" placeholder="All maxed out on thinking effort: max or xhigh.">
         </label>
         <label class="full-width">
-          <span>底部注释</span>
-          <textarea id="note-input" rows="3" placeholder="可选；留空则不显示"></textarea>
+          <span>底部注释（全局）</span>
+          <textarea id="note-input" rows="3">Note: All models were maxed out on thinking effort; Claude Models may include fallbacks and GPT Models may include cyberguards.</textarea>
         </label>
       </div>
       <button class="primary-button" id="generate-button" type="button">
@@ -103,6 +115,6 @@
   </main>
 
   <footer>OpenAI、Claude、Kimi、GLM/Z.ai 图标及字体均随应用内置。</footer>
-  <script src="app.js?v=20261028" type="module"></script>
+  <script src="app.js?v=20261070" type="module"></script>
 </body>
 </html>

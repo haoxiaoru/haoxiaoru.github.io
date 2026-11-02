@@ -261,27 +261,39 @@
       background: #f8f8f8;
       border-radius: 48px;
     }
+    .v3-content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 120px 150px 150px 150px;
+    }
     .v3-logo {
-      position: absolute;
-      left: 150px;
-      top: 120px;
+      align-self: flex-start;
       width: auto;
       height: auto;
       max-width: 480px;
       max-height: 150px;
+      object-fit: contain;
+    }
+    .v3-quote-block {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      min-width: 0;
+      width: 100%;
     }
     .v3-quote-mark {
-      position: absolute;
-      left: 150px;
-      top: 360px;
       width: 84px;
       height: 67px;
+      margin-bottom: 24px;
     }
     .v3-quote {
-      position: absolute;
-      left: 150px;
-      top: 470px;
-      width: 1944px;
+      width: 100%;
       font-size: 80px;
       line-height: 1.5;
       font-weight: 300;
@@ -292,10 +304,8 @@
       white-space: pre-wrap;
     }
     .v3-attribution {
-      position: absolute;
-      right: 150px;
-      top: 1550px;
-      max-width: 1944px;
+      align-self: flex-end;
+      max-width: 100%;
       text-align: right;
       font-size: 52px;
       line-height: 68px;
@@ -645,12 +655,16 @@
     function getV3Markup() {
       return `
         <div class="v3-card-bg"></div>
-        ${state.logo ? `<img src="${state.logo}" class="v3-logo" alt="logo">` : ''}
-        <img src="${v2QuoteMark}" class="v3-quote-mark" alt="">
-        <div class="v3-quote">${escapeHtml(clampQuoteText(state.quote || '', 'v3'))}</div>
-        <div class="v3-attribution">
-          ${state.name ? `<div><span class="v3-dashes"><span>—</span><span>—</span></span> ${escapeHtml(state.name)}</div>` : ''}
-          ${state.title ? `<div>${escapeHtml(state.title)}</div>` : ''}
+        <div class="v3-content">
+          ${state.logo ? `<img src="${state.logo}" class="v3-logo" alt="logo">` : '<div></div>'}
+          <div class="v3-quote-block">
+            <img src="${v2QuoteMark}" class="v3-quote-mark" alt="">
+            <div class="v3-quote">${escapeHtml(clampQuoteText(state.quote || '', 'v3'))}</div>
+          </div>
+          <div class="v3-attribution">
+            ${state.name ? `<div><span class="v3-dashes"><span>—</span><span>—</span></span> ${escapeHtml(state.name)}</div>` : ''}
+            ${state.title ? `<div>${escapeHtml(state.title)}</div>` : ''}
+          </div>
         </div>
       `;
     }

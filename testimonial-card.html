@@ -282,7 +282,7 @@
       left: 150px;
       top: 470px;
       width: 1944px;
-      font-size: 72px;
+      font-size: 80px;
       line-height: 1.5;
       font-weight: 300;
       letter-spacing: -0.007em;
@@ -294,7 +294,7 @@
     .v3-attribution {
       position: absolute;
       right: 150px;
-      top: 1310px;
+      top: 1550px;
       max-width: 1944px;
       text-align: right;
       font-size: 52px;
@@ -403,8 +403,8 @@
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <span class="text-lg font-semibold tracking-tight">横版客户证言卡片生成器</span>
-        <span id="templateBadge" class="text-xs text-[#737373] bg-[#f0f0f0] px-2 py-1 rounded-full">v3 · 4:3</span>
-        <span id="ratioBadge" class="text-xs text-[#a3a3a3] bg-[#f5f5f5] px-2 py-1 rounded-full">4:3</span>
+        <span id="templateBadge" class="text-xs text-[#737373] bg-[#f0f0f0] px-2 py-1 rounded-full">v3 · 1:1</span>
+        <span id="ratioBadge" class="text-xs text-[#a3a3a3] bg-[#f5f5f5] px-2 py-1 rounded-full">1:1</span>
       </div>
       <div class="text-xs text-[#a3a3a3]">本地 HTML · 无需上传服务器</div>
     </div>
@@ -415,7 +415,7 @@
       <div class="field-label !mb-0">模板版本</div>
       <div class="template-switch" role="group" aria-label="模板版本">
         <button type="button" class="template-option" data-template="v2" aria-pressed="false">v2 新版</button>
-        <button type="button" class="template-option active" data-template="v3" aria-pressed="true">v3 4:3</button>
+        <button type="button" class="template-option active" data-template="v3" aria-pressed="true">v3 1:1</button>
         <button type="button" class="template-option" data-template="v1" aria-pressed="false">v1 旧版</button>
       </div>
     </div>
@@ -479,7 +479,7 @@
           <div class="card-render" id="previewCard"></div>
         </div>
         <div class="mt-4 text-xs text-[#a3a3a3] leading-relaxed">
-          提示：v2 为设计新版（2:1），v3 为 4:3 版本，v1 保留此前的圆角卡片。
+          提示：v2 为设计新版（2:1），v3 为 1:1 版本，v1 保留此前的圆角卡片。
         </div>
       </section>
     </div>
@@ -497,7 +497,7 @@
     const templates = {
       v1: { width: 1080, height: 540, scale: 2, exportWidth: 2160, exportHeight: 1080 },
       v2: { width: 2244, height: 1413, scale: 1, exportWidth: 2244, exportHeight: 1413 },
-      v3: { width: 2244, height: 1683, scale: 1, exportWidth: 2244, exportHeight: 1683 }
+      v3: { width: 2244, height: 2244, scale: 1, exportWidth: 2244, exportHeight: 2244 }
     };
     const v2QuoteMark = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFMAAABCCAYAAAArOOo+AAADsUlEQVR4nO1brVLrQBQ+dPCsA0UkLnmDyMi+AW8AbxBZRyUOWVdc6+LaqtYVh4wrrn2C3Dm9yUzhhia75yfbO/lmjgP24/yfsxuAHj169OhxUfj8/CzW63UBniLLsgI5gs/Y7XZFmqZIsjDGeEcY+T0/Px/5BUHgHb9v1kaCSLQSnwj/xg8VDD5aG2qka4Uiv+Fw+Cu/OI79UOZms/nH2nUShmEnHlDnjXVSOkN3GI/HjSRP5eXlRZXwuWipk04K5q4hbOqkLEoqwJSCkdCWGxZKjDAtft+ItgmbU3l7eys0wxqV05Yb/i+dKDKzJKqtSNu001lhHFsS1VZk1dt6r8jUkqi2Ih8fH/9fRaZKxQYLYdkj+l9sUs8VaVOxK5lOp5ehyOHfdslbRWq2ZyRFBop5yDZHopS/o4uycFjLRikP2U41nRUcPNC2jwTF8HGJGO3OwnmygdLqGvzKwnEZ4W07a4Oi1V0NjaIe3q7hEyh5pasi1b2ytJy3Xpk6GroTr3S1eqDglRRDq3ulaxsESmRdDY2CGy7QAiWpg8JWmmLosr3TAyUXGQWyFENrjbXkXAQKt3kUr+S+axo0/cDr6yvpgDiOQRKj0Yj0+1EUgZoyZ7MZ6YAgCEDSK/M8J/2Nm5sbUAE1hACgeH9/FwvzKIrI/NTu520306DYdlBz+Ymw4foc2YeHB/IBh8MBJEDN5RL4NWcul0uWA/b7PUiAix/nGHktVXgqbLdb4AZX1CA+Pj5A3DNXqxXLAfP5HLjBaaDFYgGiKMc/NsmYi5DLdcS5CY2rog80isaI2FhLeibmdNFi5vK8BRTHNpe7pybvFNtncoYRyBBm5yf2wNblrhmUrlEZm3V2hTbO5pzI8xySJGHt7TiBbRI7PynPBIYcKumZpxHE1oFoKBMAClxU2HqBhjIrQT2QvVSiAAHvtluVX9tXKAPtHSTH6KrNr+0eoFaZYRiCzwg95TeQXuVLwFd+tcq8vb29kr67ocBXbgMfCMeWZyVJcmWMAS2QdfH19SVeJY0xzu/GKXf5NhPRRfSbT09PpNENjc298Dg1Mvu3mxINcsA4XUh4J14ier9BMsYcm1/OzQx6J+VpzE9+4p+qIGHq/XQsaG382IAa7tSUo/aGPVN4ruf6WAKN7P3nzkYgpJuAIdrWQ7WM3Bjy53Ko6UCJPw1+rgNBT5R8Dn7lShqHfxS8fLu/v8cvMI4z893dndPf5ATym0wmx2V09TgL+WGz3zW3Hj169OjRA7jxBwFxaZiHRnVjAAAAAElFTkSuQmCC';
     const downloadIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>';
@@ -728,8 +728,8 @@
 
     function updateTemplateUI() {
       const config = templates[state.template];
-      const badgeMap = { v1: 'v1 · 旧版', v2: 'v2 · 新版', v3: 'v3 · 4:3' };
-      const ratioMap = { v1: '2:1', v2: '2:1', v3: '4:3' };
+      const badgeMap = { v1: 'v1 · 旧版', v2: 'v2 · 新版', v3: 'v3 · 1:1' };
+      const ratioMap = { v1: '2:1', v2: '2:1', v3: '1:1' };
       els.templateBadge.textContent = badgeMap[state.template];
       els.ratioBadge.textContent = ratioMap[state.template];
       els.lineHint.textContent = '卡片中最多显示 8 行文字';

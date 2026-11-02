@@ -7,6 +7,48 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
+    @font-face {
+      font-family: "Sentient";
+      src: url("https://cdn.jsdelivr.net/gh/haoxiaoru/haoxiaoru.github.io@main/fonts/testimonial/Sentient-Light.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 300;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Sentient";
+      src: url("https://cdn.jsdelivr.net/gh/haoxiaoru/haoxiaoru.github.io@main/fonts/testimonial/Sentient-Bold.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Testimonial Han Common";
+      src: url("https://cdn.jsdelivr.net/gh/haoxiaoru/haoxiaoru.github.io@main/fonts/testimonial/SourceHanSerifSC-Regular-Common.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 300;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Testimonial Han Common";
+      src: url("https://cdn.jsdelivr.net/gh/haoxiaoru/haoxiaoru.github.io@main/fonts/testimonial/SourceHanSerifSC-Bold-Common.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Testimonial Han";
+      src: url("https://cdn.jsdelivr.net/gh/haoxiaoru/haoxiaoru.github.io@main/fonts/testimonial/SourceHanSerifSC-Regular.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 300;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Testimonial Han";
+      src: url("https://cdn.jsdelivr.net/gh/haoxiaoru/haoxiaoru.github.io@main/fonts/testimonial/SourceHanSerifSC-Bold.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+    }
     :root {
       --bg: #fafafa;
       --fg: #171717;
@@ -131,6 +173,171 @@
       pointer-events: none;
       background: transparent;
     }
+    .preview-wrap.template-v2 {
+      border-radius: 16px;
+      box-shadow: none;
+      background: transparent;
+    }
+    .card-render.template-v2 {
+      background: transparent;
+      color: #000;
+      font-family: "Sentient", "Testimonial Han Common", "Testimonial Han", "Songti SC", "STSong", serif;
+      font-synthesis: none;
+    }
+    .v2-card-bg {
+      position: absolute;
+      inset: 0;
+      background: #f8f8f8;
+      border-radius: 48px;
+    }
+    .v2-logo {
+      position: absolute;
+      left: 139px;
+      top: 150px;
+      width: auto;
+      height: auto;
+      max-width: 370px;
+      max-height: 115px;
+    }
+    .v2-quote-mark {
+      position: absolute;
+      left: 140px;
+      top: 473px;
+      width: 83px;
+      height: 66px;
+    }
+    .v2-quote {
+      position: absolute;
+      left: 144px;
+      top: 599px;
+      width: 1690px;
+      font-size: 48px;
+      line-height: 1.5;
+      font-weight: 300;
+      letter-spacing: -0.007em;
+      overflow: hidden;
+      max-height: 12em;
+      padding-bottom: 20px;
+      white-space: pre-wrap;
+    }
+    .v2-attribution {
+      position: absolute;
+      right: 135px;
+      top: 1102px;
+      max-width: 1500px;
+      text-align: right;
+      font-size: 48px;
+      line-height: 62px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .v2-attribution > div {
+      height: 62px;
+      line-height: 62px;
+    }
+    .v2-dashes {
+      position: relative;
+      top: -2px;
+      font-size: 36px;
+      letter-spacing: 0;
+    }
+    .v2-dashes span + span {
+      margin-left: 6px;
+    }
+    .preview-wrap.template-v3 {
+      border-radius: 16px;
+      box-shadow: none;
+      background: transparent;
+    }
+    .card-render.template-v3 {
+      background: transparent;
+      color: #000;
+      font-family: "Sentient", "Testimonial Han Common", "Testimonial Han", "Songti SC", "STSong", serif;
+      font-synthesis: none;
+    }
+    .v3-card-bg {
+      position: absolute;
+      inset: 0;
+      background: #f8f8f8;
+      border-radius: 48px;
+    }
+    .v3-logo {
+      position: absolute;
+      left: 150px;
+      top: 120px;
+      width: auto;
+      height: auto;
+      max-width: 480px;
+      max-height: 150px;
+    }
+    .v3-quote-mark {
+      position: absolute;
+      left: 150px;
+      top: 360px;
+      width: 84px;
+      height: 67px;
+    }
+    .v3-quote {
+      position: absolute;
+      left: 150px;
+      top: 470px;
+      width: 1944px;
+      font-size: 72px;
+      line-height: 1.5;
+      font-weight: 300;
+      letter-spacing: -0.007em;
+      overflow: hidden;
+      max-height: 12em;
+      padding-bottom: 20px;
+      white-space: pre-wrap;
+    }
+    .v3-attribution {
+      position: absolute;
+      right: 150px;
+      top: 1310px;
+      max-width: 1944px;
+      text-align: right;
+      font-size: 52px;
+      line-height: 68px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .v3-attribution > div {
+      height: 68px;
+      line-height: 68px;
+    }
+    .v3-dashes {
+      position: relative;
+      top: -2px;
+      font-size: 40px;
+      letter-spacing: 0;
+    }
+    .v3-dashes span + span {
+      margin-left: 6px;
+    }
+    .template-switch {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 10px;
+      background: #e5e5e5;
+    }
+    .template-option {
+      min-width: 72px;
+      padding: 7px 14px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: #737373;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .template-option.active {
+      background: #fff;
+      color: #171717;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
     input, textarea, button {
       font-family: inherit;
     }
@@ -196,13 +403,22 @@
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <span class="text-lg font-semibold tracking-tight">横版客户证言卡片生成器</span>
-        <span class="text-xs text-[#737373] bg-[#f0f0f0] px-2 py-1 rounded-full">2:1 · 公众号适配</span>
+        <span id="templateBadge" class="text-xs text-[#737373] bg-[#f0f0f0] px-2 py-1 rounded-full">v2 · 新版</span>
+        <span id="ratioBadge" class="text-xs text-[#a3a3a3] bg-[#f5f5f5] px-2 py-1 rounded-full">2:1</span>
       </div>
       <div class="text-xs text-[#a3a3a3]">本地 HTML · 无需上传服务器</div>
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto px-6 py-8 flex-1 w-full">
+    <div class="flex items-center justify-between mb-6">
+      <div class="field-label !mb-0">模板版本</div>
+      <div class="template-switch" role="group" aria-label="模板版本">
+        <button type="button" class="template-option active" data-template="v2" aria-pressed="true">v2 新版</button>
+        <button type="button" class="template-option" data-template="v3" aria-pressed="false">v3 4:3</button>
+        <button type="button" class="template-option" data-template="v1" aria-pressed="false">v1 旧版</button>
+      </div>
+    </div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
       <section class="space-y-6">
         <div>
@@ -225,7 +441,7 @@
         <div>
           <div class="flex items-center justify-between">
             <div class="field-label">客户证言</div>
-            <div class="text-xs text-[#a3a3a3]">卡片中最多显示 8 行文字</div>
+            <div id="lineHint" class="text-xs text-[#a3a3a3]">卡片中最多显示 8 行文字</div>
           </div>
           <textarea id="quoteInput" class="text-area" placeholder="请输入客户证言内容…"></textarea>
         </div>
@@ -249,7 +465,7 @@
         <div class="pt-2">
           <button id="downloadBtn" class="btn btn-primary w-full sm:w-auto">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-            下载 1080px 高清卡片
+            下载 2244px 高清卡片
           </button>
         </div>
       </section>
@@ -257,13 +473,13 @@
       <section>
         <div class="flex items-center justify-between mb-4">
           <div class="field-label !mb-0">实时预览</div>
-          <div class="text-xs text-[#a3a3a3]">实际导出尺寸 1080 × 540</div>
+          <div id="exportSize" class="text-xs text-[#a3a3a3]">实际导出尺寸 2244 × 1413</div>
         </div>
-        <div class="preview-wrap" id="previewWrap">
+        <div class="preview-wrap template-v2" id="previewWrap">
           <div class="card-render" id="previewCard"></div>
         </div>
         <div class="mt-4 text-xs text-[#a3a3a3] leading-relaxed">
-          提示：横版卡片更适合微信公众号阅读场景，可减少在手机屏幕上的纵向占用面积。
+          提示：v2 为设计新版（2:1），v3 为 4:3 版本，v1 保留此前的圆角卡片。
         </div>
       </section>
     </div>
@@ -271,14 +487,22 @@
 
   <footer class="border-t border-[#e5e5e5] bg-white py-4">
     <div class="max-w-7xl mx-auto px-6 flex justify-end">
-      <span class="text-xs text-[#a3a3a3]">v1.0.0</span>
+      <span class="text-xs text-[#a3a3a3]">v2.2.0</span>
     </div>
   </footer>
 
   <div id="captureB" class="capture-stage"></div>
 
   <script>
+    const templates = {
+      v1: { width: 1080, height: 540, scale: 2, exportWidth: 2160, exportHeight: 1080 },
+      v2: { width: 2244, height: 1413, scale: 1, exportWidth: 2244, exportHeight: 1413 },
+      v3: { width: 2244, height: 1683, scale: 1, exportWidth: 2244, exportHeight: 1683 }
+    };
+    const v2QuoteMark = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFMAAABCCAYAAAArOOo+AAADsUlEQVR4nO1brVLrQBQ+dPCsA0UkLnmDyMi+AW8AbxBZRyUOWVdc6+LaqtYVh4wrrn2C3Dm9yUzhhia75yfbO/lmjgP24/yfsxuAHj169OhxUfj8/CzW63UBniLLsgI5gs/Y7XZFmqZIsjDGeEcY+T0/Px/5BUHgHb9v1kaCSLQSnwj/xg8VDD5aG2qka4Uiv+Fw+Cu/OI79UOZms/nH2nUShmEnHlDnjXVSOkN3GI/HjSRP5eXlRZXwuWipk04K5q4hbOqkLEoqwJSCkdCWGxZKjDAtft+ItgmbU3l7eys0wxqV05Yb/i+dKDKzJKqtSNu001lhHFsS1VZk1dt6r8jUkqi2Ih8fH/9fRaZKxQYLYdkj+l9sUs8VaVOxK5lOp5ehyOHfdslbRWq2ZyRFBop5yDZHopS/o4uycFjLRikP2U41nRUcPNC2jwTF8HGJGO3OwnmygdLqGvzKwnEZ4W07a4Oi1V0NjaIe3q7hEyh5pasi1b2ytJy3Xpk6GroTr3S1eqDglRRDq3ulaxsESmRdDY2CGy7QAiWpg8JWmmLosr3TAyUXGQWyFENrjbXkXAQKt3kUr+S+axo0/cDr6yvpgDiOQRKj0Yj0+1EUgZoyZ7MZ6YAgCEDSK/M8J/2Nm5sbUAE1hACgeH9/FwvzKIrI/NTu520306DYdlBz+Ymw4foc2YeHB/IBh8MBJEDN5RL4NWcul0uWA/b7PUiAix/nGHktVXgqbLdb4AZX1CA+Pj5A3DNXqxXLAfP5HLjBaaDFYgGiKMc/NsmYi5DLdcS5CY2rog80isaI2FhLeibmdNFi5vK8BRTHNpe7pybvFNtncoYRyBBm5yf2wNblrhmUrlEZm3V2hTbO5pzI8xySJGHt7TiBbRI7PynPBIYcKumZpxHE1oFoKBMAClxU2HqBhjIrQT2QvVSiAAHvtluVX9tXKAPtHSTH6KrNr+0eoFaZYRiCzwg95TeQXuVLwFd+tcq8vb29kr67ocBXbgMfCMeWZyVJcmWMAS2QdfH19SVeJY0xzu/GKXf5NhPRRfSbT09PpNENjc298Dg1Mvu3mxINcsA4XUh4J14ier9BMsYcm1/OzQx6J+VpzE9+4p+qIGHq/XQsaG382IAa7tSUo/aGPVN4ruf6WAKN7P3nzkYgpJuAIdrWQ7WM3Bjy53Ko6UCJPw1+rgNBT5R8Dn7lShqHfxS8fLu/v8cvMI4z893dndPf5ATym0wmx2V09TgL+WGz3zW3Hj169OjRA7jxBwFxaZiHRnVjAAAAAElFTkSuQmCC';
+    const downloadIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>';
     const state = {
+      template: 'v2',
       logo: null,
       quote: '',
       name: '',
@@ -300,7 +524,11 @@
       previewWrap: document.getElementById('previewWrap'),
       previewCard: document.getElementById('previewCard'),
       captureB: document.getElementById('captureB'),
-      downloadBtn: document.getElementById('downloadBtn')
+      downloadBtn: document.getElementById('downloadBtn'),
+      exportSize: document.getElementById('exportSize'),
+      templateBadge: document.getElementById('templateBadge'),
+      ratioBadge: document.getElementById('ratioBadge'),
+      lineHint: document.getElementById('lineHint')
     };
 
     function updateState() {
@@ -315,6 +543,62 @@
       return str.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
     }
 
+    const quoteClampConfig = {
+      v2: { className: 'v2-quote', width: 1690, maxLines: 8 },
+      v3: { className: 'v3-quote', width: 1944, maxLines: 8 }
+    };
+    let quoteMeasureEl = null;
+    const quoteClampCache = new Map();
+
+    function getQuoteMeasureEl() {
+      if (!quoteMeasureEl) {
+        quoteMeasureEl = document.createElement('div');
+        quoteMeasureEl.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden;pointer-events:none;z-index:-1;';
+        document.body.appendChild(quoteMeasureEl);
+      }
+      return quoteMeasureEl;
+    }
+
+    function clampQuoteText(text, template) {
+      const cfg = quoteClampConfig[template];
+      if (!cfg) return text || '';
+      const key = template + '|' + (text || '');
+      if (quoteClampCache.has(key)) return quoteClampCache.get(key);
+      const el = getQuoteMeasureEl();
+      el.className = cfg.className;
+      el.style.width = cfg.width + 'px';
+      el.style.display = 'block';
+      el.style.fontFamily = '"Sentient", "Testimonial Han Common", "Testimonial Han", "Songti SC", "STSong", serif';
+      el.style.webkitLineClamp = 'unset';
+      el.style.webkitBoxOrient = 'unset';
+      el.style.overflow = 'visible';
+      el.style.maxHeight = 'none';
+      el.style.whiteSpace = 'pre-wrap';
+      el.textContent = text || '';
+      const style = getComputedStyle(el);
+      const lineHeight = parseFloat(style.lineHeight);
+      const paddingBottom = parseFloat(style.paddingBottom) || 0;
+      const target = cfg.maxLines * lineHeight + paddingBottom;
+      if (el.scrollHeight <= target) {
+        quoteClampCache.set(key, text || '');
+        return text || '';
+      }
+      const chars = Array.from(text || '');
+      let low = 0, high = chars.length;
+      while (low < high) {
+        const mid = Math.ceil((low + high) / 2);
+        el.textContent = chars.slice(0, mid).join('') + '…';
+        if (el.scrollHeight <= target) {
+          low = mid;
+        } else {
+          high = mid - 1;
+        }
+      }
+      const result = low > 0 ? chars.slice(0, low).join('') + '…' : '…';
+      quoteClampCache.set(key, result);
+      return result;
+    }
+
     function getLogoBlock() {
       if (!state.logo && !state.site) return '<div></div>';
       return `
@@ -325,9 +609,8 @@
       `;
     }
 
-    function renderCard(container) {
-      container.style.background = 'transparent';
-      container.innerHTML = `
+    function getV1Markup() {
+      return `
         <div class="card-inner">
           <div class="quote-col">
             <div class="testimonial-text">
@@ -346,22 +629,147 @@
       `;
     }
 
+    function getV2Markup() {
+      return `
+        <div class="v2-card-bg"></div>
+        ${state.logo ? `<img src="${state.logo}" class="v2-logo" alt="logo">` : ''}
+        <img src="${v2QuoteMark}" class="v2-quote-mark" alt="">
+        <div class="v2-quote">${escapeHtml(clampQuoteText(state.quote || '', 'v2'))}</div>
+        <div class="v2-attribution">
+          ${state.name ? `<div><span class="v2-dashes"><span>—</span><span>—</span></span> ${escapeHtml(state.name)}</div>` : ''}
+          ${state.title ? `<div>${escapeHtml(state.title)}</div>` : ''}
+        </div>
+      `;
+    }
+
+    function getV3Markup() {
+      return `
+        <div class="v3-card-bg"></div>
+        ${state.logo ? `<img src="${state.logo}" class="v3-logo" alt="logo">` : ''}
+        <img src="${v2QuoteMark}" class="v3-quote-mark" alt="">
+        <div class="v3-quote">${escapeHtml(clampQuoteText(state.quote || '', 'v3'))}</div>
+        <div class="v3-attribution">
+          ${state.name ? `<div><span class="v3-dashes"><span>—</span><span>—</span></span> ${escapeHtml(state.name)}</div>` : ''}
+          ${state.title ? `<div>${escapeHtml(state.title)}</div>` : ''}
+        </div>
+      `;
+    }
+
+    function fitV2Logos(container) {
+      container.querySelectorAll('.v2-logo').forEach(img => {
+        const fit = () => {
+          if (!img.naturalWidth || !img.naturalHeight) return;
+          const scale = Math.min(370 / img.naturalWidth, 115 / img.naturalHeight);
+          img.style.width = `${img.naturalWidth * scale}px`;
+          img.style.height = `${img.naturalHeight * scale}px`;
+        };
+        if (img.complete) fit();
+        else img.addEventListener('load', fit, { once: true });
+      });
+    }
+
+    function alignV2Attribution(container) {
+      const quote = container.querySelector('.v2-quote');
+      const attribution = container.querySelector('.v2-attribution');
+      if (!quote || !attribution) return;
+      const style = getComputedStyle(quote);
+      const lineHeight = parseFloat(style.lineHeight);
+      const paddingBottom = parseFloat(style.paddingBottom);
+      const lines = Math.max(0, Math.round((quote.offsetHeight - paddingBottom) / lineHeight));
+      const extraLines = Math.max(0, lines - 6);
+      attribution.style.top = `${1102 + extraLines * lineHeight}px`;
+    }
+
+    function fitV3Logos(container) {
+      container.querySelectorAll('.v3-logo').forEach(img => {
+        const fit = () => {
+          if (!img.naturalWidth || !img.naturalHeight) return;
+          const scale = Math.min(480 / img.naturalWidth, 150 / img.naturalHeight);
+          img.style.width = `${img.naturalWidth * scale}px`;
+          img.style.height = `${img.naturalHeight * scale}px`;
+        };
+        if (img.complete) fit();
+        else img.addEventListener('load', fit, { once: true });
+      });
+    }
+
+    function alignV3Attribution(container) {
+      const quote = container.querySelector('.v3-quote');
+      const attribution = container.querySelector('.v3-attribution');
+      if (!quote || !attribution) return;
+      const style = getComputedStyle(quote);
+      const lineHeight = parseFloat(style.lineHeight);
+      const paddingBottom = parseFloat(style.paddingBottom);
+      const lines = Math.max(0, Math.round((quote.offsetHeight - paddingBottom) / lineHeight));
+      const extraLines = Math.max(0, lines - 6);
+      attribution.style.top = `${1310 + extraLines * lineHeight}px`;
+    }
+
+    function renderCard(container) {
+      const config = templates[state.template];
+      container.classList.add('card-render');
+      container.classList.remove('template-v1', 'template-v2', 'template-v3');
+      container.classList.add(`template-${state.template}`);
+      container.style.width = `${config.width}px`;
+      container.style.height = `${config.height}px`;
+      container.style.background = 'transparent';
+      if (state.template === 'v2') {
+        container.innerHTML = getV2Markup();
+        fitV2Logos(container);
+        alignV2Attribution(container);
+      } else if (state.template === 'v3') {
+        container.innerHTML = getV3Markup();
+        fitV3Logos(container);
+        alignV3Attribution(container);
+      } else {
+        container.innerHTML = getV1Markup();
+      }
+    }
+
+    function updateTemplateUI() {
+      const config = templates[state.template];
+      const badgeMap = { v1: 'v1 · 旧版', v2: 'v2 · 新版', v3: 'v3 · 4:3' };
+      const ratioMap = { v1: '2:1', v2: '2:1', v3: '4:3' };
+      els.templateBadge.textContent = badgeMap[state.template];
+      els.ratioBadge.textContent = ratioMap[state.template];
+      els.lineHint.textContent = '卡片中最多显示 8 行文字';
+      els.exportSize.textContent = `实际导出尺寸 ${config.exportWidth} × ${config.exportHeight}`;
+      els.previewWrap.classList.toggle('template-v2', state.template === 'v2');
+      els.previewWrap.classList.toggle('template-v3', state.template === 'v3');
+      els.previewWrap.style.aspectRatio = `${config.width} / ${config.height}`;
+      document.querySelectorAll('.template-option').forEach(button => {
+        const active = button.dataset.template === state.template;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+      if (!els.downloadBtn.disabled) {
+        els.downloadBtn.innerHTML = `${downloadIcon} 下载 ${config.exportWidth}px 高清卡片`;
+      }
+    }
+
     function render() {
       renderCard(els.previewCard);
       renderCard(els.captureB);
+      updateTemplateUI();
       scalePreview();
     }
 
     function scalePreview() {
-      const wrap = els.previewWrap;
-      const card = els.previewCard;
-      const scale = wrap.clientWidth / 1080;
-      card.style.transform = `scale(${scale})`;
+      const config = templates[state.template];
+      const scale = els.previewWrap.clientWidth / config.width;
+      els.previewCard.style.transform = `scale(${scale})`;
     }
 
-    els.logoInput.addEventListener('change', e => {
-      const file = e.target.files[0];
-      if (!file) return;
+    document.querySelectorAll('.template-option').forEach(button => {
+      button.addEventListener('click', () => {
+        if (els.downloadBtn.disabled) return;
+        state.template = button.dataset.template;
+        render();
+      });
+    });
+
+    function loadLogo(file) {
+      if (!file || !file.type.startsWith('image/')) return;
       const reader = new FileReader();
       reader.onload = ev => {
         state.logo = ev.target.result;
@@ -371,7 +779,9 @@
         render();
       };
       reader.readAsDataURL(file);
-    });
+    }
+
+    els.logoInput.addEventListener('change', e => loadLogo(e.target.files[0]));
 
     els.removeLogo.addEventListener('click', e => {
       e.preventDefault();
@@ -388,18 +798,7 @@
     els.logoDrop.addEventListener('drop', e => {
       e.preventDefault();
       els.logoDrop.style.borderColor = '#d4d4d4';
-      const file = e.dataTransfer.files[0];
-      if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = ev => {
-          state.logo = ev.target.result;
-          els.logoThumb.src = state.logo;
-          els.logoPlaceholder.classList.add('hidden');
-          els.logoPreview.classList.remove('hidden');
-          render();
-        };
-        reader.readAsDataURL(file);
-      }
+      loadLogo(e.dataTransfer.files[0]);
     });
 
     ['quoteInput','nameInput','titleInput','siteInput'].forEach(id => {
@@ -423,18 +822,77 @@
       return `${base}-横版-${Date.now()}.png`;
     }
 
+    function withTimeout(promise, ms, message) {
+      let timer;
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => {
+          timer = setTimeout(() => reject(new Error(message)), ms);
+        })
+      ]).finally(() => clearTimeout(timer));
+    }
+
+    async function ensureTestimonialFonts() {
+      if (!document.fonts) return;
+      const text = `${state.quote} ${state.name} ${state.title}`;
+      const requests = [
+        document.fonts.load('300 48px "Sentient"', text),
+        document.fonts.load('700 48px "Sentient"', text)
+      ];
+      if (/[\u3400-\u9fff\uf900-\ufaff]/.test(state.quote)) {
+        requests.push(document.fonts.load('300 48px "Testimonial Han Common"', state.quote));
+      }
+      if (/[\u3400-\u9fff\uf900-\ufaff]/.test(`${state.name} ${state.title}`)) {
+        requests.push(document.fonts.load('700 48px "Testimonial Han Common"', `${state.name} ${state.title}`));
+      }
+      await Promise.all(requests);
+      if (requests.length > 2) render();
+      await document.fonts.ready;
+    }
+
+    function waitForImages(container) {
+      return Promise.all(Array.from(container.querySelectorAll('img')).map(img => {
+        if (img.complete) {
+          return img.naturalWidth > 0
+            ? Promise.resolve()
+            : Promise.reject(new Error('Logo 无法读取，请更换图片'));
+        }
+        return new Promise((resolve, reject) => {
+          img.addEventListener('load', () => {
+            if (img.naturalWidth > 0) resolve();
+            else reject(new Error('Logo 无法读取，请更换图片'));
+          }, { once: true });
+          img.addEventListener('error', () => reject(new Error('Logo 加载失败，请更换图片')), { once: true });
+        });
+      }));
+    }
+
     els.downloadBtn.addEventListener('click', async () => {
       els.downloadBtn.disabled = true;
       els.downloadBtn.innerHTML = `<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 生成中…`;
       try {
-        const canvas = await html2canvas(els.captureB, {
-          width: 1080,
-          height: 540,
-          scale: 1,
+        const config = templates[state.template];
+        if (state.template === 'v2' || state.template === 'v3') {
+          await withTimeout(ensureTestimonialFonts(), 60000, '字体加载超时，请检查网络后重试');
+        } else if (document.fonts) {
+          await withTimeout(document.fonts.ready, 10000, '字体加载超时，请重试');
+        }
+        if (state.template === 'v2') {
+          alignV2Attribution(els.previewCard);
+          alignV2Attribution(els.captureB);
+        } else if (state.template === 'v3') {
+          alignV3Attribution(els.previewCard);
+          alignV3Attribution(els.captureB);
+        }
+        await withTimeout(waitForImages(els.captureB), 15000, 'Logo 加载超时，请更换图片或稍后重试');
+        const canvas = await withTimeout(html2canvas(els.captureB, {
+          width: config.width,
+          height: config.height,
+          scale: config.scale,
           backgroundColor: null,
           useCORS: true,
           logging: false
-        });
+        }), 45000, '图片生成超时，请重试');
         const link = document.createElement('a');
         link.download = getDownloadFileName();
         link.href = canvas.toDataURL('image/png');
@@ -443,14 +901,13 @@
         alert('导出失败：' + err.message);
       } finally {
         els.downloadBtn.disabled = false;
-        els.downloadBtn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> 下载 1080px 高清卡片`;
+        updateTemplateUI();
       }
     });
 
     window.addEventListener('resize', scalePreview);
 
     updateState();
-    scalePreview();
   </script>
 </body>
 </html>

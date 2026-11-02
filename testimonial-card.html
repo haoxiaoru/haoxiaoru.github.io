@@ -467,11 +467,6 @@
           </div>
         </div>
 
-        <div>
-          <div class="field-label">网址 / 公司名</div>
-          <input type="text" id="siteInput" class="text-input" value="" placeholder="例如 example.com">
-        </div>
-
         <div class="pt-2">
           <button id="downloadBtn" class="btn btn-primary w-full sm:w-auto">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
@@ -516,8 +511,7 @@
       logo: null,
       quote: '',
       name: '',
-      title: '',
-      site: ''
+      title: ''
     };
 
     const els = {
@@ -530,7 +524,6 @@
       quoteInput: document.getElementById('quoteInput'),
       nameInput: document.getElementById('nameInput'),
       titleInput: document.getElementById('titleInput'),
-      siteInput: document.getElementById('siteInput'),
       previewWrap: document.getElementById('previewWrap'),
       previewCard: document.getElementById('previewCard'),
       captureB: document.getElementById('captureB'),
@@ -545,7 +538,6 @@
       state.quote = els.quoteInput.value;
       state.name = els.nameInput.value;
       state.title = els.titleInput.value;
-      state.site = els.siteInput.value;
       render();
     }
 
@@ -610,11 +602,10 @@
     }
 
     function getLogoBlock() {
-      if (!state.logo && !state.site) return '<div></div>';
+      if (!state.logo) return '<div></div>';
       return `
         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px; max-width: 100%;">
           ${state.logo ? `<img src="${state.logo}" class="logo-img" alt="logo">` : ''}
-          ${state.site ? `<div class="meta-text" style="font-weight: 500; letter-spacing: 0.02em;">${escapeHtml(state.site)}</div>` : ''}
         </div>
       `;
     }
@@ -815,23 +806,14 @@
       loadLogo(e.dataTransfer.files[0]);
     });
 
-    ['quoteInput','nameInput','titleInput','siteInput'].forEach(id => {
+    ['quoteInput','nameInput','titleInput'].forEach(id => {
       els[id].addEventListener('input', updateState);
     });
 
     function getDownloadFileName() {
-      const site = (state.site || '').trim();
+      const name = (state.name || '').trim();
       const title = (state.title || '').trim();
-      let base = '';
-      if (site) {
-        base = site
-          .replace(/^https?:\/\//i, '')
-          .replace(/^www\./i, '')
-          .split('/')[0]
-          .replace(/\.[^.]+$/, '');
-      }
-      if (!base && title) base = title;
-      if (!base) base = '客户证言';
+      let base = name || title || '客户证言';
       base = base.replace(/[\\/:*?"<>|]/g, '_').slice(0, 50);
       return `${base}-横版-${Date.now()}.png`;
     }
